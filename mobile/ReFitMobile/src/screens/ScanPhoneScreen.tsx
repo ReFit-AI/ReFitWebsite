@@ -37,6 +37,16 @@ const ScanPhoneScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  const handleAIGrading = () => {
+    // Navigate to camera screen with device info
+    navigation.navigate('Camera', {
+      deviceInfo: {
+        brand: phoneData.brand,
+        model: phoneData.model,
+      },
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -99,7 +109,18 @@ const ScanPhoneScreen: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleGetQuote}>
-          <Text style={styles.buttonText}>Get Quote</Text>
+          <Text style={styles.buttonText}>Get Quote (Manual)</Text>
+        </TouchableOpacity>
+
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>OR</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        <TouchableOpacity style={styles.aiButton} onPress={handleAIGrading}>
+          <Text style={styles.aiButtonText}>🤖 Use AI Grading</Text>
+          <Text style={styles.aiButtonSubtext}>Take photos for instant grading</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -155,6 +176,38 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#333',
+  },
+  dividerText: {
+    color: '#666',
+    paddingHorizontal: 16,
+    fontSize: 14,
+  },
+  aiButton: {
+    backgroundColor: '#00D4FF',
+    paddingVertical: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  aiButtonText: {
+    color: '#000',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  aiButtonSubtext: {
+    color: '#000',
+    fontSize: 14,
+    opacity: 0.8,
   },
 });
 

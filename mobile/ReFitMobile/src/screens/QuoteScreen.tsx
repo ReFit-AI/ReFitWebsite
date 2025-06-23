@@ -21,7 +21,7 @@ interface Props {
 }
 
 const QuoteScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { phoneData } = route.params;
+  const { phoneData, deviceInfo } = route.params;
   const [quote, setQuote] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,8 +31,22 @@ const QuoteScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const fetchQuote = async () => {
     try {
-      const result = await phoneService.getQuote(phoneData);
-      setQuote(result);
+      // Check if we have AI grading data
+      if (deviceInfo && deviceInfo.gradingDetails) {
+        // Use AI-determined price
+        setQuote({
+          usdPrice: deviceInfo.price,
+          solPrice: deviceInfo.price / 150, // Mock SOL conversion
+          solUsdPrice: 150,
+          expiresAt: new Date(Date.now() + 10 * 60000).toISOString(),
+          gradingDetails: deviceInfo.gradingDetails,
+          isAIGraded: true,
+        });
+      } else if (phoneData) {
+        // Use manual form data
+        const result = await phoneService.getQuote(phoneData);
+        setQuote(result);
+      }
     } catch (error) {
       console.error('Failed to fetch quote:', error);
       // Fallback demo quote

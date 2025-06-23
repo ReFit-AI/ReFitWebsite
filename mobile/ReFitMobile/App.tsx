@@ -7,14 +7,32 @@ import { SolanaProvider } from './src/components/SolanaProvider';
 // Import screens
 import HomeScreen from './src/screens/HomeScreen';
 import ScanPhoneScreen from './src/screens/ScanPhoneScreen';
+import CameraScreen from './src/screens/CameraScreen';
+import GradingResultScreen from './src/screens/GradingResultScreen';
 import QuoteScreen from './src/screens/QuoteScreen';
 import ShippingScreen from './src/screens/ShippingScreen';
 
 export type RootStackParamList = {
   Home: undefined;
   ScanPhone: undefined;
+  Camera: {
+    deviceInfo: {
+      brand: string;
+      model: string;
+    };
+  };
+  GradingResult: {
+    photos: any[];
+  };
   Quote: {
-    phoneData: {
+    deviceInfo?: {
+      brand: string;
+      model: string;
+      condition: string;
+      price: number;
+      gradingDetails?: any;
+    };
+    phoneData?: {
       brand: string;
       model: string;
       storage: string;
@@ -58,6 +76,19 @@ function App(): React.JSX.Element {
               name="ScanPhone" 
               component={ScanPhoneScreen}
               options={{ title: 'Scan Your Phone' }}
+            />
+            <Stack.Screen 
+              name="Camera" 
+              component={CameraScreen}
+              options={{ 
+                title: 'AI Phone Grading',
+                headerShown: false // Full screen camera experience
+              }}
+            />
+            <Stack.Screen 
+              name="GradingResult" 
+              component={GradingResultScreen}
+              options={{ title: 'AI Grading Results' }}
             />
             <Stack.Screen 
               name="Quote" 
