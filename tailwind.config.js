@@ -1,31 +1,46 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   darkMode: 'class',
   theme: {
     extend: {
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic':
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
       colors: {
         solana: {
-          purple: '#9945FF',
-          green: '#14F195',
-          dark: '#0A0A0A',
+          purple: '#9933ff',
+          green: '#00ff88',
+          dark: '#1a1a1a',
         },
         apple: {
-          black: '#000000',
-          gray: '#86868b',
-          light: '#fbfbfd',
+          blue: '#007aff',
+          gray: {
+            100: '#f2f2f7',
+            200: '#e5e5ea',
+            300: '#d1d1d6',
+            400: '#c7c7cc',
+            500: '#aeaeb2',
+            600: '#8e8e93',
+            700: '#636366',
+            800: '#48484a',
+            900: '#3a3a3c',
+          }
         }
       },
       fontFamily: {
-        'sf-pro': ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        'sf-pro': ['SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        'apple': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'fade-in': 'fadeIn 0.3s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeIn: {
@@ -35,8 +50,8 @@ export default {
         slideUp: {
           '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-      },
+        }
+      }
     },
   },
   plugins: [],
