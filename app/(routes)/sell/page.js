@@ -157,15 +157,6 @@ export default function SellPage() {
               Sell Your Phone
             </h1>
             <p className="text-xl text-gray-400">Get instant payment in SOL</p>
-            
-            {/* Demo Button */}
-            <button
-              onClick={() => setShowDemo(true)}
-              className="mt-6 inline-flex items-center px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/50 rounded-lg transition-all"
-            >
-              <Camera className="h-4 w-4 mr-2" />
-              Try V3RA AI Demo
-            </button>
           </motion.div>
 
           {/* Progress Steps */}

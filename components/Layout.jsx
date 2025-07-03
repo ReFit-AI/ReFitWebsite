@@ -28,7 +28,6 @@ const Layout = ({ children }) => {
     { path: '/orders', label: 'Orders', icon: Package },
     { path: '/profile', label: 'Profile', icon: User },
     { path: '/about', label: 'About', icon: Info },
-    { path: '/roadmap', label: 'Roadmap', icon: Target },
   ]
 
   return (

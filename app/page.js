@@ -14,7 +14,6 @@ import {
   ChevronRight
 } from 'lucide-react'
 import FAQ from '@/components/FAQ'
-import EmailCapture from '@/components/EmailCapture'
 
 export default function HomePage() {
   const popularDevices = [
@@ -98,70 +97,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Popular Devices Section */}
-      <section className="py-16 bg-gray-950/50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">Popular Devices</h2>
-            <p className="text-xl text-gray-400">See what your device is worth today</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
-            {popularDevices.map((device, index) => (
-              <motion.div
-                key={device.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="group relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10"
-              >
-                {/* Gradient background on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-green-600/0 group-hover:from-purple-600/5 group-hover:to-green-600/5 rounded-2xl transition-all duration-300" />
-                
-                <div className="relative">
-                  {/* Phone icon */}
-                  <div className="text-6xl text-center mb-4">📱</div>
-                  
-                  {/* Device name */}
-                  <h3 className="text-lg font-semibold mb-2 text-center text-gray-200 group-hover:text-white transition-colors">
-                    {device.name}
-                  </h3>
-                  
-                  {/* Price */}
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-3xl font-bold text-green-400">
-                      ${device.price}
-                    </span>
-                    <TrendingUp className="h-5 w-5 text-green-400" />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* See All Devices Button */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <Link 
-              href="/sell" 
-              className="inline-flex items-center px-6 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg text-white font-semibold hover:bg-gray-800 transition-all duration-300"
-            >
-              See All Devices
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
 
       {/* How It Works - Visual 3-Step Process */}
       <section className="py-20 bg-black">
@@ -239,21 +174,6 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* Demo CTA */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <Link 
-              href="/sell" 
-              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 group"
-            >
-              Try Demo Now
-              <Play className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
         </div>
       </section>
 
@@ -348,14 +268,6 @@ export default function HomePage() {
       </section>
 
 
-      {/* Email Capture Section */}
-      <section className="py-20 bg-gray-950">
-        <div className="container mx-auto px-4">
-          <div className="max-w-md mx-auto">
-            <EmailCapture />
-          </div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
       <section className="py-20 bg-gray-950">
@@ -471,12 +383,6 @@ export default function HomePage() {
                     Solana
                   </span>
                 </div>
-              </div>
-              
-              {/* Solana Mobile Badge */}
-              <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-full border border-purple-500/30">
-                <Smartphone className="h-4 w-4 text-purple-400" />
-                <span className="text-sm font-medium text-purple-400">Solana Mobile App Coming Soon</span>
               </div>
             </div>
           </motion.div>
