@@ -72,13 +72,6 @@ export default function HomePage() {
                 Get Your Quote
                 <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link 
-                href="/shop" 
-                className="px-8 py-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full text-white font-semibold text-lg hover:bg-gray-800 transition-all duration-300 flex items-center justify-center"
-              >
-                <Smartphone className="mr-2 h-5 w-5" />
-                Shop Phones
-              </Link>
             </div>
             
             {/* Trust indicators */}
@@ -354,124 +347,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Smart Contract Commerce Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <span className="text-sm text-purple-400 font-semibold mb-2 block">COMING SOON</span>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Smart Contract Phone Purchases
-              </h2>
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                Revolutionary way to upgrade: Buy a new phone → Trade-in credit applied instantly
-              </p>
-            </motion.div>
-
-            {/* Visual Process */}
-            <div className="bg-gray-900/30 rounded-2xl border border-gray-800 p-8 max-w-4xl mx-auto mb-16">
-              <div className="grid md:grid-cols-4 gap-4 text-center">
-                <div className="space-y-2">
-                  <div className="text-4xl">🛒</div>
-                  <h4 className="font-semibold">Order Seeker</h4>
-                  <p className="text-sm text-gray-400">Pay full price</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-4xl">🔒</div>
-                  <h4 className="font-semibold">Smart Contract</h4>
-                  <p className="text-sm text-gray-400">Funds locked</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-4xl">📱</div>
-                  <h4 className="font-semibold">Ship Old Phone</h4>
-                  <p className="text-sm text-gray-400">Quick verification</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-4xl">💸</div>
-                  <h4 className="font-semibold">Get Refund</h4>
-                  <p className="text-sm text-gray-400">Instant SOL back</p>
-                </div>
-              </div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Upgrade to Web3 phones
-              </h2>
-              <p className="text-xl text-gray-400">
-                Get 20% extra credit when you trade in
-              </p>
-            </motion.div>
-
-            {/* Product cards */}
-            <div className="grid md:grid-cols-2 gap-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="group relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-purple-500/50 transition-all duration-300"
-              >
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1 bg-purple-500/20 rounded-full text-xs font-semibold text-purple-400">
-                    NEW
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold mb-2">Solana Seeker</h3>
-                <p className="text-gray-400 mb-6">
-                  Next-gen Web3 phone with built-in Seed Vault and dApp store
-                </p>
-                <div className="text-3xl font-bold mb-6">
-                  <span className="text-gray-500 line-through text-xl">$450</span>
-                  <span className="ml-2">$360</span>
-                  <span className="text-sm text-gray-400 ml-2">with trade-in</span>
-                </div>
-                <Link 
-                  href="/shop" 
-                  className="inline-flex items-center text-purple-400 font-semibold group-hover:text-purple-300 transition-colors"
-                >
-                  Learn more
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="group relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-purple-500/50 transition-all duration-300"
-              >
-                <h3 className="text-2xl font-bold mb-2">Solana Saga</h3>
-                <p className="text-gray-400 mb-6">
-                  The original Web3 phone, now at an incredible price
-                </p>
-                <div className="text-3xl font-bold mb-6">
-                  <span className="text-gray-500 line-through text-xl">$599</span>
-                  <span className="ml-2">$479</span>
-                  <span className="text-sm text-gray-400 ml-2">with trade-in</span>
-                </div>
-                <Link 
-                  href="/shop" 
-                  className="inline-flex items-center text-green-400 font-semibold group-hover:text-green-300 transition-colors"
-                >
-                  Learn more
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Email Capture Section */}
       <section className="py-20 bg-gray-950">

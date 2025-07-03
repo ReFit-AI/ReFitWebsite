@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { motion } from 'framer-motion'
-import { Home, Package, Info, ShoppingCart, User, Target } from 'lucide-react'
+import { Home, Package, Info, User, Target } from 'lucide-react'
 import { initializeServices, cleanupServices } from '@/services'
 import { WalletButton } from './WalletButton'
 
@@ -25,7 +25,6 @@ const Layout = ({ children }) => {
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
     { path: '/sell', label: 'Sell', icon: Package },
-    { path: '/shop', label: 'Shop', icon: ShoppingCart },
     { path: '/orders', label: 'Orders', icon: Package },
     { path: '/profile', label: 'Profile', icon: User },
     { path: '/about', label: 'About', icon: Info },
@@ -201,11 +200,6 @@ const Layout = ({ children }) => {
                 <li>
                   <Link href="/sell" className="text-gray-400 hover:text-white transition-colors">
                     Sell Your Phone
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/shop" className="text-gray-400 hover:text-white transition-colors">
-                    Shop Phones
                   </Link>
                 </li>
                 <li>

@@ -60,24 +60,6 @@ export default function RoadmapPage() {
       status: "upcoming",
       items: [
         { 
-          title: "Your Old Phone Funds Your New One", 
-          description: "Buy new Seeker → money in smart contract → trade old phone → get the difference",
-          icon: Recycle,
-          status: "upcoming"
-        },
-        { 
-          title: "Break Today, Replace Tomorrow", 
-          description: "Instant replacement service powered by our refurbished inventory",
-          icon: RefreshCw,
-          status: "upcoming"
-        },
-        { 
-          title: "Trade-In Credit as Currency", 
-          description: "Use your phone's value as collateral for purchases",
-          icon: CircleDollarSign,
-          status: "upcoming"
-        },
-        { 
           title: "Official Solana Mobile Partner", 
           description: "Seamless integration with the Solana Mobile ecosystem",
           icon: Shield,

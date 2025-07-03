@@ -21,10 +21,6 @@ export default function FAQ() {
       answer: "We accept all major brands including iPhone (6 and newer), Samsung Galaxy, Google Pixel, and Solana phones. Even devices with cracked screens or battery issues have value. Check our instant quote tool for your specific model."
     },
     {
-      question: "How does the smart contract purchase work?",
-      answer: "Coming in Phase 2: Order a new Solana Seeker → Pay full price into smart contract → Receive phone with ReFit pre-installed → Ship your old phone → Get the difference refunded in SOL instantly. It's like an automated trade-in program."
-    },
-    {
       question: "Why Solana?",
       answer: "Solana offers instant settlements, minimal fees, and the infrastructure we need for tokenizing inventory. Plus, with Solana Mobile integration, we can create seamless experiences for Saga and Seeker users."
     }
