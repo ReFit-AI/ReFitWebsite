@@ -60,12 +60,7 @@ export default function HomePage() {
             
             {/* Subheadline */}
             <p className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto font-light">
-              AI-powered instant valuation. Trade in your device for immediate Solana.
-            </p>
-            
-            {/* Tagline */}
-            <p className="text-sm text-gray-500 mb-8 font-medium">
-              Powered by V3RA AI verification
+              Trade in your device for Solana. Get instant quotes and fast payments.
             </p>
             
             {/* CTA Buttons */}
@@ -95,15 +90,15 @@ export default function HomePage() {
             >
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-yellow-500" />
-                <span className="font-medium">Launching Week 1</span>
+                <span className="font-medium">Get paid in 24 hours</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span>Instant SOL payments</span>
+                <span>Free shipping included</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span>15+ years experience</span>
+                <span>Best prices guaranteed</span>
               </div>
             </motion.div>
           </motion.div>
@@ -203,9 +198,9 @@ export default function HomePage() {
               
               {/* Card */}
               <div className="pt-12 pb-8 px-6 bg-gray-900/50 rounded-2xl border border-gray-800 group-hover:border-purple-500/50 transition-all duration-300">
-                <div className="text-5xl mb-4">📸</div>
-                <h3 className="text-xl font-bold mb-2">Snap a photo</h3>
-                <p className="text-gray-400">V3RA AI instantly analyzes condition</p>
+                <div className="text-5xl mb-4">📱</div>
+                <h3 className="text-xl font-bold mb-2">Select your device</h3>
+                <p className="text-gray-400">Choose model and condition</p>
               </div>
               
               {/* Connection line */}
@@ -374,7 +369,7 @@ export default function HomePage() {
                 Smart Contract Phone Purchases
               </h2>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                Revolutionary way to upgrade: Buy new Seeker → Money in smart contract → Old phone funds the difference
+                Revolutionary way to upgrade: Buy a new phone → Trade-in credit applied instantly
               </p>
             </motion.div>
 
@@ -394,7 +389,7 @@ export default function HomePage() {
                 <div className="space-y-2">
                   <div className="text-4xl">📱</div>
                   <h4 className="font-semibold">Ship Old Phone</h4>
-                  <p className="text-sm text-gray-400">AI valuation</p>
+                  <p className="text-sm text-gray-400">Quick verification</p>
                 </div>
                 <div className="space-y-2">
                   <div className="text-4xl">💸</div>

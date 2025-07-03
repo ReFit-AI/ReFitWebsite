@@ -14,7 +14,7 @@ export default function FAQ() {
     },
     {
       question: "How fast do I get paid?",
-      answer: "You receive SOL in your wallet within 24 hours of device inspection. Our V3RA AI system provides instant quotes, and once you ship your phone with our prepaid label, payment is automated via smart contract."
+      answer: "You receive SOL in your wallet within 24 hours of device inspection. Get instant quotes online, ship your phone with our prepaid label, and payment is automated via smart contract."
     },
     {
       question: "What phones do you accept?",

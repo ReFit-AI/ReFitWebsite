@@ -29,9 +29,9 @@ export default function RoadmapPage() {
       status: "in-progress",
       items: [
         { 
-          title: "AI-Powered Instant Quotes", 
-          description: "Snap a photo. Get a quote. Ship your phone. Get paid instantly.",
-          icon: Brain,
+          title: "Instant Phone Quotes", 
+          description: "Select your device. Get a quote. Ship your phone. Get paid instantly.",
+          icon: DollarSign,
           status: "in-progress"
         },
         { 
@@ -184,7 +184,7 @@ export default function RoadmapPage() {
               The Circular Economy
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Your old phone funds your new one. Instant AI quotes. Smart contracts. Zero waste.
+              Your old phone funds your new one. Instant quotes. Smart contracts. Zero waste.
               We&apos;re reimagining how hardware moves through the world.
             </p>
           </motion.div>
