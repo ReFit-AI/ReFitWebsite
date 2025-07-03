@@ -25,6 +25,7 @@ const Layout = ({ children }) => {
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
     { path: '/sell', label: 'Sell', icon: Package },
+    { path: '/box-ship', label: 'Box & Ship', icon: Package },
     { path: '/orders', label: 'Orders', icon: Package },
     { path: '/profile', label: 'Profile', icon: User },
     { path: '/about', label: 'About', icon: Info },

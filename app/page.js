@@ -71,6 +71,13 @@ export default function HomePage() {
                 Get Your Quote
                 <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
+              <Link 
+                href="/box-ship" 
+                className="px-8 py-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full text-white font-semibold text-lg hover:bg-gray-800 transition-all duration-300 flex items-center justify-center"
+              >
+                <Package className="mr-2 h-5 w-5" />
+                Box & Ship
+              </Link>
             </div>
             
             {/* Trust indicators */}
