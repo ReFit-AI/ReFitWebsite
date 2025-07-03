@@ -10,7 +10,6 @@ import PhoneForm from '@/components/PhoneForm'
 import PriceQuote from '@/components/PriceQuote'
 import ShippingAddressForm from '@/components/ShippingAddressForm'
 import ShippingSelection from '@/components/ShippingSelection'
-import SmartContractDemo from '@/components/SmartContractDemo'
 import { getUserProfileService, getShippingService, initializeServices } from '@/services'
 
 export default function SellPage() {
@@ -23,7 +22,6 @@ export default function SellPage() {
   const [selectedShippingRate, setSelectedShippingRate] = useState(null)
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [shippingLabel, setShippingLabel] = useState(null)
-  const [showDemo, setShowDemo] = useState(false)
 
   const steps = [
     { number: 1, title: 'Device Info', icon: Smartphone },
@@ -454,11 +452,6 @@ export default function SellPage() {
             )}
           </motion.div>
       </div>
-      
-      {/* Demo Modal */}
-      {showDemo && (
-        <SmartContractDemo onClose={() => setShowDemo(false)} />
-      )}
     </div>
   )
 }

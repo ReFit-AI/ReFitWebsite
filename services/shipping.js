@@ -143,12 +143,12 @@ class ShippingService {
     return {
       name: 'ReFit Warehouse',
       company: 'ReFit',
-      street1: '100 California St',
-      city: 'San Francisco',
-      state: 'CA',
-      zip: '94111',
+      street1: 'YOUR_ACTUAL_STREET_ADDRESS',
+      city: 'YOUR_CITY',
+      state: 'YOUR_STATE',
+      zip: 'YOUR_ZIP',
       country: 'US',
-      phone: '415-555-0100',
+      phone: 'YOUR_PHONE_NUMBER',
       email: 'warehouse@shoprefit.com'
     };
   }
