@@ -5,20 +5,16 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
   Target, 
-  Zap, 
   Shield, 
   Globe, 
   ArrowRight,
   CheckCircle,
   Code,
-  Smartphone,
   DollarSign,
   Cpu,
   RefreshCw,
   TrendingUp,
   CircleDollarSign,
-  Brain,
-  Recycle,
   Sparkles
 } from 'lucide-react'
 export default function RoadmapPage() {

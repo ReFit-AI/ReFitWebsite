@@ -7,22 +7,16 @@ import {
   ArrowLeft,
   Lock,
   Unlock,
-  TrendingUp,
   Award,
   Info,
   Calculator,
-  Users,
   Coins,
-  ChevronRight,
   Star,
   Zap,
   Shield,
   Clock,
-  DollarSign,
   ChevronDown,
-  AlertCircle,
-  BarChart3,
-  Sparkles
+  AlertCircle
 } from 'lucide-react'
 
 // RFT TOKENOMICS

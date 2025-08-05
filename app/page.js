@@ -314,7 +314,7 @@ export default function HomePage() {
                 Stake Your Trade-In Value
               </h2>
               <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-                Don't just sell your phone – stake its value and earn up to 500% APR through ReFit's innovative staking program.
+                Don&apos;t just sell your phone – stake its value and earn up to 500% APR through ReFit&apos;s innovative staking program.
               </p>
               
               <Link 
