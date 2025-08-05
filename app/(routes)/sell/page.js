@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck, Camera } from 'lucide-react'
+import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck } from 'lucide-react'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'react-hot-toast'

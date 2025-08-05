@@ -25,44 +25,44 @@ export default function RoadmapPage() {
   const quarters = [
     {
       quarter: "Today",
-      title: "Instant Phone Buyback",
+      title: "Upgrade Forever Launch",
       status: "in-progress",
       items: [
         { 
-          title: "AI-Powered Instant Quotes", 
-          description: "Snap a photo. Get a quote. Ship your phone. Get paid instantly.",
-          icon: Brain,
+          title: "Your Old Phone Pays for Your New One", 
+          description: "Trade in, stake value, earn ~6.5% APY toward future upgrades forever",
+          icon: CircleDollarSign,
           status: "in-progress"
         },
         { 
-          title: "Live with 100+ Devices", 
-          description: "Real inventory, real prices, real payments on Solana",
-          icon: Smartphone,
+          title: "First 100 Users Get Bonus APY", 
+          description: "+0.5% bonus for early adopters. Be part of history.",
+          icon: TrendingUp,
           status: "in-progress"
         },
         { 
-          title: "Zero Friction Experience", 
-          description: "No accounts. No waiting. Just instant USDC to your wallet.",
-          icon: Zap,
+          title: "Family Stacking Power", 
+          description: "Stack multiple devices = free phone every year",
+          icon: Shield,
           status: "in-progress"
         },
         { 
-          title: "Solana Mobile Integration", 
-          description: "Native app built for Saga and Seeker devices",
+          title: "Manual Processing Excellence", 
+          description: "White glove service for our first users",
           icon: Sparkles,
           status: "in-progress"
         }
       ]
     },
     {
-      quarter: "Next",
-      title: "The Smart Contract Revolution",
+      quarter: "Week 2",
+      title: "Validator Goes Live",
       status: "upcoming",
       items: [
         { 
-          title: "Your Old Phone Funds Your New One", 
-          description: "Buy new Seeker → money in smart contract → trade old phone → get the difference",
-          icon: Recycle,
+          title: "Deploy Solana Validator", 
+          description: "Real staking begins. Your trades secure the network.",
+          icon: Cpu,
           status: "upcoming"
         },
         { 
@@ -86,8 +86,8 @@ export default function RoadmapPage() {
       ]
     },
     {
-      quarter: "Soon",
-      title: "The Network Effect",
+      quarter: "Month 2",
+      title: "Smart Contract Automation",
       status: "upcoming",
       items: [
         { 
@@ -117,31 +117,31 @@ export default function RoadmapPage() {
       ]
     },
     {
-      quarter: "Vision",
-      title: "Every Device Has Value",
+      quarter: "The Vision",
+      title: "Infinite Upgrades",
       status: "upcoming",
       items: [
         { 
-          title: "Hardware Liquidity Layer", 
-          description: "Making every electronic device instantly liquid",
+          title: "The Infinity Phone Achievement", 
+          description: "Stack $10k in trades = free phone every year forever",
           icon: DollarSign,
           status: "upcoming"
         },
         { 
-          title: "Global Circular Economy", 
-          description: "Zero waste through perfect market efficiency",
+          title: "1 Million Devices Staked", 
+          description: "Largest device-backed validator on Solana",
           icon: Globe,
           status: "upcoming"
         },
         { 
-          title: "Community Ownership", 
-          description: "Decentralized governance of the protocol",
+          title: "Corporate Fleet Programs", 
+          description: "Companies stake old devices, fund employee upgrades",
           icon: Target,
           status: "upcoming"
         },
         { 
-          title: "The Future of Commerce", 
-          description: "Where hardware meets DeFi on Solana",
+          title: "Never Pay Full Price Again", 
+          description: "The future where upgrades fund themselves",
           icon: CheckCircle,
           status: "upcoming"
         }
@@ -181,11 +181,11 @@ export default function RoadmapPage() {
             className="text-center mb-16"
           >
             <h1 className="text-5xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
-              The Circular Economy
+              Upgrade Forever Roadmap
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Your old phone funds your new one. Instant AI quotes. Smart contracts. Zero waste.
-              We&apos;re reimagining how hardware moves through the world.
+              Your old phone pays for your new one. Trade in once, stake the value, upgrade forever.
+              We&apos;re building the future where devices fund themselves.
             </p>
           </motion.div>
 
@@ -297,9 +297,9 @@ export default function RoadmapPage() {
             className="mt-20 text-center"
           >
             <div className="max-w-3xl mx-auto p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 to-green-500/10 border border-gray-700">
-              <h3 className="text-2xl font-bold mb-4">Ready to Scale</h3>
+              <h3 className="text-2xl font-bold mb-4">Join the Upgrade Forever Revolution</h3>
               <p className="text-gray-400 mb-6">
-                Live platform. Real users. 15 years of industry expertise. We&apos;re building the circular economy for hardware on Solana.
+                Launching TODAY. First 100 users get bonus APY. Turn your old phone into perpetual upgrade funds.
               </p>
               <div className="grid md:grid-cols-3 gap-4 mb-6 text-left">
                 <div className="p-4 bg-black/50 rounded-lg">
@@ -317,15 +317,15 @@ export default function RoadmapPage() {
               </div>
               <div className="text-center mb-6">
                 <p className="text-sm text-gray-500">
-                  What eBay did for collectibles, we&apos;re doing for hardware. On Solana.
+                  Your old phones are worth more than cash. They&apos;re your ticket to free upgrades forever.
                 </p>
               </div>
               <div className="flex justify-center">
                 <Link
-                  href="/"
+                  href="/sell"
                   className="btn-primary"
                 >
-                  Try the Demo
+                  Start Your Upgrade Fund
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </div>
