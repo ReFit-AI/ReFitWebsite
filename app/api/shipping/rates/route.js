@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { rateLimiters } from '@/lib/rate-limit';
 
 // Simple in-memory cache to avoid rate limits
 const rateCache = new Map();
@@ -9,6 +10,18 @@ function getCacheKey(fromAddress, toAddress, parcel) {
 }
 
 export async function POST(request) {
+  // Apply rate limiting
+  const { success, message, retryAfter } = await rateLimiters.standard(request);
+  if (!success) {
+    return NextResponse.json(
+      { error: message },
+      { 
+        status: 429,
+        headers: { 'Retry-After': String(retryAfter) }
+      }
+    );
+  }
+  
   try {
     const { fromAddress, toAddress, parcel } = await request.json();
 
