@@ -1,5 +1,8 @@
 # ReFit - Solana-Powered Device Buyback Platform
 
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black)](https://refit-website.vercel.app)
+[![Status](https://img.shields.io/badge/Status-Live-success)](https://refit-website.vercel.app)
+
 ReFit is a modern device buyback platform that leverages Solana blockchain technology to provide instant payments and transparent pricing for used phones and electronics.
 
 ## Features
