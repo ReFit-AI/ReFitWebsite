@@ -218,8 +218,8 @@ class MockShippingService extends ShippingService {
       success: true,
       label: {
         trackingNumber,
-        labelUrl: `https://refit.io/labels/${trackingNumber}.pdf`,
-        trackingUrl: `https://tracking.example.com/${trackingNumber}`,
+        labelUrl: `https://www.shoprefit.com/labels/${trackingNumber}.pdf`,
+        trackingUrl: `https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1=${trackingNumber}`,
         carrier: 'USPS',
         cost: 8.45
       }

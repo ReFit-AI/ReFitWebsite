@@ -6,8 +6,8 @@ function generateMockLabel() {
   const trackingNumber = 'MOCK' + randomUUID().replace(/-/g, '').slice(0, 18).toUpperCase();
   return {
     trackingNumber,
-    labelUrl: `https://refit.io/mock-labels/${trackingNumber}.pdf`,
-    trackingUrl: `https://tracking.mock/${trackingNumber}`,
+    labelUrl: `https://www.shoprefit.com/mock-labels/${trackingNumber}.pdf`,
+    trackingUrl: `https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1=${trackingNumber}`,
     carrier: 'USPS',
     cost: 0.00,
     service: 'USPS Priority Mail',

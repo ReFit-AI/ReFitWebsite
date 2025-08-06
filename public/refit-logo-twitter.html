@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReFit Logo - Twitter Profile Image</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        canvas {
+            border: 1px solid #333;
+            border-radius: 20px;
+        }
+        button {
+            background: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+        }
+        p {
+            color: #888;
+            text-align: center;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ReFit Logo for Twitter Profile</h1>
+        <p>Click any style below to download a 1000x1000px image perfect for Twitter profile picture</p>
+        
+        <canvas id="canvas" width="1000" height="1000"></canvas>
+        
+        <div class="options">
+            <button onclick="drawLogo('gradient')">Gradient on Black</button>
+            <button onclick="drawLogo('gradient-circle')">Gradient with Circle BG</button>
+            <button onclick="drawLogo('solid-purple')">Solid Purple</button>
+            <button onclick="drawLogo('solid-green')">Solid Green</button>
+            <button onclick="drawLogo('animated')">Animated Gradient</button>
+            <button onclick="drawLogo('white')">White on Gradient BG</button>
+        </div>
+        
+        <button id="downloadBtn" onclick="downloadImage()">Download Image</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let currentStyle = 'gradient';
+
+        function drawLogo(style = 'gradient') {
+            currentStyle = style;
+            const size = 1000;
+            const center = size / 2;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Background
+            if (style === 'gradient-circle') {
+                // Circular gradient background
+                const bgGradient = ctx.createRadialGradient(center, center, 0, center, center, center);
+                bgGradient.addColorStop(0, '#1a0f2e');
+                bgGradient.addColorStop(0.5, '#0f1923');
+                bgGradient.addColorStop(1, '#000000');
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, size, size);
+            } else if (style === 'white') {
+                // Gradient background for white logo
+                const bgGradient = ctx.createLinearGradient(0, 0, size, size);
+                bgGradient.addColorStop(0, '#9945FF');
+                bgGradient.addColorStop(0.5, '#14F195');
+                bgGradient.addColorStop(1, '#9945FF');
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, size, size);
+            } else {
+                // Black background
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, size, size);
+            }
+            
+            // Scale for the logo (leaving some padding)
+            const scale = 0.7;
+            const logoSize = size * scale;
+            const offset = (size - logoSize) / 2;
+            
+            // Save context for transformations
+            ctx.save();
+            ctx.translate(center, center);
+            
+            // Add glow effect
+            if (style !== 'white') {
+                ctx.shadowColor = style === 'solid-purple' ? '#9945FF' : 
+                                 style === 'solid-green' ? '#14F195' : '#9945FF';
+                ctx.shadowBlur = 30;
+            }
+            
+            // Create gradient or solid color
+            let strokeStyle;
+            if (style === 'gradient' || style === 'gradient-circle' || style === 'animated') {
+                const gradient = ctx.createLinearGradient(-logoSize/2, -logoSize/2, logoSize/2, logoSize/2);
+                gradient.addColorStop(0, '#9945FF');
+                gradient.addColorStop(0.5, '#14F195');
+                gradient.addColorStop(1, '#9945FF');
+                strokeStyle = gradient;
+            } else if (style === 'solid-purple') {
+                strokeStyle = '#9945FF';
+            } else if (style === 'solid-green') {
+                strokeStyle = '#14F195';
+            } else if (style === 'white') {
+                strokeStyle = '#FFFFFF';
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 20;
+            }
+            
+            // Draw outer circle (screw head)
+            ctx.beginPath();
+            ctx.arc(0, 0, logoSize/2, 0, Math.PI * 2);
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = logoSize * 0.08;
+            ctx.stroke();
+            
+            // Draw inner circle (subtle depth)
+            ctx.beginPath();
+            ctx.arc(0, 0, logoSize * 0.39, 0, Math.PI * 2);
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = logoSize * 0.025;
+            ctx.globalAlpha = 0.5;
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+            
+            // Draw diagonal screw slot
+            ctx.beginPath();
+            const slotLength = logoSize * 0.55;
+            ctx.moveTo(-slotLength/2, slotLength/2);
+            ctx.lineTo(slotLength/2, -slotLength/2);
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = logoSize * 0.11;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            // Add extra glow for animated style
+            if (style === 'animated') {
+                ctx.shadowColor = '#00D9FF';
+                ctx.shadowBlur = 50;
+                ctx.globalAlpha = 0.3;
+                
+                // Redraw with extra glow
+                ctx.beginPath();
+                ctx.arc(0, 0, logoSize/2, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                ctx.globalAlpha = 1;
+            }
+            
+            ctx.restore();
+            
+            // Add subtle branding text (optional)
+            if (style === 'gradient-circle' || style === 'white') {
+                ctx.save();
+                ctx.font = `bold ${size * 0.06}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                if (style === 'white') {
+                    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                } else {
+                    const textGradient = ctx.createLinearGradient(center - 100, center + 380, center + 100, center + 380);
+                    textGradient.addColorStop(0, '#9945FF');
+                    textGradient.addColorStop(0.5, '#14F195');
+                    textGradient.addColorStop(1, '#9945FF');
+                    ctx.fillStyle = textGradient;
+                }
+                
+                ctx.fillText('REFIT', center, center + 380);
+                ctx.restore();
+            }
+        }
+
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = `refit-logo-${currentStyle}-twitter.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Draw initial logo
+        drawLogo('gradient');
+    </script>
+</body>
+</html>
