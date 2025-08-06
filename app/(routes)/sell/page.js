@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck, Camera } from 'lucide-react'
+import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck } from 'lucide-react'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'react-hot-toast'
@@ -10,7 +10,6 @@ import PhoneForm from '@/components/PhoneForm'
 import PriceQuote from '@/components/PriceQuote'
 import ShippingAddressForm from '@/components/ShippingAddressForm'
 import ShippingSelection from '@/components/ShippingSelection'
-import SmartContractDemo from '@/components/SmartContractDemo'
 import { getUserProfileService, getShippingService, initializeServices } from '@/services'
 
 export default function SellPage() {
@@ -23,7 +22,11 @@ export default function SellPage() {
   const [selectedShippingRate, setSelectedShippingRate] = useState(null)
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [shippingLabel, setShippingLabel] = useState(null)
-  const [showDemo, setShowDemo] = useState(false)
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentStep])
 
   const steps = [
     { number: 1, title: 'Device Info', icon: Smartphone },
@@ -157,15 +160,6 @@ export default function SellPage() {
               Sell Your Phone
             </h1>
             <p className="text-xl text-gray-400">Get instant payment in SOL</p>
-            
-            {/* Demo Button */}
-            <button
-              onClick={() => setShowDemo(true)}
-              className="mt-6 inline-flex items-center px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/50 rounded-lg transition-all"
-            >
-              <Camera className="h-4 w-4 mr-2" />
-              Try V3RA AI Demo
-            </button>
           </motion.div>
 
           {/* Progress Steps */}
@@ -463,11 +457,6 @@ export default function SellPage() {
             )}
           </motion.div>
       </div>
-      
-      {/* Demo Modal */}
-      {showDemo && (
-        <SmartContractDemo onClose={() => setShowDemo(false)} />
-      )}
     </div>
   )
 }

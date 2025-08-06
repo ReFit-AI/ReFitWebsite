@@ -5,6 +5,10 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  swcMinify: true,
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {

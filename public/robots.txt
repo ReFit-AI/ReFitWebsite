@@ -1,0 +1,9 @@
+# Robots.txt for ReFit
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /auth/
+
+# Sitemap
+Sitemap: https://www.shoprefit.com/sitemap.xml

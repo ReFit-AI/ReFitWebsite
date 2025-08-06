@@ -131,6 +131,15 @@
     }
   }
   
+  /* Mobile Touch Optimization */
+  @media (hover: none) and (pointer: coarse) {
+    button, a, .clickable {
+      @apply min-h-[44px];
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+  }
+  
   /* Card styles */
   .card {
     @apply bg-gray-900/50 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300;

@@ -12,7 +12,11 @@ import {
   ChevronRight,
   Coins
 } from 'lucide-react'
-import FAQ from '@/components/FAQ'
+import dynamic from 'next/dynamic'
+
+const FAQ = dynamic(() => import('@/components/FAQ'), {
+  loading: () => <div className="h-96 animate-pulse bg-gray-900/50 rounded-lg" />,
+})
 
 export default function HomePage() {
   const popularDevices = [
@@ -58,7 +62,7 @@ export default function HomePage() {
             
             {/* Subheadline */}
             <p className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto font-light">
-              Instant valuation. Trade in your device for immediate Solana.
+              Instant valuation. Trade in your device for Solana.
             </p>
             
             {/* Single CTA */}
@@ -154,7 +158,7 @@ export default function HomePage() {
               <div className="pt-12 pb-8 px-6 bg-gray-900/50 rounded-2xl border border-gray-800 group-hover:border-purple-500/50 transition-all duration-300">
                 <div className="text-5xl mb-4">⚡</div>
                 <h3 className="text-xl font-bold mb-2">Get instant quote</h3>
-                <p className="text-gray-400">See your SOL value immediately</p>
+                <p className="text-gray-400">See your SOL value instantly</p>
               </div>
               
               <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-purple-500 to-transparent" />
@@ -257,7 +261,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-bold mb-2">Instant Quotes</h3>
               <p className="text-gray-400">
-                Get your price in seconds with AI-powered valuation. No waiting, no haggling.
+                Get a fair market price for your device. Simple, transparent pricing.
               </p>
             </motion.div>
 

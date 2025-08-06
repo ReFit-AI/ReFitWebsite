@@ -11,6 +11,25 @@ export const metadata = {
   icons: {
     icon: '/solana-logo.svg',
   },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  themeColor: '#000000',
+  manifest: '/manifest.json',
+  openGraph: {
+    title: 'ReFit - Trade Your Phone on Solana',
+    description: 'Trade in your old phone for instant SOL payments.',
+    url: 'https://www.shoprefit.com',
+    siteName: 'ReFit',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ReFit - Trade Your Phone on Solana',
+    description: 'Trade in your old phone for instant SOL payments.',
+  },
 }
 
 export default function RootLayout({ children }) {

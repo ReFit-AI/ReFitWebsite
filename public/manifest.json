@@ -1,0 +1,21 @@
+{
+  "name": "ReFit - Trade Your Phone",
+  "short_name": "ReFit",
+  "description": "Trade in your old phone for instant SOL payments",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#9333ea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/solana-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "shopping", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr"
+}

@@ -280,16 +280,20 @@ export default function TokenomicsPage() {
                         <p className="text-gray-400">Total Supply</p>
                       </div>
                     </div>
-                    <svg className="w-full h-full transform -rotate-90">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 256 256">
                       {(() => {
                         let currentAngle = 0;
+                        const centerX = 128;
+                        const centerY = 128;
+                        const radius = 100;
+                        
                         return distribution.map((item, index) => {
                           const startAngle = currentAngle;
                           const endAngle = currentAngle + (item.percentage * 3.6);
-                          const x1 = 128 + 100 * Math.cos((startAngle * Math.PI) / 180);
-                          const y1 = 128 + 100 * Math.sin((startAngle * Math.PI) / 180);
-                          const x2 = 128 + 100 * Math.cos((endAngle * Math.PI) / 180);
-                          const y2 = 128 + 100 * Math.sin((endAngle * Math.PI) / 180);
+                          const x1 = centerX + radius * Math.cos((startAngle * Math.PI) / 180);
+                          const y1 = centerY + radius * Math.sin((startAngle * Math.PI) / 180);
+                          const x2 = centerX + radius * Math.cos((endAngle * Math.PI) / 180);
+                          const y2 = centerY + radius * Math.sin((endAngle * Math.PI) / 180);
                           const largeArc = item.percentage > 50 ? 1 : 0;
                           
                           currentAngle = endAngle;
@@ -297,7 +301,7 @@ export default function TokenomicsPage() {
                           return (
                             <path
                               key={index}
-                              d={`M 128 128 L ${x1} ${y1} A 100 100 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                              d={`M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`}
                               className={`fill-current ${
                                 index === 0 ? 'text-purple-600' :
                                 index === 1 ? 'text-green-600' :
