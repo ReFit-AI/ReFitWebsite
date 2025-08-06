@@ -61,6 +61,7 @@ const Layout = ({ children }) => {
 
   // Tertiary - profile/info pages
   const moreNav = [
+    { path: '/tokenomics', label: 'Tokenomics', icon: Coins },
     { path: '/orders', label: 'My Orders', icon: ClipboardList },
     { path: '/profile', label: 'Profile', icon: User },
     { path: '/roadmap', label: 'Roadmap', icon: Target },
