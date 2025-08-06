@@ -13,12 +13,10 @@ import {
   ArrowRight,
   ChevronDown,
   Sparkles,
-  PieChart,
   BarChart3,
   Award,
   Wallet,
   Building,
-  Heart,
   Target,
   RefreshCw,
   Info
@@ -147,7 +145,7 @@ export default function TokenomicsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-16"
         >
-          {Object.entries(tokenMetrics).map(([key, value], index) => (
+          {Object.entries(tokenMetrics).map(([key, value]) => (
             <div
               key={key}
               className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-4 border border-gray-800 hover:border-purple-500/50 transition-all duration-300"
@@ -283,32 +281,35 @@ export default function TokenomicsPage() {
                       </div>
                     </div>
                     <svg className="w-full h-full transform -rotate-90">
-                      {distribution.reduce((acc, item, index) => {
-                        const startAngle = acc;
-                        const endAngle = acc + (item.percentage * 3.6);
-                        const x1 = 128 + 100 * Math.cos((startAngle * Math.PI) / 180);
-                        const y1 = 128 + 100 * Math.sin((startAngle * Math.PI) / 180);
-                        const x2 = 128 + 100 * Math.cos((endAngle * Math.PI) / 180);
-                        const y2 = 128 + 100 * Math.sin((endAngle * Math.PI) / 180);
-                        const largeArc = item.percentage > 50 ? 1 : 0;
-                        
-                        return (
-                          <path
-                            key={index}
-                            d={`M 128 128 L ${x1} ${y1} A 100 100 0 ${largeArc} 1 ${x2} ${y2} Z`}
-                            className={`fill-current ${
-                              index === 0 ? 'text-purple-600' :
-                              index === 1 ? 'text-green-600' :
-                              index === 2 ? 'text-blue-600' :
-                              index === 3 ? 'text-orange-600' :
-                              index === 4 ? 'text-red-600' :
-                              'text-gray-600'
-                            } opacity-80 hover:opacity-100 transition-opacity`}
-                          />
-                        );
-                        
-                        return endAngle;
-                      }, 0)}
+                      {(() => {
+                        let currentAngle = 0;
+                        return distribution.map((item, index) => {
+                          const startAngle = currentAngle;
+                          const endAngle = currentAngle + (item.percentage * 3.6);
+                          const x1 = 128 + 100 * Math.cos((startAngle * Math.PI) / 180);
+                          const y1 = 128 + 100 * Math.sin((startAngle * Math.PI) / 180);
+                          const x2 = 128 + 100 * Math.cos((endAngle * Math.PI) / 180);
+                          const y2 = 128 + 100 * Math.sin((endAngle * Math.PI) / 180);
+                          const largeArc = item.percentage > 50 ? 1 : 0;
+                          
+                          currentAngle = endAngle;
+                          
+                          return (
+                            <path
+                              key={index}
+                              d={`M 128 128 L ${x1} ${y1} A 100 100 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                              className={`fill-current ${
+                                index === 0 ? 'text-purple-600' :
+                                index === 1 ? 'text-green-600' :
+                                index === 2 ? 'text-blue-600' :
+                                index === 3 ? 'text-orange-600' :
+                                index === 4 ? 'text-red-600' :
+                                'text-gray-600'
+                              } opacity-80 hover:opacity-100 transition-opacity`}
+                            />
+                          );
+                        });
+                      })()}
                     </svg>
                   </div>
                 </div>
