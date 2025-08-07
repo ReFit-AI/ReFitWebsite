@@ -13,8 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load KT pricing data
-const ktPricingData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/private/kt-pricing-parsed.json'), 'utf8')
+const supplierPricingData = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../data/supplier-pricing-iphones.json'), 'utf8')
 );
 
 console.log('💰 PROFIT MARGIN ANALYSIS\n');
@@ -46,7 +46,7 @@ let modelCount = 0;
 console.log('\n📱 PROFIT PER PHONE BY CONDITION:\n');
 
 topModels.forEach(modelName => {
-  const devices = ktPricingData.iphones.filter(d => 
+  const devices = supplierPricingData.iphones.filter(d => 
     d.model === modelName && d.lock_status === 'Unlocked'
   );
   
@@ -98,7 +98,7 @@ console.log(`\n  📈 Overall Average:  $${overallAvg.toFixed(0)} profit per buy
 console.log('\n💹 PROFIT MARGINS AS PERCENTAGE:\n');
 
 // Sample a typical high-value phone
-const samplePhone = ktPricingData.iphones.find(d => 
+const samplePhone = supplierPricingData.iphones.find(d => 
   d.model === 'iPhone 16 PRO MAX' && d.storage === '256GB' && d.lock_status === 'Unlocked'
 );
 

@@ -8,11 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load pricing data
-const ktIphoneData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/private/kt-pricing-parsed.json'), 'utf8')
+const supplierIphoneData = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../data/supplier-pricing-iphones.json'), 'utf8')
 );
-const ktAndroidData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/private/kt-android-parsed.json'), 'utf8')
+const supplierAndroidData = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../data/supplier-pricing-androids.json'), 'utf8')
 );
 
 // Homepage devices to check
@@ -39,7 +39,7 @@ homepageDevices.forEach(device => {
   let actualPrice = 0;
   
   // Search iPhone data
-  const iphoneMatch = ktIphoneData.iphones?.find(d => 
+  const iphoneMatch = supplierIphoneData.iphones?.find(d => 
     d.model.toUpperCase().includes(device.name.toUpperCase().replace('IPHONE ', '')) &&
     d.storage === device.storage &&
     d.lock_status === 'Unlocked'
@@ -54,7 +54,7 @@ homepageDevices.forEach(device => {
   
   // Search Android data
   if (!found && device.name.includes('Galaxy')) {
-    const androidMatch = ktAndroidData.androids?.find(d => 
+    const androidMatch = supplierAndroidData.androids?.find(d => 
       d.model.toUpperCase().includes('S24') && 
       d.storage === device.storage &&
       d.lock_status === 'Unlocked'
@@ -96,7 +96,7 @@ console.log('\n📊 RECOMMENDED HOMEPAGE PRICES:\n');
 const corrections = [];
 
 // iPhone 15 Pro
-const iphone15Pro = ktIphoneData.iphones?.find(d => 
+const iphone15Pro = supplierIphoneData.iphones?.find(d => 
   d.model === 'iPhone 15 PRO' && d.storage === '256GB' && d.lock_status === 'Unlocked'
 );
 if (iphone15Pro) {
@@ -107,7 +107,7 @@ if (iphone15Pro) {
 }
 
 // iPhone 14 Pro
-const iphone14Pro = ktIphoneData.iphones?.find(d => 
+const iphone14Pro = supplierIphoneData.iphones?.find(d => 
   d.model === 'iPhone 14 PRO' && d.storage === '256GB' && d.lock_status === 'Unlocked'
 );
 if (iphone14Pro) {
@@ -118,7 +118,7 @@ if (iphone14Pro) {
 }
 
 // Samsung Galaxy S24
-const galaxyS24 = ktAndroidData.androids?.find(d => 
+const galaxyS24 = supplierAndroidData.androids?.find(d => 
   d.model === 'GALAXY S24' && d.storage === '256GB' && d.lock_status === 'Unlocked'
 );
 if (galaxyS24) {
@@ -129,7 +129,7 @@ if (galaxyS24) {
 }
 
 // iPhone 13 Pro
-const iphone13Pro = ktIphoneData.iphones?.find(d => 
+const iphone13Pro = supplierIphoneData.iphones?.find(d => 
   d.model === 'iPhone 13 PRO' && d.storage === '256GB' && d.lock_status === 'Unlocked'
 );
 if (iphone13Pro) {
@@ -140,7 +140,7 @@ if (iphone13Pro) {
 }
 
 // iPhone 12 Pro
-const iphone12Pro = ktIphoneData.iphones?.find(d => 
+const iphone12Pro = supplierIphoneData.iphones?.find(d => 
   d.model === 'iPhone 12 PRO' && d.storage === '256GB' && d.lock_status === 'Unlocked'
 );
 if (iphone12Pro) {
@@ -151,7 +151,7 @@ if (iphone12Pro) {
 }
 
 // Add newest models
-const iphone16ProMax = ktIphoneData.iphones?.find(d => 
+const iphone16ProMax = supplierIphoneData.iphones?.find(d => 
   d.model === 'iPhone 16 PRO MAX' && d.storage === '256GB' && d.lock_status === 'Unlocked'
 );
 if (iphone16ProMax) {

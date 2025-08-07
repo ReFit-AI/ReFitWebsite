@@ -14,8 +14,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load KT pricing data
-const ktPricingData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/private/kt-pricing-parsed.json'), 'utf8')
+const supplierPricingData = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../data/supplier-pricing-iphones.json'), 'utf8')
 );
 
 // Inline the necessary functions from pricing-engine.js
@@ -42,7 +42,7 @@ const ISSUE_DEDUCTIONS = {
 function buildModelIndex() {
   const index = {};
   
-  ktPricingData.iphones?.forEach(device => {
+  supplierPricingData.iphones?.forEach(device => {
     const modelKey = device.model.toLowerCase().replace(/\s+/g, '-');
     
     if (!index[modelKey]) {

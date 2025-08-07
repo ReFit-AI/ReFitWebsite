@@ -8,8 +8,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load data files
-const ktIphoneData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/private/kt-pricing-parsed.json'), 'utf8'));
-const ktAndroidData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/private/kt-android-parsed.json'), 'utf8'));
+const supplierIphoneData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/supplier-pricing-iphones.json'), 'utf8'));
+const supplierAndroidData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/supplier-pricing-androids.json'), 'utf8'));
 const sagaData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/saga-pricing.json'), 'utf8'));
 
 console.log('🧪 Testing Multi-Brand Pricing System\n');
@@ -17,8 +17,8 @@ console.log('=' .repeat(80));
 
 // Test data summary
 console.log('\n📊 DATA SUMMARY:');
-console.log(`  iPhones:  ${ktIphoneData.iphones?.length || 0} configurations`);
-console.log(`  Android:  ${ktAndroidData.androids?.length || 0} configurations`);
+console.log(`  iPhones:  ${supplierIphoneData.iphones?.length || 0} configurations`);
+console.log(`  Android:  ${supplierAndroidData.androids?.length || 0} configurations`);
 console.log(`  Saga:     ${sagaData.saga_phones?.length || 0} configurations`);
 
 // Show sample prices for each category
@@ -26,7 +26,7 @@ console.log('\n💰 SAMPLE PRICES BY CATEGORY:\n');
 
 // iPhone sample
 console.log('iPhone 16 Pro Max 256GB (Unlocked):');
-const iphone16 = ktIphoneData.iphones?.find(p => 
+const iphone16 = supplierIphoneData.iphones?.find(p => 
   p.model === 'iPhone 16 PRO MAX' && p.storage === '256GB' && p.lock_status === 'Unlocked'
 );
 if (iphone16) {
@@ -37,7 +37,7 @@ if (iphone16) {
 
 // Android sample
 console.log('\nGalaxy S25 Ultra 256GB (Unlocked):');
-const galaxyS25 = ktAndroidData.androids?.find(p => 
+const galaxyS25 = supplierAndroidData.androids?.find(p => 
   p.model === 'GALAXY S25 ULTRA' && p.storage === '256GB' && p.lock_status === 'Unlocked'
 );
 if (galaxyS25) {
@@ -60,7 +60,7 @@ if (saga) {
 // Top Android models
 console.log('\n🤖 TOP ANDROID MODELS:');
 const androidModels = {};
-ktAndroidData.androids?.forEach(device => {
+supplierAndroidData.androids?.forEach(device => {
   if (!androidModels[device.model]) {
     androidModels[device.model] = [];
   }

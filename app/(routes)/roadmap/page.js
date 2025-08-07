@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
-  Target, 
   Shield, 
   Globe, 
   ArrowRight,
@@ -436,7 +435,7 @@ export default function RoadmapPage() {
                 <div className="text-yellow-400 font-bold mt-2">= Phone bill paid. Or groceries. Or save for upgrade. Your choice.</div>
               </div>
               <p className="text-gray-400 mb-6">
-                We're live. Processing trades manually. First 100 users become founding members.
+                We&apos;re live. Processing trades manually. First 100 users become founding members.
               </p>
               
               {/* Why Now */}
@@ -452,7 +451,7 @@ export default function RoadmapPage() {
                   <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
                     <div className="text-2xl font-bold text-green-400 mb-1">150K</div>
                     <p className="text-sm text-gray-400">
-                      Seeker phones shipping. All need liquidity. We're ready.
+                      Seeker phones shipping. All need liquidity. We&apos;re ready.
                     </p>
                   </div>
                   <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
@@ -466,7 +465,7 @@ export default function RoadmapPage() {
 
               <div className="text-center mb-6">
                 <p className="text-lg font-bold text-white">
-                  "Every dead device is losing you money. We fix that."
+                  &quot;Every dead device is losing you money. We fix that.&quot;
                 </p>
                 <p className="text-sm text-gray-400 mt-2">
                   Turn junk into yield. Use it for anything. Plus own the network with RFT.
