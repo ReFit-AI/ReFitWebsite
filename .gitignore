@@ -37,6 +37,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Private pricing and vendor data
+data/private/*
+!data/private/.gitkeep
+*.pricesheet.*
+*.pricelist.*
+*wholesale*
+*vendor-pricing*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

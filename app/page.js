@@ -20,12 +20,12 @@ const FAQ = dynamic(() => import('@/components/FAQ'), {
 
 export default function HomePage() {
   const popularDevices = [
-    { name: 'iPhone 15 Pro', price: 960, trend: 'up' },
-    { name: 'iPhone 14 Pro', price: 720, trend: 'up' },
-    { name: 'Samsung Galaxy S24', price: 680, trend: 'up' },
-    { name: 'iPhone 13 Pro', price: 560, trend: 'up' },
-    { name: 'Pixel 8 Pro', price: 520, trend: 'up' },
-    { name: 'iPhone 12 Pro', price: 440, trend: 'up' },
+    { name: 'iPhone 16 Pro Max', price: 760, trend: 'up' },
+    { name: 'iPhone 15 Pro', price: 513, trend: 'up' },
+    { name: 'iPhone 14 Pro', price: 390, trend: 'up' },
+    { name: 'iPhone 13 Pro', price: 309, trend: 'up' },
+    { name: 'iPhone 12 Pro', price: 200, trend: 'up' },
+    { name: 'Samsung Galaxy S24', price: 181, trend: 'up' },
   ]
 
   return (

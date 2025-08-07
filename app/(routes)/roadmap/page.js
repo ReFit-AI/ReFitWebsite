@@ -28,164 +28,190 @@ export default function RoadmapPage() {
   const [showDemo, setShowDemo] = useState(false)
   const quarters = [
     {
-      quarter: "Live Now",
-      title: "Device Trade-In Platform",
+      quarter: "Day 1-7",
+      title: "Prove It Works",
       status: "completed",
+      milestone: "10 Seekers Bought",
       items: [
         { 
-          title: "Instant Phone Valuation", 
-          description: "Get real-time quotes for your device based on condition and model",
-          icon: CircleDollarSign,
-          status: "completed"
-        },
-        { 
-          title: "SOL Payments", 
-          description: "Receive payment directly to your Solana wallet - fast and secure",
-          icon: DollarSign,
-          status: "completed"
-        },
-        { 
-          title: "Free Shipping", 
-          description: "We cover shipping costs and provide tracking for your device",
-          icon: Shield,
-          status: "completed"
-        },
-        { 
-          title: "White Glove Service", 
-          description: "Personal support throughout your trade-in process",
+          title: "Manual Excellence", 
+          description: "Buying every Seeker offered. Personal service. Building trust.",
           icon: Sparkles,
-          status: "completed"
-        }
-      ]
-    },
-    {
-      quarter: "Q1 2025",
-      title: "Perpetual Upgrade Program Launch",
-      status: "in-progress",
-      items: [
-        { 
-          title: "Staking Mechanism", 
-          description: "Choose to stake part of your trade-in value for continuous rewards",
-          icon: TrendingUp,
-          status: "in-progress"
+          status: "completed",
+          metric: "First 3 trades complete"
         },
         { 
-          title: "ReFit Validator", 
-          description: "Deploy our Solana validator - earn real network rewards",
-          icon: Cpu,
-          status: "in-progress"
+          title: "Instant Payments", 
+          description: "USDC in your wallet within minutes. No waiting.",
+          icon: DollarSign,
+          status: "completed",
+          metric: "$3,000 paid out"
         },
         { 
-          title: "RFT Token Launch", 
-          description: "Native token rewards for stakers - 400M community allocation",
+          title: "Airdrop Promise", 
+          description: "Every seller gets RFT tokens. Be a founding member.",
           icon: CircleDollarSign,
-          status: "in-progress"
+          status: "completed",
+          metric: "100 RFT per dollar traded"
         },
         { 
-          title: "Early Adopter Bonuses", 
-          description: "First 100 stakers receive bonus APY and founding member status",
-          icon: Rocket,
-          status: "in-progress"
+          title: "Community First", 
+          description: "150 Telegram members ready. You're not alone.",
+          icon: Users,
+          status: "completed",
+          metric: "24/7 founder support"
         }
       ]
     },
     {
-      quarter: "Q2 2025",
-      title: "Ecosystem Expansion",
-      status: "upcoming",
+      quarter: "Week 2-4",
+      title: "Build The Engine",
+      status: "in-progress",
+      milestone: "$50K Staked",
       items: [
         { 
-          title: "V3RA AI Valuation", 
-          description: "AI-powered instant device assessment - get your price in seconds",
+          title: "Deploy Validator", 
+          description: "Every trade contributes to a Solana validator. Real yield, not promises.",
+          icon: Cpu,
+          status: "in-progress",
+          metric: "7% APY live"
+        },
+        { 
+          title: "Staking Goes Live", 
+          description: "Choose: Take cash now or stake for ongoing yield.",
+          icon: TrendingUp,
+          status: "in-progress",
+          metric: "First 100 stakers"
+        },
+        { 
+          title: "The Math Works", 
+          description: "$600 phone → $42/year SOL + RFT tokens → Pays phone bill or anything else",
+          icon: CircleDollarSign,
+          status: "in-progress",
+          metric: "Real yield + token upside"
+        },
+        { 
+          title: "Founding Members", 
+          description: "First 100 users get 10x RFT multiplier. Never offered again.",
+          icon: Rocket,
+          status: "in-progress",
+          metric: "Be part of history"
+        }
+      ]
+    },
+    {
+      quarter: "Month 2-3",
+      title: "Smart Contracts Change Everything",
+      status: "upcoming",
+      milestone: "1,000 Devices",
+      items: [
+        { 
+          title: "Repair & Swap Magic", 
+          description: "Break phone → Order replacement → Pay to contract → Ship broken → Get refund. Never be without a phone.",
+          icon: RefreshCw,
+          status: "upcoming",
+          metric: "Zero downtime"
+        },
+        { 
+          title: "P2P Marketplace", 
+          description: "eBay on Solana. Trade devices directly. Smart contracts handle trust.",
+          icon: Code,
+          status: "upcoming",
+          metric: "2.5% fees vs 13% eBay"
+        },
+        { 
+          title: "AI Grading", 
+          description: "Photo → Quote in seconds. 90% accurate. Getting better daily.",
           icon: Brain,
           status: "upcoming",
-          hasDemo: true
+          hasDemo: true,
+          metric: "10-second quotes"
         },
         { 
-          title: "Smart Contract Automation", 
-          description: "Fully automated trade-in and staking through on-chain programs",
-          icon: Code,
-          status: "upcoming"
-        },
-        { 
-          title: "Device Insurance Options", 
-          description: "Protect your future upgrades with optional coverage plans",
-          icon: Shield,
-          status: "upcoming"
-        },
-        { 
-          title: "Referral Program", 
-          description: "Earn RFT tokens for bringing friends to the platform",
+          title: "Family Stacking", 
+          description: "5 old phones = $2,500 staked = $175/year + RFT. Covers phone bills, Netflix, whatever.",
           icon: Users,
-          status: "upcoming"
+          status: "upcoming",
+          metric: "Stack junk, earn yield"
         },
         { 
-          title: "Mobile App", 
-          description: "iOS and Android apps for easy device assessment and tracking",
-          icon: RefreshCw,
-          status: "upcoming"
+          title: "$100K TVL", 
+          description: "Enough staked to qualify for Solana Foundation delegation. 10x our power.",
+          icon: Shield,
+          status: "upcoming",
+          metric: "Network effect begins"
         }
       ]
     },
     {
-      quarter: "Q3-Q4 2025",
-      title: "Scale & Partnerships",
+      quarter: "Month 6",
+      title: "Become Infrastructure",
       status: "upcoming",
+      milestone: "10,000 Devices",
       items: [
         { 
-          title: "Repair Shop Network", 
-          description: "Partner with local repair shops for device refurbishment",
-          icon: Globe,
-          status: "upcoming"
-        },
-        { 
-          title: "Corporate Programs", 
-          description: "B2B solutions for company device upgrade cycles",
+          title: "Wholesale Markets", 
+          description: "Buyers place orders: '100 iPhone 14s at $400'. Protocol matches. Like an order book for phones.",
           icon: Building,
-          status: "upcoming"
+          status: "upcoming",
+          metric: "$1M monthly volume"
         },
         { 
-          title: "Expanded Device Types", 
-          description: "Accept tablets, laptops, wearables, and gaming consoles",
+          title: "Physical Nodes", 
+          description: "100 repair shops as nodes. Same-day pickup. Local liquidity.",
+          icon: Globe,
+          status: "upcoming",
+          metric: "Every major city"
+        },
+        { 
+          title: "Corporate Fleets", 
+          description: "Companies stake old devices. Use yield for anything - upgrades, services, OpEx reduction.",
+          icon: Users,
+          status: "upcoming",
+          metric: "First Fortune 500"
+        },
+        { 
+          title: "Beyond Phones", 
+          description: "Laptops, tablets, watches. If it has value, it can stake.",
           icon: Cpu,
-          status: "upcoming"
-        },
-        { 
-          title: "Global Expansion", 
-          description: "Launch in new markets beyond the US",
-          icon: Target,
-          status: "upcoming"
+          status: "upcoming",
+          metric: "$10M staked"
         }
       ]
     },
     {
-      quarter: "Long-Term Vision",
-      title: "The Future of Device Ownership",
+      quarter: "The Endgame",
+      title: "Junk Becomes Income",
       status: "upcoming",
+      milestone: "1M Devices = $1B TVL",
       items: [
         { 
-          title: "Perpetual Upgrade Achievement", 
-          description: "Stack enough value to earn a free phone every upgrade cycle",
+          title: "The $10K Stack", 
+          description: "Stack $10K in old devices. Earn $700/year + RFT appreciation while staked.",
           icon: DollarSign,
-          status: "upcoming"
+          status: "upcoming",
+          metric: "Junk becomes income"
         },
         { 
-          title: "1 Million Devices Processed", 
-          description: "Become the leading blockchain-based trade-in platform",
+          title: "Largest Device Validator", 
+          description: "$1B staked. Securing Solana. Funded by phones that would be in drawers.",
           icon: Globe,
-          status: "upcoming"
+          status: "upcoming",
+          metric: "Top 10 validator"
         },
         { 
-          title: "Zero E-Waste Initiative", 
-          description: "100% of devices refurbished or responsibly recycled",
+          title: "Physical Asset DEX", 
+          description: "Every device on Earth tradeable. Cars, watches, anything. We started with phones.",
           icon: RefreshCw,
-          status: "upcoming"
+          status: "upcoming",
+          metric: "$100M monthly volume"
         },
         { 
-          title: "Device-as-a-Service", 
-          description: "Never buy a phone again - just continuously upgrade",
+          title: "You Own It", 
+          description: "RFT holders govern the protocol. The users become the platform.",
           icon: CheckCircle,
-          status: "upcoming"
+          status: "upcoming",
+          metric: "True decentralization"
         }
       ]
     }
@@ -222,13 +248,50 @@ export default function RoadmapPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-16"
           >
-            <h1 className="text-5xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
-              ReFit Roadmap
+            <h1 className="text-5xl sm:text-6xl font-bold mb-6">
+              <span className="block text-white">Your Junk Drawer</span>
+              <span className="block bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
+                Is A Yield Farm
+              </span>
             </h1>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              From simple trade-ins to perpetual upgrades. We&apos;re building a sustainable future 
-              where your old devices fund your new ones through staking rewards.
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-4">
+              Turn dead electronics into income streams.
             </p>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Trade devices → Stake value → Earn 7% APY + RFT tokens → Spend on anything.
+              Your old phones could pay your phone bill. Or buy groceries. Or yes, fund upgrades.
+            </p>
+          </motion.div>
+
+          {/* The Big Idea Box */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="max-w-4xl mx-auto mb-16 p-8 bg-gradient-to-br from-purple-900/20 via-black to-green-900/20 border border-gray-800 rounded-2xl"
+          >
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              <div>
+                <div className="text-4xl mb-2">📱</div>
+                <h3 className="font-bold mb-2">You Have</h3>
+                <p className="text-sm text-gray-400">Old phones worth $1000s doing nothing</p>
+              </div>
+              <div>
+                <div className="text-4xl mb-2">💰</div>
+                <h3 className="font-bold mb-2">We Make Them</h3>
+                <p className="text-sm text-gray-400">Earn 7% APY + token rewards forever</p>
+              </div>
+              <div>
+                <div className="text-4xl mb-2">♾️</div>
+                <h3 className="font-bold mb-2">You Get</h3>
+                <p className="text-sm text-gray-400">Passive income + RFT tokens that grow with usage</p>
+              </div>
+            </div>
+            <div className="text-center mt-6 pt-6 border-t border-gray-800">
+              <p className="text-yellow-400 font-bold">
+                ⚡ LIVE NOW - Solo founder processing every trade personally
+              </p>
+            </div>
           </motion.div>
 
           {/* Timeline */}
@@ -259,7 +322,14 @@ export default function RoadmapPage() {
                   {/* Content */}
                   <div className="ml-24">
                     <div className="mb-8">
-                      <h2 className="text-3xl font-bold mb-2">{quarter.quarter}</h2>
+                      <div className="flex items-center gap-4 mb-2">
+                        <h2 className="text-3xl font-bold">{quarter.quarter}</h2>
+                        {quarter.milestone && (
+                          <span className="px-3 py-1 bg-gradient-to-r from-purple-600/20 to-green-600/20 border border-purple-500/50 rounded-full text-sm font-bold text-purple-400">
+                            Goal: {quarter.milestone}
+                          </span>
+                        )}
+                      </div>
                       <h3 className="text-xl text-gray-400">{quarter.title}</h3>
                     </div>
 
@@ -301,7 +371,12 @@ export default function RoadmapPage() {
                               </div>
                               <div className="flex-1">
                                 <h4 className="font-semibold mb-1">{item.title}</h4>
-                                <p className="text-sm text-gray-400">{item.description}</p>
+                                <p className="text-sm text-gray-400 mb-2">{item.description}</p>
+                                {item.metric && (
+                                  <div className="text-xs font-bold text-green-400 mb-2">
+                                    → {item.metric}
+                                  </div>
+                                )}
                                 <div className="mt-3 flex items-center justify-between">
                                   <div className="flex items-center gap-2">
                                     <div className={`
@@ -353,48 +428,48 @@ export default function RoadmapPage() {
             className="mt-20 text-center"
           >
             <div className="max-w-3xl mx-auto p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 to-green-500/10 border border-gray-700">
-              <h3 className="text-2xl font-bold mb-4">Join the Perpetual Upgrade Revolution</h3>
+              <h3 className="text-2xl font-bold mb-4">The Math Is Simple</h3>
+              <div className="bg-black/50 rounded-lg p-4 mb-6 font-mono text-sm">
+                <div className="text-green-400">Your drawer: 3 old iPhones worth $1,500</div>
+                <div className="text-gray-400">Staked at 7% APY: $105/year in SOL</div>
+                <div className="text-purple-400">+ RFT tokens (10x for first 100 users)</div>
+                <div className="text-yellow-400 font-bold mt-2">= Phone bill paid. Or groceries. Or save for upgrade. Your choice.</div>
+              </div>
               <p className="text-gray-400 mb-6">
-                Trade in your device today and be among the first to access staking rewards when they launch in Q1 2025.
+                We're live. Processing trades manually. First 100 users become founding members.
               </p>
               
-              {/* Partnership Opportunities */}
+              {/* Why Now */}
               <div className="mb-8">
-                <h4 className="text-lg font-semibold mb-4 text-gray-300">Seeking Strategic Partnerships</h4>
+                <h4 className="text-lg font-semibold mb-4 text-gray-300">Why This Works</h4>
                 <div className="grid md:grid-cols-3 gap-4 mb-6 text-left">
-                  <div className="p-4 bg-black/50 rounded-lg border border-gray-800 hover:border-purple-500/50 transition-colors">
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="w-4 h-4 text-purple-400" />
-                      <h5 className="font-semibold text-purple-400">Venture Capital</h5>
-                    </div>
+                  <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
+                    <div className="text-2xl font-bold text-purple-400 mb-1">$500B</div>
                     <p className="text-sm text-gray-400">
-                      Seeking funding to accelerate platform development and expand operations
+                      Annual device trade market. We need 0.1% to hit $500M.
                     </p>
                   </div>
-                  <div className="p-4 bg-black/50 rounded-lg border border-gray-800 hover:border-green-500/50 transition-colors">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Shield className="w-4 h-4 text-green-400" />
-                      <h5 className="font-semibold text-green-400">Solana Ecosystem</h5>
-                    </div>
+                  <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
+                    <div className="text-2xl font-bold text-green-400 mb-1">150K</div>
                     <p className="text-sm text-gray-400">
-                      Open to collaboration with Solana Foundation and ecosystem partners
+                      Seeker phones shipping. All need liquidity. We're ready.
                     </p>
                   </div>
-                  <div className="p-4 bg-black/50 rounded-lg border border-gray-800 hover:border-pink-500/50 transition-colors">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Users className="w-4 h-4 text-pink-400" />
-                      <h5 className="font-semibold text-pink-400">Device Partners</h5>
-                    </div>
+                  <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
+                    <div className="text-2xl font-bold text-pink-400 mb-1">7% APY</div>
                     <p className="text-sm text-gray-400">
-                      Interested in partnerships with manufacturers and retailers
+                      Validator rewards are real. Not tokens. Actual SOL yield.
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="text-center mb-6">
-                <p className="text-sm text-gray-500 italic">
-                  Your old phone is worth more than cash – it&apos;s your entry into perpetual upgrades.
+                <p className="text-lg font-bold text-white">
+                  "Every dead device is losing you money. We fix that."
+                </p>
+                <p className="text-sm text-gray-400 mt-2">
+                  Turn junk into yield. Use it for anything. Plus own the network with RFT.
                 </p>
               </div>
               
@@ -403,15 +478,17 @@ export default function RoadmapPage() {
                   href="/sell"
                   className="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 group"
                 >
-                  Start Trading Today
+                  Trade Your First Device
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link
-                  href="/stake"
+                <a
+                  href="https://t.me/refittrade"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-8 py-3 bg-gray-800 border border-gray-700 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-300"
                 >
-                  Learn About Staking
-                </Link>
+                  Join 150+ Members
+                </a>
               </div>
             </div>
           </motion.div>

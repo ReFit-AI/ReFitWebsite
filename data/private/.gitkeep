@@ -1,0 +1,3 @@
+# Private Data Directory
+This directory contains sensitive pricing and vendor information.
+All files in this directory are gitignored for security.

@@ -6,11 +6,12 @@ import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck } from 
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'react-hot-toast'
-import PhoneForm from '@/components/PhoneForm'
+import PhoneFormV2 from '@/components/PhoneFormV2'
 import PriceQuote from '@/components/PriceQuote'
 import ShippingAddressForm from '@/components/ShippingAddressForm'
 import ShippingSelection from '@/components/ShippingSelection'
 import { getUserProfileService, getShippingService, initializeServices } from '@/services'
+import orderService from '@/services/orderService.supabase'
 
 export default function SellPage() {
   const { publicKey, connected } = useWallet()
@@ -55,14 +56,9 @@ export default function SellPage() {
     }
   }
 
-  const handlePhoneSubmit = (data) => {
-    setPhoneData(data)
-    setPriceQuote({
-      usdPrice: 850,
-      solPrice: 4.72,
-      estimatedProcessingTime: '2-3 business days',
-      confidence: 'high'
-    })
+  const handlePhoneSubmit = ({ phoneData, quote }) => {
+    setPhoneData(phoneData)
+    setPriceQuote(quote)
     setCurrentStep(2)
   }
 
@@ -114,23 +110,46 @@ export default function SellPage() {
   }
 
   const handleCreateOrder = async () => {
-    if (!connected) {
+    if (!connected || !publicKey) {
       toast.error('Please connect your wallet')
       return
     }
 
     try {
+      // Generate shipping label
       const shippingService = getShippingService()
       const labelResult = await shippingService.purchaseLabel(
         selectedShippingRate.rateId,
         userAddress
       )
 
-      if (labelResult.success) {
-        setShippingLabel(labelResult.label)
-        toast.success('Shipping label generated! Ready to print.')
-      } else {
+      if (!labelResult.success) {
         toast.error(labelResult.error || 'Failed to generate label')
+        return
+      }
+
+      // Create order with all tracking information
+      const orderResult = await orderService.createOrder({
+        walletAddress: publicKey.toString(),
+        phoneData: {
+          ...phoneData,
+          category: phoneData.brand === 'Solana' ? 'solana' : 
+                    phoneData.brand === 'Apple' ? 'iphone' : 'android'
+        },
+        priceQuote,
+        shippingAddress: userAddress,
+        shippingRate: selectedShippingRate,
+        shippingLabel: labelResult.label
+      })
+
+      if (orderResult.success) {
+        setShippingLabel(labelResult.label)
+        toast.success(`Order ${orderResult.orderId} created! Label ready to print.`)
+        
+        // Track order creation event (for analytics)
+        console.log('Order created:', orderResult.order)
+      } else {
+        toast.error(orderResult.error || 'Failed to create order')
       }
     } catch (error) {
       console.error('Create order error:', error)
@@ -213,7 +232,7 @@ export default function SellPage() {
             className="mt-16"
           >
             {currentStep === 1 && (
-              <PhoneForm onSubmit={handlePhoneSubmit} />
+              <PhoneFormV2 onSubmit={handlePhoneSubmit} />
             )}
 
             {currentStep === 2 && priceQuote && (

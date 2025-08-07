@@ -6,6 +6,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { Package, Clock, CheckCircle, Truck, Eye, Download } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { getUserProfileService } from '@/services'
+import orderService from '@/services/orderService.supabase'
 import TrackingStatus from '@/components/TrackingStatus'
 
 export default function OrdersPage() {
@@ -19,73 +20,32 @@ export default function OrdersPage() {
   const loadOrders = useCallback(async () => {
     setLoading(true)
     try {
-      const result = await userProfileService.getOrderHistory(publicKey.toString())
+      // Use the order service to get real orders
+      const result = await orderService.getOrdersByWallet(publicKey.toString())
       
       if (result.success && result.orders.length > 0) {
-        setOrders(result.orders)
+        // Map Supabase order structure to UI structure
+        const mappedOrders = result.orders.map(order => ({
+          id: order.id,
+          device: `${order.device_brand} ${order.device_model}${order.device_storage ? ` - ${order.device_storage}` : ''}`,
+          brand: order.device_brand,
+          model: order.device_model,
+          condition: order.device_condition,
+          price: order.quote_usd,
+          solPrice: order.quote_sol,
+          status: order.status.replace('_', '-'), // Convert pending_shipment to pending-shipment
+          createdAt: order.created_at,
+          shippingLabel: order.label_url,
+          trackingNumber: order.tracking_number,
+          carrier: order.carrier,
+          shippingAddress: order.shipping_address,
+          paymentTxHash: order.payment_tx_hash,
+          completedAt: order.completed_at
+        }))
+        setOrders(mappedOrders)
       } else {
-        // Mock orders for demo
-        setOrders([
-          {
-            id: 'ORD001',
-            device: 'iPhone 15 Pro - 256GB',
-            brand: 'Apple',
-            model: 'iPhone 15 Pro',
-            condition: 'Excellent',
-            price: 900,
-            solPrice: 6.0,
-            status: 'pending-shipment',
-            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-            shippingLabel: 'https://shipping.example.com/label/ORD001',
-            shippingAddress: {
-              name: 'John Doe',
-              street1: '123 Main St',
-              city: 'San Francisco',
-              state: 'CA',
-              zip: '94105'
-            }
-          },
-          {
-            id: 'ORD002',
-            device: 'Solana Saga - 128GB',
-            brand: 'Solana',
-            model: 'Saga',
-            condition: 'Good',
-            price: 600,
-            solPrice: 4.0,
-            status: 'shipped',
-            createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-            trackingNumber: '1Z999AA10123456784',
-            carrier: 'USPS',
-            shippingAddress: {
-              name: 'John Doe',
-              street1: '123 Main St',
-              city: 'San Francisco',
-              state: 'CA',
-              zip: '94105'
-            }
-          },
-          {
-            id: 'ORD003',
-            device: 'Samsung Galaxy S23 - 512GB',
-            brand: 'Samsung',
-            model: 'Galaxy S23',
-            condition: 'Fair',
-            price: 450,
-            solPrice: 3.0,
-            status: 'completed',
-            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-            completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-            paymentTxHash: '3xAmPLeTrAnSaCtIoNhAsH...',
-            shippingAddress: {
-              name: 'John Doe',
-              street1: '123 Main St',
-              city: 'San Francisco',
-              state: 'CA',
-              zip: '94105'
-            }
-          }
-        ])
+        // Show empty state - no demo orders
+        setOrders([])
       }
     } catch (error) {
       console.error('Load orders error:', error)

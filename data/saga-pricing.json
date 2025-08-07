@@ -1,0 +1,22 @@
+{
+  "vendor": "ReFit Internal",
+  "date": "2025-08-07",
+  "solana_phones": [
+    {
+      "model": "Saga",
+      "display_name": "Solana Saga",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "specs": "12GB RAM, Snapdragon 8+ Gen 1, 6.67\" OLED",
+      "prices": {
+        "working": 150,
+        "broken": 50
+      },
+      "market_data": {
+        "avg_resale": 250,
+        "resale_range": "200-280",
+        "notes": "Conservative pricing for unexplored market"
+      }
+    }
+  ]
+}
