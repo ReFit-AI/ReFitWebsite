@@ -1,16 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-
-// Server-side Supabase client with service role
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key';
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-});
+import { supabaseAdmin } from '@/lib/supabase-server';
 
 export async function POST(request) {
   try {
@@ -56,10 +45,9 @@ export async function POST(request) {
       }
     }
 
-    // Create new user
+    // Create new user (passwordless)
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email: `${walletAddress}@shoprefit.com`,
-      password: walletAddress,
       email_confirm: true,
       user_metadata: {
         wallet_address: walletAddress,
