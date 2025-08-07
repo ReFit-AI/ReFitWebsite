@@ -72,11 +72,9 @@ const PhoneForm = ({ onSubmit }) => {
   ]
   
   const conditionOptions = [
-    { value: 'like-new', label: 'Like New', description: 'No signs of wear' },
-    { value: 'excellent', label: 'Excellent', description: 'Minor signs of wear' },
-    { value: 'good', label: 'Good', description: 'Visible wear but works perfectly' },
-    { value: 'fair', label: 'Fair', description: 'Noticeable wear, minor issues' },
-    { value: 'poor', label: 'Poor', description: 'Heavy wear, functional issues' }
+    { value: 'excellent', label: 'Excellent (Grade B)', description: 'Fully functional, light scratches only, no cracks' },
+    { value: 'good', label: 'Good (Grade C)', description: 'Cracked screen/back but fully functional, original LCD' },
+    { value: 'fair', label: 'Fair (Grade D)', description: 'LCD issues (spots/lines), heavy damage, still powers on' }
   ]
 
   const handleChange = (e) => {
@@ -225,24 +223,52 @@ const PhoneForm = ({ onSubmit }) => {
       {/* Condition */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-3">
-          Condition
+          Device Condition
         </label>
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-3">
           {conditionOptions.map(({ value, label, description }) => (
-            <label key={value} className="flex items-center space-x-3 cursor-pointer">
-              <input
-                type="radio"
-                name="condition"
-                value={value}
-                checked={formData.condition === value}
-                onChange={handleChange}
-                className="w-4 h-4 text-solana-purple bg-gray-900 border-gray-600 focus:ring-solana-purple focus:ring-2"
-              />
-              <div className="flex-1">
-                <div className="font-medium text-white">{label}</div>
-                <div className="text-sm text-gray-400">{description}</div>
+            <motion.div
+              key={value}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={() => handleButtonSelect('condition', value)}
+              className={`relative cursor-pointer rounded-lg border-2 p-4 transition-all duration-200 ${
+                formData.condition === value
+                  ? 'border-solana-purple bg-solana-purple/10'
+                  : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+              }`}
+            >
+              <div className="flex items-start space-x-3">
+                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold ${
+                  value === 'excellent' ? 'bg-green-500/20 text-green-400' :
+                  value === 'good' ? 'bg-yellow-500/20 text-yellow-400' :
+                  'bg-orange-500/20 text-orange-400'
+                }`}>
+                  {value === 'excellent' ? '✨' : value === 'good' ? '👍' : '🔧'}
+                </div>
+                <div className="flex-1">
+                  <div className={`font-semibold ${formData.condition === value ? 'text-solana-purple' : 'text-white'}`}>
+                    {label}
+                  </div>
+                  <div className="text-sm text-gray-400 mt-1">{description}</div>
+                  {value === 'excellent' && (
+                    <div className="text-xs text-gray-500 mt-2">
+                      ✓ No cracks • ✓ Original screen • ✓ Minor cosmetic wear only
+                    </div>
+                  )}
+                  {value === 'good' && (
+                    <div className="text-xs text-gray-500 mt-2">
+                      ✓ Fully functional • ✓ Original LCD works • ⚠️ May have cracks
+                    </div>
+                  )}
+                  {value === 'fair' && (
+                    <div className="text-xs text-gray-500 mt-2">
+                      ✓ Powers on • ⚠️ Screen issues • ⚠️ Heavy cosmetic damage
+                    </div>
+                  )}
+                </div>
               </div>
-            </label>
+            </motion.div>
           ))}
         </div>
       </div>

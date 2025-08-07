@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { AlertCircle, Package, Battery, Smartphone } from 'lucide-react'
+import { AlertCircle, Package, Battery, Smartphone, Info } from 'lucide-react'
 import SmartPhoneSelectorV2 from './SmartPhoneSelectorV2'
 import { calculateQuote } from '@/lib/pricing-engine-v2'
 
@@ -15,6 +15,7 @@ const PhoneFormV2 = ({ onSubmit }) => {
     box: false
   })
   const [quoteError, setQuoteError] = useState(null)
+  const [showConditionInfo, setShowConditionInfo] = useState(false)
 
   // Conditions based on phone type
   const getConditions = () => {
@@ -36,25 +37,31 @@ const PhoneFormV2 = ({ onSubmit }) => {
       ]
     }
     
-    // Standard conditions for iPhone/Android
+    // Standard conditions for iPhone/Android (Grade B, C, D)
     return [
       {
         value: 'excellent',
-        label: 'Excellent',
-        description: 'Minor signs of wear, fully functional',
-        icon: '✨'
+        label: 'Good Condition',
+        description: 'Fully functional, cosmetic wear only',
+        icon: '✨',
+        grade: 'B',
+        details: 'No cracks • Original screen • Light scratches OK'
       },
       {
         value: 'good',
-        label: 'Good',
-        description: 'Visible wear but works perfectly',
-        icon: '👍'
+        label: 'Cracked Screen',
+        description: 'Cracked but fully functional, LCD works',
+        icon: '👍',
+        grade: 'C',
+        details: 'Screen/back cracked • Original LCD works • Fully functional'
       },
       {
         value: 'fair',
-        label: 'Fair',
-        description: 'Heavy wear, may have minor issues',
-        icon: '👌'
+        label: 'LCD Issues',
+        description: 'LCD damaged (spots/lines) or replaced',
+        icon: '🔧',
+        grade: 'D',
+        details: 'LCD spots/lines • Non-original screen • Still powers on'
       }
     ]
   }
@@ -160,7 +167,34 @@ const PhoneFormV2 = ({ onSubmit }) => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          <h3 className="text-lg font-semibold text-white">Device Condition</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white">Device Condition</h3>
+            <button
+              type="button"
+              onClick={() => setShowConditionInfo(!showConditionInfo)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <Info size={20} />
+            </button>
+          </div>
+          
+          {/* Condition Info Panel */}
+          {showConditionInfo && (
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4 space-y-3">
+              <div className="flex items-start space-x-2">
+                <Info className="text-blue-400 mt-0.5" size={16} />
+                <div className="text-sm text-blue-200 space-y-2">
+                  <p className="font-semibold">Grading Guidelines:</p>
+                  <div className="space-y-1 text-gray-300">
+                    <div><span className="font-medium text-green-400">Grade B:</span> No cracks, original screen, cosmetic wear OK</div>
+                    <div><span className="font-medium text-yellow-400">Grade C:</span> Cracked screen/back OK if LCD works perfectly</div>
+                    <div><span className="font-medium text-orange-400">Grade D:</span> LCD has spots/lines or non-original screen</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div className={`grid grid-cols-1 ${phoneSelection?.category === 'solana' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
             {conditions.map(cond => (
               <motion.button
@@ -175,9 +209,19 @@ const PhoneFormV2 = ({ onSubmit }) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
+                {cond.grade && (
+                  <div className="absolute top-3 left-3 px-2 py-1 bg-gray-800 rounded text-xs font-bold text-gray-400">
+                    Grade {cond.grade}
+                  </div>
+                )}
                 <div className="text-3xl mb-3">{cond.icon}</div>
                 <div className="font-semibold text-white mb-1">{cond.label}</div>
-                <div className="text-sm text-gray-400">{cond.description}</div>
+                <div className="text-sm text-gray-400 mb-2">{cond.description}</div>
+                {cond.details && (
+                  <div className="text-xs text-gray-500 border-t border-gray-700 pt-2 mt-2">
+                    {cond.details}
+                  </div>
+                )}
                 {condition === cond.value && (
                   <div className="absolute top-3 right-3">
                     <div className="w-6 h-6 bg-solana-purple rounded-full flex items-center justify-center">

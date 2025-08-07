@@ -302,7 +302,7 @@ const Layout = ({ children }) => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 20 }}
-              className="fixed top-16 right-0 bottom-0 w-80 bg-gray-900/95 backdrop-blur-xl border-l border-gray-800 md:hidden overflow-y-auto"
+              className="fixed top-16 right-0 bottom-0 w-full max-w-sm bg-gray-900/98 backdrop-blur-xl border-l border-gray-800 md:hidden overflow-y-auto z-50 shadow-2xl"
             >
               <div className="p-6 space-y-6">
                 {/* Primary Actions */}

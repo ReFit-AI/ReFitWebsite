@@ -449,9 +449,9 @@ export default function RoadmapPage() {
                     </p>
                   </div>
                   <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
-                    <div className="text-2xl font-bold text-green-400 mb-1">150K</div>
+                    <div className="text-2xl font-bold text-green-400 mb-1">10</div>
                     <p className="text-sm text-gray-400">
-                      Seeker phones shipping. All need liquidity. We&apos;re ready.
+                      Phones to buy for initial inventory.
                     </p>
                   </div>
                   <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
