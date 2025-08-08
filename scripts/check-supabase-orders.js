@@ -21,9 +21,16 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Helper to redact sensitive data
+function redactSensitive(str) {
+  if (!str) return 'N/A';
+  if (str.length <= 8) return '*'.repeat(str.length);
+  return str.substring(0, 4) + '*'.repeat(str.length - 8) + str.substring(str.length - 4);
+}
+
 async function checkOrders() {
   console.log('🔍 Checking Supabase for orders...\n');
-  console.log('Connected to:', supabaseUrl);
+  console.log('Connected to:', supabaseUrl.replace(/\/\/([^.]+)/, '//***'));
   console.log('=' .repeat(70));
 
   try {
@@ -40,8 +47,8 @@ async function checkOrders() {
       console.log(`Found ${profiles?.length || 0} profiles`);
       profiles?.forEach((profile, i) => {
         console.log(`\nProfile ${i + 1}:`);
-        console.log(`  Wallet: ${profile.wallet_address}`);
-        console.log(`  Email: ${profile.email || 'N/A'}`);
+        console.log(`  Wallet: ${redactSensitive(profile.wallet_address)}`);
+        console.log(`  Email: ${redactSensitive(profile.email || 'N/A')}`);
         console.log(`  Created: ${new Date(profile.created_at).toLocaleString()}`);
       });
     }
@@ -61,7 +68,7 @@ async function checkOrders() {
       
       orders?.forEach((order, i) => {
         console.log(`\n✅ Order ${i + 1}: ${order.id}`);
-        console.log(`  Wallet: ${order.wallet_address}`);
+        console.log(`  Wallet: ${redactSensitive(order.wallet_address)}`);
         console.log(`  Device: ${order.device_brand} ${order.device_model}`);
         console.log(`  Storage: ${order.device_storage || 'N/A'}`);
         console.log(`  Condition: ${order.device_condition}`);
@@ -71,9 +78,9 @@ async function checkOrders() {
         
         if (order.shipping_address) {
           const addr = order.shipping_address;
-          console.log(`  Shipping to: ${addr.name}`);
-          console.log(`    ${addr.street1}`);
-          if (addr.street2) console.log(`    ${addr.street2}`);
+          console.log(`  Shipping to: ${redactSensitive(addr.name)}`);
+          console.log(`    ${redactSensitive(addr.street1)}`);
+          if (addr.street2) console.log(`    ${redactSensitive(addr.street2)}`);
           console.log(`    ${addr.city}, ${addr.state} ${addr.zip}`);
         }
       });
@@ -93,8 +100,8 @@ async function checkOrders() {
       console.log(`Found ${addresses?.length || 0} addresses`);
       addresses?.forEach((addr, i) => {
         console.log(`\nAddress ${i + 1}:`);
-        console.log(`  Name: ${addr.name}`);
-        console.log(`  Street: ${addr.street1}`);
+        console.log(`  Name: ${redactSensitive(addr.name)}`);
+        console.log(`  Street: ${redactSensitive(addr.street1)}`);
         console.log(`  City: ${addr.city}, ${addr.state} ${addr.zip}`);
       });
     }

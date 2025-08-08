@@ -96,7 +96,7 @@ const nextConfig = {
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
           { 
             key: 'Access-Control-Allow-Origin', 
-            value: isDev ? '*' : allowedOrigins.join(', ')
+            value: allowedOrigins[0] // Use first allowed origin, handle multiple via Vary header
           },
           { key: 'Access-Control-Allow-Methods', value: 'GET,DELETE,PATCH,POST,PUT,OPTIONS' },
           { 

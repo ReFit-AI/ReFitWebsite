@@ -13,15 +13,15 @@ export async function GET(request) {
   }
   
   try {
-    // Generate authentication challenge with nonce
-    const challenge = generateAuthChallenge();
+    // Generate authentication challenge with nonce (now async)
+    const challenge = await generateAuthChallenge();
     
     return NextResponse.json({
       success: true,
       ...challenge
     });
   } catch (error) {
-    console.error('Challenge generation error:', error);
+    console.error('Challenge generation error:', process.env.NODE_ENV === 'development' ? error : error.message);
     
     return NextResponse.json(
       { error: 'Failed to generate challenge' },

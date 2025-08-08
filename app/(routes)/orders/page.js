@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Package, Clock, CheckCircle, Truck, Eye, Download } from 'lucide-react'
 import { toast } from 'react-hot-toast'
-import { getUserProfileService } from '@/services'
 import orderService from '@/services/orderService.supabase'
 import TrackingStatus from '@/components/TrackingStatus'
 
@@ -15,7 +14,7 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [showTracking, setShowTracking] = useState(false)
-  const userProfileService = getUserProfileService()
+  // const userProfileService = getUserProfileService() // Removed - not used
 
   const loadOrders = useCallback(async () => {
     setLoading(true)
@@ -53,7 +52,7 @@ export default function OrdersPage() {
     } finally {
       setLoading(false)
     }
-  }, [publicKey, userProfileService])
+  }, [publicKey])
 
   useEffect(() => {
     if (connected && publicKey) {

@@ -6,7 +6,9 @@ export async function POST(request) {
 
     // For development, return a mock validation response
     if (process.env.NODE_ENV === 'development' || !process.env.SHIPPO_API_KEY) {
-      console.log('Using mock address validation for development');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Using mock address validation for development');
+      }
       return NextResponse.json({
         success: true,
         address: {

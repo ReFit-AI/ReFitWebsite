@@ -131,7 +131,7 @@ export async function GET() {
       currency: 'USD'
     });
   } catch (error) {
-    console.error('Phone models error:', error);
+    console.error('Phone models error:', process.env.NODE_ENV === 'development' ? error : error.message);
     return NextResponse.json(
       { error: 'Failed to fetch phone models' },
       { status: 500 }

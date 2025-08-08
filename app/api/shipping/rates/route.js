@@ -42,14 +42,18 @@ export async function POST(request) {
     const cachedData = rateCache.get(cacheKey);
     
     if (cachedData && (Date.now() - cachedData.timestamp < CACHE_TTL)) {
-      console.log('Returning cached shipping rates');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Returning cached shipping rates');
+      }
       return NextResponse.json(cachedData.data);
     }
 
-    console.log('Getting shipping rates with Shippo API...');
-    console.log('From Address:', redactSensitive(fromAddress));
-    console.log('To Address:', redactSensitive(toAddress));
-    console.log('Shippo API Key exists:', !!process.env.SHIPPO_API_KEY);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Getting shipping rates with Shippo API...');
+      console.log('From Address:', redactSensitive(fromAddress));
+      console.log('To Address:', redactSensitive(toAddress));
+      console.log('Shippo API Key exists:', !!process.env.SHIPPO_API_KEY);
+    }
 
     // Check if API key exists
     if (!process.env.SHIPPO_API_KEY) {
@@ -79,7 +83,9 @@ export async function POST(request) {
       phone: '415-555-0100'
     };
 
-    console.log('Creating shipment for rate calculation...');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Creating shipment for rate calculation...');
+    }
 
     // Transform parcel to match Shippo SDK format
     const transformedParcel = parcel ? {
@@ -114,9 +120,11 @@ export async function POST(request) {
 
     const shipment = await shippo.shipments.create(shipmentPayload);
 
-    console.log('Shipment created successfully');
-    console.log('Shipment object status:', shipment.status);
-    console.log('Available rates:', shipment.rates?.length || 0);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Shipment created successfully');
+      console.log('Shipment object status:', shipment.status);
+      console.log('Available rates:', shipment.rates?.length || 0);
+    }
     
     if (shipment.status === 'ERROR') {
       console.error('Shipment creation failed:', shipment.messages);
@@ -145,7 +153,9 @@ export async function POST(request) {
       }))
       .slice(0, 1); // Only take the first Priority Mail option
 
-    console.log(`Found ${rates.length} USPS rates`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Found ${rates.length} USPS rates`);
+    }
 
     // If no USPS Priority Mail rates found, use fallback
     if (rates.length === 0) {

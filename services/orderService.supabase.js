@@ -168,7 +168,7 @@ class OrderServiceSupabase {
         orders: orders || []
       };
     } catch (error) {
-      console.error('Get orders by wallet error:', error);
+      console.error('Get orders by wallet error:', process.env.NODE_ENV === 'development' ? error : error.message);
       return {
         success: false,
         error: error.message,

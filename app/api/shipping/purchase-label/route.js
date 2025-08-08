@@ -35,9 +35,11 @@ export async function POST(request) {
       );
     }
 
-    console.log('Creating shipping label with Shippo API...');
-    console.log('Rate ID:', rateId);
-    console.log('User Address:', JSON.stringify(userAddress, null, 2));
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Creating shipping label with Shippo API...');
+      console.log('Rate ID:', rateId);
+      console.log('User Address:', JSON.stringify(userAddress, null, 2));
+    }
 
     // Initialize Shippo only if API key configured
     const SHIPPO_API_KEY = process.env.SHIPPO_API_KEY || process.env.NEXT_PUBLIC_SHIPPO_API_KEY;
@@ -64,11 +66,15 @@ export async function POST(request) {
     
     if (rateId && rateId.startsWith('rate_') && rateId !== 'fallback-ground' && rateId !== 'prepaid-usps-ground') {
       // We have a real Shippo rate ID, use it directly
-      console.log('Using existing rate ID:', rateId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Using existing rate ID:', rateId);
+      }
       selectedRate = { object_id: rateId };
     } else {
       // We need to create a shipment to get a real rate
-      console.log('Creating new shipment to get rate...');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Creating new shipment to get rate...');
+      }
       
       // Define warehouse address
       const warehouseAddress = {
@@ -92,8 +98,10 @@ export async function POST(request) {
       massUnit: 'oz'
     };
 
-    console.log('Creating shipment...');
-    console.log('Parcel data:', JSON.stringify(parcel, null, 2));
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Creating shipment...');
+      console.log('Parcel data:', JSON.stringify(parcel, null, 2));
+    }
     
     // Create shipment to get real rates
     const shipmentPayload = {
@@ -113,12 +121,16 @@ export async function POST(request) {
       async: false
     };
     
-    console.log('Shipment payload:', JSON.stringify(shipmentPayload, null, 2));
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Shipment payload:', JSON.stringify(shipmentPayload, null, 2));
+    }
     
     const shipment = await shippo.shipments.create(shipmentPayload);
 
-    console.log('Shipment created:', shipment.objectId || shipment.object_id);
-    console.log('Available rates:', shipment.rates?.length || 0);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Shipment created:', shipment.objectId || shipment.object_id);
+      console.log('Available rates:', shipment.rates?.length || 0);
+    }
 
     // Find USPS Priority Mail rate
     const uspsPriorityRate = shipment.rates
@@ -133,12 +145,16 @@ export async function POST(request) {
       throw new Error('No USPS Priority Mail rates available for this address');
     }
     
-    console.log('Using USPS Priority Mail rate:', uspsPriorityRate.servicelevel.name);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Using USPS Priority Mail rate:', uspsPriorityRate.servicelevel.name);
+    }
     selectedRate = uspsPriorityRate;
 
-    console.log('Selected rate ID:', selectedRate.objectId || selectedRate.object_id);
-    if (selectedRate.amount) {
-      console.log('Rate amount:', selectedRate.amount);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Selected rate ID:', selectedRate.objectId || selectedRate.object_id);
+      if (selectedRate.amount) {
+        console.log('Rate amount:', selectedRate.amount);
+      }
     }
     }
 
@@ -149,15 +165,19 @@ export async function POST(request) {
       async: false
     });
 
-    console.log('Transaction status:', transaction.status);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Transaction status:', transaction.status);
+    }
 
     if (transaction.status !== 'SUCCESS') {
       console.error('Transaction failed:', transaction.messages);
       throw new Error(transaction.messages?.join(', ') || 'Label purchase failed');
     }
 
-    console.log('Label created successfully!');
-    console.log('Tracking number:', transaction.tracking_number);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Label created successfully!');
+      console.log('Tracking number:', transaction.tracking_number);
+    }
 
     return NextResponse.json({
       success: true,

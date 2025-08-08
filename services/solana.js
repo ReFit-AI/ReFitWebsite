@@ -85,7 +85,9 @@ export async function processBuybackPayment(wallet, orderId, amountInSol) {
     
     // This would normally be signed by the platform's wallet
     // For demo, we'll simulate the payment confirmation
-    console.log(`Payment of ${amountInSol} SOL would be sent for order ${orderId}`)
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Payment of ${amountInSol} SOL would be sent for order ${orderId}`)
+    }
     
     return {
       success: true,
@@ -155,7 +157,7 @@ export async function verifyWalletOwnership(wallet, message) {
       publicKey: publicKey.toString()
     }
   } catch (error) {
-    console.error('Error verifying wallet:', error)
+    console.error('Error verifying wallet:', process.env.NODE_ENV === 'development' ? error : error.message)
     return {
       success: false,
       error: error.message

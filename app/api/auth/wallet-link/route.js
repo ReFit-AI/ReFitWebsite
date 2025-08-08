@@ -66,7 +66,7 @@ export async function POST(request) {
       });
 
     if (insertError && !insertError.message.includes('duplicate')) {
-      console.error('User record creation error:', insertError);
+      console.error('User record creation error:', process.env.NODE_ENV === 'development' ? insertError : insertError.message);
     }
 
     // Generate session
@@ -86,7 +86,7 @@ export async function POST(request) {
       session,
     });
   } catch (error) {
-    console.error('Wallet link error:', error);
+    console.error('Wallet link error:', process.env.NODE_ENV === 'development' ? error : error.message);
     return NextResponse.json(
       { error: error.message || 'Failed to link wallet' },
       { status: 500 }

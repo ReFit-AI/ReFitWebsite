@@ -43,8 +43,8 @@ export async function POST(request) {
     const nonceMatch = message.match(/Nonce: ([a-f0-9-]+)/i);
     const nonce = nonceMatch ? nonceMatch[1] : null;
     
-    // Verify the signature
-    const verificationResult = verifySignature(publicKey, signature, message, nonce);
+    // Verify the signature (now async)
+    const verificationResult = await verifySignature(publicKey, signature, message, nonce);
     if (!verificationResult.valid) {
       return NextResponse.json(
         { error: verificationResult.error || 'Invalid signature' },
@@ -75,7 +75,7 @@ export async function POST(request) {
       });
 
     if (error) {
-      console.error('Session creation error:', error);
+      console.error('Session creation error:', process.env.NODE_ENV === 'development' ? error : error.message);
       return NextResponse.json(
         { error: 'Failed to create session' },
         { status: 500 }
@@ -88,7 +88,7 @@ export async function POST(request) {
       walletAddress: publicKey
     });
   } catch (error) {
-    console.error('Auth connect error:', error);
+    console.error('Auth connect error:', process.env.NODE_ENV === 'development' ? error : error.message);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

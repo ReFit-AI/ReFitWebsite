@@ -63,7 +63,7 @@ class ProductionUserProfileService {
         isNew
       };
     } catch (error) {
-      console.error('Initialize profile error:', error);
+      console.error('Initialize profile error:', process.env.NODE_ENV === 'development' ? error : error.message);
       
       // Development fallback
       if (process.env.NODE_ENV === 'development') {
@@ -155,7 +155,7 @@ class ProductionUserProfileService {
 
       return { user: authData.user, isNew: true };
     } catch (error) {
-      console.error('Error linking wallet:', error);
+      console.error('Error linking wallet:', process.env.NODE_ENV === 'development' ? error : error.message);
       throw error;
     }
   }
@@ -174,7 +174,9 @@ class ProductionUserProfileService {
       if (error) {
         // Handle case where user doesn't exist yet
         if (error.code === 'PGRST116') {
-          console.log('User profile not found in database, will use auth user data');
+          if (process.env.NODE_ENV === 'development') {
+            console.log('User profile not found in database, will use auth user data');
+          }
           return null;
         }
         throw error;
@@ -182,13 +184,13 @@ class ProductionUserProfileService {
 
       return user;
     } catch (error) {
-      console.error('Get profile error:', {
+      console.error('Get profile error:', process.env.NODE_ENV === 'development' ? {
         message: error?.message || 'Unknown error',
         code: error?.code,
         details: error?.details,
         hint: error?.hint,
         errorString: JSON.stringify(error)
-      });
+      } : error?.message || 'Unknown error');
       return null;
     }
   }
@@ -235,7 +237,7 @@ class ProductionUserProfileService {
 
       return data || [];
     } catch (error) {
-      console.error('Get addresses error:', error);
+      console.error('Get addresses error:', process.env.NODE_ENV === 'development' ? error : error.message);
       return [];
     }
   }
@@ -268,7 +270,7 @@ class ProductionUserProfileService {
 
       return { success: true, address: data };
     } catch (error) {
-      console.error('Add address error:', error);
+      console.error('Add address error:', process.env.NODE_ENV === 'development' ? error : error.message);
       return { success: false, error: error.message };
     }
   }
@@ -300,7 +302,7 @@ class ProductionUserProfileService {
 
       return { success: true, address: data };
     } catch (error) {
-      console.error('Update address error:', error);
+      console.error('Update address error:', process.env.NODE_ENV === 'development' ? error : error.message);
       return { success: false, error: error.message };
     }
   }
@@ -322,7 +324,7 @@ class ProductionUserProfileService {
 
       return { success: true };
     } catch (error) {
-      console.error('Delete address error:', error);
+      console.error('Delete address error:', process.env.NODE_ENV === 'development' ? error : error.message);
       return { success: false, error: error.message };
     }
   }

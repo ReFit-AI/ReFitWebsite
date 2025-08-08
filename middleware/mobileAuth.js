@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase';
+import { hashSessionToken } from '@/lib/solana-auth';
 
 export async function verifyMobileSession(request) {
   const authHeader = request.headers.get('authorization');
@@ -11,13 +12,15 @@ export async function verifyMobileSession(request) {
   }
 
   const sessionToken = authHeader.substring(7);
+  // Hash the token to match what's stored in the database
+  const hashedToken = hashSessionToken(sessionToken);
 
   try {
     const supabase = createClient();
     const { data, error } = await supabase
       .from('mobile_sessions')
       .select('*')
-      .eq('session_token', sessionToken)
+      .eq('session_token', hashedToken) // Use hashed token for comparison
       .gt('expires_at', new Date().toISOString())
       .single();
 
@@ -28,11 +31,11 @@ export async function verifyMobileSession(request) {
       };
     }
 
-    // Update last_used timestamp
+    // Update last_used timestamp (use hashed token)
     await supabase
       .from('mobile_sessions')
       .update({ last_used: new Date().toISOString() })
-      .eq('session_token', sessionToken);
+      .eq('session_token', hashedToken);
 
     return {
       authenticated: true,
