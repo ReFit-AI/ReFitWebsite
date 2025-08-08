@@ -294,28 +294,31 @@ const Layout = ({ children }) => {
           </div>
         </div>
 
-        {/* Mobile Menu - Sliding Panel */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <>
-              {/* Backdrop overlay */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 top-16 bg-black/50 backdrop-blur-sm z-40 md:hidden"
-              />
-              
-              {/* Menu Panel */}
-              <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 20 }}
-                className="fixed top-16 left-0 right-0 bottom-0 w-screen bg-gray-900/98 backdrop-blur-xl md:hidden overflow-y-auto z-50 shadow-2xl"
-              >
-                <div className="p-6 space-y-6">
+
+      </header>
+
+      {/* Mobile Menu Overlay & Panel (rendered outside header to avoid iOS stacking context issues) */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            {/* Backdrop overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 top-16 bg-black/50 backdrop-blur-sm z-[60] md:hidden"
+            />
+
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 20 }}
+              className="fixed top-16 left-0 right-0 bottom-0 w-screen bg-gray-900/98 backdrop-blur-xl md:hidden overflow-y-auto z-[70] shadow-2xl"
+            >
+              <div className="p-6 space-y-6">
                 {/* Primary Actions */}
                 <div>
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
@@ -331,8 +334,8 @@ const Layout = ({ children }) => {
                           className={`
                             flex items-center space-x-3 px-4 py-3 rounded-lg
                             transition-all duration-200
-                            ${isActive 
-                              ? 'bg-gradient-to-r from-purple-600/20 to-green-600/20 text-white' 
+                            ${isActive
+                              ? 'bg-gradient-to-r from-purple-600/20 to-green-600/20 text-white'
                               : 'text-gray-400 hover:bg-white/5 hover:text-white'}
                           `}
                         >
@@ -352,7 +355,7 @@ const Layout = ({ children }) => {
                   </div>
                 </div>
 
-                {/* Secondary Actions - Hidden until Shop is ready */}
+                {/* Secondary Actions */}
                 {secondaryNav.length > 0 && (
                   <div>
                     <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Explore</h3>
@@ -368,8 +371,8 @@ const Layout = ({ children }) => {
                             className={`
                               flex items-center space-x-3 px-4 py-3 rounded-lg
                               transition-all duration-200
-                              ${isActive 
-                                ? 'bg-white/10 text-white' 
+                              ${isActive
+                                ? 'bg-white/10 text-white'
                                 : 'text-gray-400 hover:bg-white/5 hover:text-white'}
                             `}
                           >
@@ -397,8 +400,8 @@ const Layout = ({ children }) => {
                           className={`
                             flex items-center space-x-3 px-4 py-3 rounded-lg
                             transition-all duration-200
-                            ${isActive 
-                              ? 'bg-white/10 text-white' 
+                            ${isActive
+                              ? 'bg-white/10 text-white'
                               : 'text-gray-400 hover:bg-white/5 hover:text-white'}
                           `}
                         >
@@ -423,10 +426,9 @@ const Layout = ({ children }) => {
                 )}
               </div>
             </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </header>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <main className="pt-16">
