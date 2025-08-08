@@ -316,7 +316,8 @@ const Layout = ({ children }) => {
                 transition={{ type: 'spring', damping: 20 }}
                 className="fixed right-0 bottom-0 w-full max-w-sm bg-gray-900/98 backdrop-blur-xl border-l border-gray-800 md:hidden overflow-y-auto z-40 shadow-2xl"
                 style={{ top: '64px' }} // Position below header
-              <div className="p-6 space-y-6">
+              >
+                <div className="p-6 space-y-6">
                 {/* Primary Actions */}
                 <div>
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Main</h3>
