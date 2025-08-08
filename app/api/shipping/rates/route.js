@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { rateLimiters } from '@/lib/rate-limit';
+import { rateLimitEndpoint } from '@/lib/rate-limit-upstash';
+import { shippingRatesSchema, validateInput, sanitizeError, redactSensitive } from '@/lib/validation';
 
 // Simple in-memory cache to avoid rate limits
 const rateCache = new Map();
@@ -11,19 +12,30 @@ function getCacheKey(fromAddress, toAddress, parcel) {
 
 export async function POST(request) {
   // Apply rate limiting
-  const { success, message, retryAfter } = await rateLimiters.standard(request);
-  if (!success) {
+  const rateLimitResult = await rateLimitEndpoint.shipping(request);
+  if (!rateLimitResult.success) {
     return NextResponse.json(
-      { error: message },
+      { error: rateLimitResult.message },
       { 
         status: 429,
-        headers: { 'Retry-After': String(retryAfter) }
+        headers: rateLimitResult.headers
       }
     );
   }
   
   try {
-    const { fromAddress, toAddress, parcel } = await request.json();
+    const body = await request.json();
+    
+    // Validate input
+    const validation = validateInput(body, shippingRatesSchema);
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error, errors: validation.errors },
+        { status: 400 }
+      );
+    }
+    
+    const { fromAddress, toAddress, parcel } = validation.data;
 
     // Check cache first
     const cacheKey = getCacheKey(fromAddress, toAddress, parcel);
@@ -35,8 +47,8 @@ export async function POST(request) {
     }
 
     console.log('Getting shipping rates with Shippo API...');
-    console.log('From Address:', fromAddress);
-    console.log('To Address:', toAddress);
+    console.log('From Address:', redactSensitive(fromAddress));
+    console.log('To Address:', redactSensitive(toAddress));
     console.log('Shippo API Key exists:', !!process.env.SHIPPO_API_KEY);
 
     // Check if API key exists
@@ -93,7 +105,9 @@ export async function POST(request) {
       async: false
     };
 
-    console.log('Shipment payload:', JSON.stringify(shipmentPayload, null, 2));
+    // Only log redacted payload in production
+    const isDev = process.env.NODE_ENV === 'development';
+    console.log('Shipment payload:', JSON.stringify(isDev ? shipmentPayload : redactSensitive(shipmentPayload), null, 2));
 
     // Add a small delay to avoid rate limits
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -165,21 +179,21 @@ export async function POST(request) {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Shipping rates error:', error);
-    console.error('Error stack:', error.stack);
+    const isDev = process.env.NODE_ENV === 'development';
+    console.error('Shipping rates error:', sanitizeError(error, isDev));
     
-    // Return more specific error information
-    const errorMessage = error.message || 'Unknown shipping API error';
-    const isShippoError = error.name === 'ShippoError' || error.code;
+    // Return sanitized error in production
+    const errorResponse = isDev ? {
+      success: false,
+      error: error.message || 'Unknown shipping API error',
+      errorType: error.name === 'ShippoError' || error.code ? 'shippo_api_error' : 'server_error',
+      rates: []
+    } : {
+      success: false,
+      error: 'Failed to get shipping rates',
+      rates: []
+    };
     
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: errorMessage,
-        errorType: isShippoError ? 'shippo_api_error' : 'server_error',
-        rates: []
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(errorResponse, { status: 500 });
   }
 }

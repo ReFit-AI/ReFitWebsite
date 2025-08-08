@@ -2,7 +2,7 @@
 import { Shippo } from 'shippo';
 import { supabase } from '../lib/supabase';
 
-const shippo = new Shippo(process.env.NEXT_PUBLIC_SHIPPO_API_KEY || '');
+const shippo = new Shippo(process.env.SHIPPO_API_KEY || '');
 
 class ProductionShippingService {
   constructor() {
@@ -358,7 +358,7 @@ class ProductionShippingService {
     // Implement Shippo webhook signature verification
     // https://goshippo.com/docs/webhooks/#webhook-signature-verification
     const crypto = require('crypto');
-    const webhookSecret = process.env.NEXT_PUBLIC_SHIPPO_WEBHOOK_SECRET;
+    const webhookSecret = process.env.SHIPPO_WEBHOOK_SECRET;
     
     const hmac = crypto.createHmac('sha256', webhookSecret);
     hmac.update(payload);

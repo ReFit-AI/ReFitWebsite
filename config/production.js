@@ -22,7 +22,7 @@ export const config = {
 
   // Shippo
   shippo: {
-    apiKey: process.env.NEXT_PUBLIC_SHIPPO_API_KEY,
+    apiKey: process.env.SHIPPO_API_KEY,
     testMode: false, // Always use production mode
   },
 

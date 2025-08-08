@@ -5,18 +5,19 @@ import Layout from '@/components/Layout'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#000000',
+}
+
 export const metadata = {
   title: 'ReFit - Trade Your Phone on Solana',
   description: 'Trade in your old phone for instant SOL payments. Buy Solana-native phones with extra credit.',
   icons: {
     icon: '/solana-logo.svg',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  themeColor: '#000000',
   manifest: '/manifest.json',
   openGraph: {
     title: 'ReFit - Trade Your Phone on Solana',

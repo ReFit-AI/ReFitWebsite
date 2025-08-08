@@ -1,0 +1,31 @@
+import { NextResponse } from 'next/server';
+import { generateAuthChallenge } from '@/lib/solana-auth';
+import { rateLimitEndpoint } from '@/lib/rate-limit-upstash';
+
+export async function GET(request) {
+  // Apply rate limiting
+  const rateLimitResult = await rateLimitEndpoint.auth(request);
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: rateLimitResult.message },
+      { status: 429, headers: rateLimitResult.headers }
+    );
+  }
+  
+  try {
+    // Generate authentication challenge with nonce
+    const challenge = generateAuthChallenge();
+    
+    return NextResponse.json({
+      success: true,
+      ...challenge
+    });
+  } catch (error) {
+    console.error('Challenge generation error:', error);
+    
+    return NextResponse.json(
+      { error: 'Failed to generate challenge' },
+      { status: 500 }
+    );
+  }
+}
