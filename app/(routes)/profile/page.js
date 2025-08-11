@@ -142,7 +142,7 @@ export default function ProfilePage() {
             Please connect your Solana wallet to access your profile, view order history, and manage shipping addresses.
           </p>
           <p className="text-sm text-gray-500">
-            Click the "Connect Wallet" button in the top navigation to get started.
+            Click the &quot;Connect Wallet&quot; button in the top navigation to get started.
           </p>
         </motion.div>
       </div>
