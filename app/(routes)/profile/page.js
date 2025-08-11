@@ -22,13 +22,9 @@ export default function ProfilePage() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
 
-  useEffect(() => {
-    if (connected && publicKey) {
-      loadUserData();
-    }
-  }, [connected, publicKey, loadUserData]);
-
   const loadUserData = useCallback(async () => {
+    if (!publicKey) return;
+    
     setLoading(true);
     try {
       const walletAddress = publicKey.toString();
@@ -51,6 +47,14 @@ export default function ProfilePage() {
       setLoading(false);
     }
   }, [publicKey]);
+
+  useEffect(() => {
+    if (connected && publicKey) {
+      loadUserData();
+    } else {
+      setLoading(false);
+    }
+  }, [connected, publicKey, loadUserData]);
 
   const handleSaveAddress = async (addressData) => {
     try {
@@ -123,12 +127,24 @@ export default function ProfilePage() {
 
   if (!connected) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <User className="w-16 h-16 mx-auto mb-4 text-gray-500" />
-          <h2 className="text-2xl font-semibold mb-2">Connect Your Wallet</h2>
-          <p className="text-gray-400">Please connect your wallet to view your profile</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="text-center max-w-md"
+        >
+          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-purple-500/20 to-green-500/20 rounded-full flex items-center justify-center">
+            <User className="w-10 h-10 text-purple-400" />
+          </div>
+          <h2 className="text-3xl font-bold mb-3">Connect Your Wallet</h2>
+          <p className="text-gray-400 mb-6">
+            Please connect your Solana wallet to access your profile, view order history, and manage shipping addresses.
+          </p>
+          <p className="text-sm text-gray-500">
+            Click the "Connect Wallet" button in the top navigation to get started.
+          </p>
+        </motion.div>
       </div>
     );
   }

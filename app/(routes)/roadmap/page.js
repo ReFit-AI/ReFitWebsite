@@ -30,11 +30,11 @@ export default function RoadmapPage() {
       quarter: "Day 1-7",
       title: "Prove It Works",
       status: "completed",
-      milestone: "10 Seekers Bought",
+      milestone: "10 Phones Bought",
       items: [
         { 
           title: "Manual Excellence", 
-          description: "Buying every Seeker offered. Personal service. Building trust.",
+          description: "Buying every phone offered. Personal service. Building trust.",
           icon: Sparkles,
           status: "completed",
           metric: "First 3 trades complete"
@@ -481,7 +481,7 @@ export default function RoadmapPage() {
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a
-                  href="https://t.me/refittrade"
+                  href="https://t.me/v3ra_ai"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-8 py-3 bg-gray-800 border border-gray-700 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-300"

@@ -62,7 +62,7 @@ export default function HomePage() {
             
             {/* Subheadline */}
             <p className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto font-light">
-              Instant valuation. Trade in your device for Solana.
+              Instant valuation. Get paid in USDC or SOL instantly.
             </p>
             
             {/* Single CTA */}
@@ -83,6 +83,37 @@ export default function HomePage() {
               </Link>
             </div>
             
+            {/* Social buttons */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="flex justify-center gap-4 mb-8"
+            >
+              <a
+                href="https://x.com/ReFit_SOL"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full text-white font-medium hover:bg-gray-800 transition-all duration-300 flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                Follow on X
+              </a>
+              <a
+                href="https://t.me/v3ra_ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full text-white font-medium hover:bg-gray-800 transition-all duration-300 flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-1.698 6.486-2.39 8.622-.293.908-.867 1.206-1.422.982-1.077-.437-4.02-2.637-4.955-3.252-.457-.3-.967-.62-.135-1.473.918-.938 2.025-2.102 2.653-2.758.288-.302.577-.639-.098-.363-1.89 1.545-3.757 3.004-4.32 3.415-.533.389-1.045.281-1.635.105-.778-.233-1.51-.485-1.766-.574-.425-.147-.385-.44.085-.665.493-.235 5.813-2.386 6.11-2.502.287-.112 1.368-.496 1.548-.16.135.25.095 1.44.03 1.623z"/>
+                </svg>
+                Join Telegram
+              </a>
+            </motion.div>
+            
             {/* Trust indicators */}
             <motion.div 
               initial={{ opacity: 0 }}
@@ -96,7 +127,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span>Instant SOL payments</span>
+                <span>Instant USDC/SOL payments</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-blue-500" />
@@ -158,7 +189,7 @@ export default function HomePage() {
               <div className="pt-12 pb-8 px-6 bg-gray-900/50 rounded-2xl border border-gray-800 group-hover:border-purple-500/50 transition-all duration-300">
                 <div className="text-5xl mb-4">⚡</div>
                 <h3 className="text-xl font-bold mb-2">Get instant quote</h3>
-                <p className="text-gray-400">See your SOL value instantly</p>
+                <p className="text-gray-400">See your USD value instantly</p>
               </div>
               
               <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-purple-500 to-transparent" />
@@ -178,7 +209,7 @@ export default function HomePage() {
               <div className="pt-12 pb-8 px-6 bg-gray-900/50 rounded-2xl border border-gray-800 group-hover:border-green-500/50 transition-all duration-300">
                 <div className="text-5xl mb-4">💰</div>
                 <h3 className="text-xl font-bold mb-2">Ship & get paid</h3>
-                <p className="text-gray-400">Receive SOL in your wallet</p>
+                <p className="text-gray-400">Choose USDC or SOL payment</p>
               </div>
             </motion.div>
           </div>

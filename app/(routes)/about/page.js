@@ -45,7 +45,7 @@ export default function AboutPage() {
               </h1>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto">
                 We&apos;re building the future of device buyback, where blockchain technology 
-                meets minimalist design to create a seamless trading experience.
+                enables transparent pricing and instant, secure transactions.
               </p>
             </div>
 
@@ -53,9 +53,9 @@ export default function AboutPage() {
             <div className="glass rounded-2xl p-8 mb-12">
               <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
               <p className="text-gray-300 leading-relaxed">
-                We&apos;re creating a platform that makes selling your devices as simple as a single click. 
+                We&apos;re creating a platform that makes selling your devices simple and transparent. 
                 By leveraging Solana&apos;s orderbook functionality and smart contracts, we eliminate middlemen, 
-                reduce fees, and ensure instant, transparent transactions.
+                reduce fees, and ensure instant, verifiable transactions.
               </p>
             </div>
 
@@ -122,7 +122,7 @@ export default function AboutPage() {
                   {
                     step: '3',
                     title: 'Get Paid',
-                    description: 'Receive payment in SOL directly to your wallet upon device verification.'
+                    description: 'Receive payment in USDC or SOL directly to your wallet upon device verification.'
                   }
                 ].map((item, index) => (
                   <motion.div
