@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { AlertCircle, Package, Battery, Smartphone, Info } from 'lucide-react'
 import SmartPhoneSelectorV2 from './SmartPhoneSelectorV2'
-import { calculateQuote } from '@/lib/pricing-engine-v2'
+import { calculateQuote } from '@/lib/pricing-engine-v3'
 
 const PhoneFormV2 = ({ onSubmit }) => {
   const [phoneSelection, setPhoneSelection] = useState(null)

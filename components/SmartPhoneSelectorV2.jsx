@@ -8,7 +8,7 @@ import {
   searchModels, 
   getStorageOptions,
   getAllModelsByCategory 
-} from '@/lib/pricing-engine-v2'
+} from '@/lib/pricing-engine-v3'
 
 const SmartPhoneSelectorV2 = ({ onSelect }) => {
   const [selectedCategory, setSelectedCategory] = useState('iphone')
