@@ -10,6 +10,7 @@ import PhoneFormV2 from '@/components/PhoneFormV2'
 import PriceQuote from '@/components/PriceQuote'
 import ShippingAddressForm from '@/components/ShippingAddressForm'
 import ShippingSelection from '@/components/ShippingSelection'
+import SeekerComparison from '@/components/SeekerComparison'
 import { getUserProfileService, getShippingService, initializeServices } from '@/services'
 import orderService from '@/services/orderService.supabase'
 
@@ -244,6 +245,9 @@ export default function SellPage() {
                     <p className="text-gray-400">Based on current market conditions</p>
                   </div>
                   <PriceQuote quote={priceQuote} phoneData={phoneData} />
+                  
+                  {/* Seeker Upgrade Comparison */}
+                  <SeekerComparison tradeInValue={priceQuote.usdPrice} />
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
