@@ -2,16 +2,13 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  TrendingUp, 
-  Shield, 
-  Zap, 
+import {
+  TrendingUp,
+  Shield,
+  Zap,
   DollarSign,
-  ArrowRight,
-  Clock,
   Users,
   Package,
-  BarChart3,
   Lock,
   CheckCircle
 } from 'lucide-react'
@@ -123,7 +120,7 @@ export default function PoolPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
         >
-          {stats.map((stat, index) => (
+          {stats.map((stat) => (
             <div key={stat.label} className="bg-gray-900/50 rounded-xl p-4 border border-gray-800">
               <div className="text-sm text-gray-400 mb-1">{stat.label}</div>
               <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
