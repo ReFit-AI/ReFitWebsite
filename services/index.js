@@ -49,7 +49,9 @@ export async function initializeServices(walletAddress) {
   // Skip profile service initialization for liquidity pool pages
   if (typeof window !== 'undefined' &&
       (window.location.pathname.includes('/stake') ||
-       window.location.pathname.includes('/admin'))) {
+       window.location.pathname.includes('/admin') ||
+       window.location.pathname.includes('/dashboard') ||
+       window.location.pathname.includes('/stats'))) {
     return; // Don't initialize profile service for LP pages
   }
 

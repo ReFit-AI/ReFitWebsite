@@ -4,7 +4,14 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react'
-import { Transaction, SystemProgram, PublicKey } from '@solana/web3.js'
+import {
+  Transaction,
+  SystemProgram,
+  PublicKey,
+  ComputeBudgetProgram,
+  TransactionMessage,
+  VersionedTransaction
+} from '@solana/web3.js'
 import { ArrowRight, Zap, Clock, DollarSign, Coins, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 import { SQUADS_CONFIG, formatVaultAddress } from '@/lib/squads'
 
@@ -54,54 +61,84 @@ export default function StakePage() {
     let txid = null
 
     try {
-      // TODO: Replace with actual USDC SPL token transfer
-      // For now, create a mock SOL transfer for testing
-      // In production, use @solana/spl-token to transfer USDC
+      console.log('Starting deposit transaction...')
 
       const vaultPubkey = SQUADS_CONFIG.vaultAddress === 'YOUR_SQUADS_VAULT_ADDRESS'
         ? new PublicKey('11111111111111111111111111111111') // System program for testing
         : new PublicKey(SQUADS_CONFIG.vaultAddress)
 
-      // Get fresh blockhash for EACH attempt
-      const latestBlockhash = await connection.getLatestBlockhash('finalized')
+      // Get latest blockhash with confirmed commitment
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed')
+      console.log('Got blockhash:', blockhash)
 
-      // Create NEW transaction each time (prevents reuse)
-      const transaction = new Transaction()
+      // Create instructions array
+      const instructions = []
 
-      // Add a memo with timestamp to ensure uniqueness
-      const timestamp = Date.now()
-      transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: vaultPubkey,
-          lamports: Math.floor(value * 1000000) // This simulates USDC transfer (6 decimals)
+      // Add compute budget to make transaction unique and prioritize it
+      instructions.push(
+        ComputeBudgetProgram.setComputeUnitPrice({
+          microLamports: 1000 // Small priority fee
         })
       )
 
-      // Set fresh blockhash
-      transaction.recentBlockhash = latestBlockhash.blockhash
-      transaction.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight
-      transaction.feePayer = publicKey
+      // Add unique memo with timestamp to ensure uniqueness
+      const memoProgram = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr')
+      const timestamp = Date.now()
+      const uniqueId = Math.random().toString(36).substring(2, 15)
+      const memo = `ReFit-${timestamp}-${uniqueId}`
 
-      // Sign the NEW transaction
-      const signed = await signTransaction(transaction)
-
-      // Send with confirmation
-      txid = await connection.sendRawTransaction(signed.serialize(), {
-        skipPreflight: false,
-        preflightCommitment: 'confirmed'
+      instructions.push({
+        keys: [],
+        programId: memoProgram,
+        data: Buffer.from(memo, 'utf-8')
       })
 
-      // Wait for confirmation - CRITICAL!
+      // Add the transfer instruction (simulating USDC)
+      instructions.push(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: vaultPubkey,
+          lamports: Math.floor(value * 1000000) // 6 decimals like USDC
+        })
+      )
+
+      // Create transaction
+      const transaction = new Transaction()
+      transaction.add(...instructions)
+      transaction.recentBlockhash = blockhash
+      transaction.lastValidBlockHeight = lastValidBlockHeight
+      transaction.feePayer = publicKey
+
+      console.log('Transaction created, requesting signature...')
+
+      // Sign transaction
+      const signed = await signTransaction(transaction)
+
+      console.log('Transaction signed, sending to network...')
+
+      // Send transaction with proper settings
+      txid = await connection.sendRawTransaction(signed.serialize(), {
+        skipPreflight: false, // Enable preflight for better error messages
+        preflightCommitment: 'confirmed',
+        maxRetries: 2
+      })
+
+      console.log('Transaction sent:', txid)
+
+      // Wait for confirmation
+      console.log('Waiting for confirmation...')
       const confirmation = await connection.confirmTransaction({
         signature: txid,
-        blockhash: latestBlockhash.blockhash,
-        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight
+        blockhash: blockhash,
+        lastValidBlockHeight: lastValidBlockHeight
       }, 'confirmed')
 
       if (confirmation.value.err) {
-        throw new Error('Transaction failed to confirm')
+        console.error('Transaction failed:', confirmation.value.err)
+        throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`)
       }
+
+      console.log('Transaction confirmed successfully!')
 
       // Verify transaction details before recording deposit
       const txDetails = await connection.getTransaction(txid, {
@@ -140,19 +177,36 @@ export default function StakePage() {
       console.error('Deposit error:', error)
       setDepositStatus('error')
 
-      // Better error messages
+      // Parse error and provide helpful messages
       let userMessage = 'Failed to process deposit'
-      if (error.message?.includes('User rejected')) {
-        userMessage = 'Transaction cancelled'
+
+      if (error.message?.includes('User rejected') || error.message?.includes('cancelled')) {
+        userMessage = 'Transaction cancelled by user'
       } else if (error.message?.includes('insufficient')) {
-        userMessage = 'Insufficient SOL for transaction'
-      } else if (error.message?.includes('confirm')) {
-        userMessage = 'Transaction failed to confirm'
+        userMessage = 'Insufficient SOL balance for transaction fees'
+      } else if (error.message?.includes('blockhash not found')) {
+        userMessage = 'Network congestion - please try again'
+      } else if (error.message?.includes('already been processed')) {
+        userMessage = 'Duplicate transaction detected - please wait and try again'
+      } else if (error.message?.includes('failed to confirm')) {
+        userMessage = 'Transaction timed out - check your wallet or try again'
+      } else if (error.message?.includes('0x1')) {
+        userMessage = 'Insufficient funds in wallet'
       } else if (error.message) {
-        userMessage = error.message
+        // Show the actual error message if it's informative
+        userMessage = error.message.length > 100
+          ? error.message.substring(0, 100) + '...'
+          : error.message
       }
 
       setErrorMessage(userMessage)
+
+      // Log detailed error for debugging
+      console.error('Full error details:', {
+        message: error.message,
+        stack: error.stack,
+        txid: txid
+      })
     } finally {
       setIsDepositing(false)
     }

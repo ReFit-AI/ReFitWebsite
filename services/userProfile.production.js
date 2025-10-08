@@ -184,13 +184,22 @@ class ProductionUserProfileService {
 
       return user;
     } catch (error) {
-      console.error('Get profile error:', process.env.NODE_ENV === 'development' ? {
-        message: error?.message || 'Unknown error',
-        code: error?.code,
-        details: error?.details,
-        hint: error?.hint,
-        errorString: JSON.stringify(error)
-      } : error?.message || 'Unknown error');
+      // Only log error if it's not from a liquidity pool page
+      const isLPPage = typeof window !== 'undefined' &&
+        (window.location.pathname.includes('/stake') ||
+         window.location.pathname.includes('/admin') ||
+         window.location.pathname.includes('/dashboard') ||
+         window.location.pathname.includes('/stats'));
+
+      if (!isLPPage && process.env.NODE_ENV === 'development') {
+        console.error('Get profile error:', {
+          message: error?.message || 'Unknown error',
+          code: error?.code,
+          details: error?.details,
+          hint: error?.hint,
+          errorString: JSON.stringify(error)
+        });
+      }
       return null;
     }
   }

@@ -5,10 +5,10 @@ import { supabase } from '@/lib/supabase'
 export async function POST(request) {
   try {
     const body = await request.json()
-    const { walletAddress, depositId, amount } = body
+    const { walletAddress, amount } = body
 
     // Validation
-    if (!walletAddress || !depositId || !amount) {
+    if (!walletAddress || !amount) {
       return NextResponse.json(
         { success: false, error: 'Missing required fields' },
         { status: 400 }
@@ -22,50 +22,44 @@ export async function POST(request) {
       )
     }
 
-    // Get deposit details
-    const { data: deposit, error: depositError } = await supabase
+    // Get user's total deposits
+    const { data: deposits, error: depositsError } = await supabase
       .from('deposits')
       .select('*')
-      .eq('id', depositId)
       .eq('wallet_address', walletAddress)
       .eq('status', 'active')
-      .single()
 
-    if (depositError || !deposit) {
-      return NextResponse.json(
-        { success: false, error: 'Deposit not found or not active' },
-        { status: 404 }
-      )
+    if (depositsError) {
+      throw depositsError
     }
+
+    const totalDeposited = deposits?.reduce((sum, d) => sum + parseFloat(d.amount), 0) || 0
+
+    // Get existing pending withdrawals
+    const { data: pendingWithdrawals } = await supabase
+      .from('withdrawal_requests')
+      .select('amount')
+      .eq('wallet_address', walletAddress)
+      .in('status', ['pending', 'approved'])
+
+    const totalPendingWithdrawals = pendingWithdrawals?.reduce(
+      (sum, w) => sum + parseFloat(w.amount), 0
+    ) || 0
+
+    const availableBalance = totalDeposited - totalPendingWithdrawals
 
     // Check if sufficient balance
-    if (parseFloat(deposit.current_value) < amount) {
+    if (availableBalance < amount) {
       return NextResponse.json(
-        { success: false, error: 'Insufficient balance' },
+        { success: false, error: `Insufficient balance. Available: $${availableBalance}` },
         { status: 400 }
       )
     }
 
-    // Check for existing pending withdrawal
-    const { data: existingRequest } = await supabase
-      .from('withdrawal_requests')
-      .select('id')
-      .eq('deposit_id', depositId)
-      .in('status', ['pending', 'approved', 'processing'])
-      .single()
-
-    if (existingRequest) {
-      return NextResponse.json(
-        { success: false, error: 'You already have a pending withdrawal request' },
-        { status: 400 }
-      )
-    }
-
-    // Create withdrawal request
+    // Create withdrawal request (not tied to specific deposit)
     const { data: withdrawalRequest, error: requestError } = await supabase
       .from('withdrawal_requests')
       .insert({
-        deposit_id: depositId,
         wallet_address: walletAddress,
         amount: amount,
         status: 'pending'
@@ -135,7 +129,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       success: true,
-      requests: requests || []
+      withdrawalRequests: requests || []
     })
   } catch (error) {
     console.error('Get withdrawals error:', error)

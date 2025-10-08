@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
+import {
   ChevronDown,
   Menu,
   X,
@@ -16,7 +16,9 @@ import {
   // ShoppingCart, // Archived until inventory ready
   User,
   Sparkles,
-  ClipboardList
+  ClipboardList,
+  Activity,
+  LayoutDashboard
 } from 'lucide-react'
 import { initializeServices, cleanupServices } from '@/services'
 import { WalletButton } from './WalletButton'
@@ -38,29 +40,35 @@ const Layout = ({ children }) => {
 
   // Primary actions - what users come to do
   const primaryNav = [
-    { 
-      path: '/sell', 
-      label: 'Trade', 
+    {
+      path: '/sell',
+      label: 'Trade',
       icon: Package,
       description: 'Sell your device'
     },
-    { 
-      path: '/stake', 
-      label: 'Stake', 
+    {
+      path: '/stake',
+      label: 'Stake',
       icon: Coins,
-      description: 'Earn rewards',
+      description: 'Earn 2% weekly',
       highlight: true // New feature highlight
     },
   ]
 
   // Secondary - important but not primary flow
-  // Keeping this array for future items (Shop will go here when ready)
   const secondaryNav = [
+    {
+      path: '/stats',
+      label: 'Stats',
+      icon: Activity,
+      description: 'Live pool stats'
+    },
     // { path: '/shop', label: 'Shop', icon: ShoppingCart }, // Archived until inventory ready
   ]
 
-  // Tertiary - profile/info pages
+  // Tertiary - profile/info pages (only show dashboard if connected)
   const moreNav = [
+    ...(connected ? [{ path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }] : []),
     { path: '/tokenomics', label: 'Tokenomics', icon: Coins },
     { path: '/orders', label: 'My Orders', icon: ClipboardList },
     { path: '/profile', label: 'Profile', icon: User },
@@ -193,7 +201,7 @@ const Layout = ({ children }) => {
                 })}
               </div>
 
-              {/* Secondary Actions - Hidden for now since Shop is archived */}
+              {/* Secondary Actions */}
               {secondaryNav.length > 0 && (
                 <>
                   {/* Divider */}
@@ -201,19 +209,21 @@ const Layout = ({ children }) => {
                   <div className="flex items-center space-x-1 mr-6">
                     {secondaryNav.map((item) => {
                       const isActive = pathname === item.path
+                      const Icon = item.icon
                       return (
                         <Link
                           key={item.path}
                           href={item.path}
                           className={`
-                            px-3 py-1.5 rounded-lg text-sm
+                            flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm
                             transition-all duration-200
-                            ${isActive 
-                              ? 'text-white bg-white/10' 
+                            ${isActive
+                              ? 'text-white bg-white/10'
                               : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
                           `}
                         >
-                          {item.label}
+                          <Icon size={16} />
+                          <span>{item.label}</span>
                         </Link>
                       )
                     })}
@@ -358,7 +368,7 @@ const Layout = ({ children }) => {
                 {/* Secondary Actions */}
                 {secondaryNav.length > 0 && (
                   <div>
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Explore</h3>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Pool Info</h3>
                     <div className="space-y-2">
                       {secondaryNav.map((item) => {
                         const Icon = item.icon
@@ -377,7 +387,10 @@ const Layout = ({ children }) => {
                             `}
                           >
                             <Icon size={20} />
-                            <span>{item.label}</span>
+                            <div>
+                              <div className="font-semibold">{item.label}</div>
+                              <div className="text-xs text-gray-500">{item.description}</div>
+                            </div>
                           </Link>
                         )
                       })}
