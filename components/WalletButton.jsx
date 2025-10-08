@@ -1,44 +1,51 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import dynamic from 'next/dynamic'
 import { X, Wallet } from 'lucide-react'
 
+// Dynamically import WalletMultiButton with no SSR
+const WalletMultiButton = dynamic(
+  async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+  { ssr: false }
+)
+
 export const WalletButton = () => {
-  const { connected, publicKey, disconnect, wallet, select, connecting } = useWallet()
+  const { connected, publicKey, disconnect, wallet, connecting } = useWallet()
   const [mounted, setMounted] = useState(false)
 
-  // Debug logging
-  useEffect(() => {
-    console.log('Wallet state changed:', { 
-      connected, 
-      connecting, 
-      walletName: wallet?.adapter?.name,
-      publicKey: publicKey?.toBase58() 
-    })
-  }, [connected, connecting, wallet, publicKey])
-
+  // Only render after mounting to avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  // Debug logging
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Wallet state changed:', {
+        connected,
+        connecting,
+        walletName: wallet?.adapter?.name,
+        publicKey: publicKey?.toBase58()
+      })
+    }
+  }, [connected, connecting, wallet, publicKey])
+
   const handleDisconnect = async () => {
     try {
       await disconnect()
-      console.log('Wallet disconnected successfully')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Wallet disconnected successfully')
+      }
     } catch (error) {
       console.error('Disconnect error:', error)
     }
   }
 
-  // Prevent hydration mismatch by not rendering until mounted
+  // Return empty div with same dimensions to prevent layout shift
   if (!mounted) {
-    return (
-      <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-purple-500/30 rounded-lg px-3 py-2">
-        <span className="text-sm text-white">Loading...</span>
-      </div>
-    )
+    return <div className="h-10 w-[140px]" />
   }
 
   if (!connected) {
@@ -46,8 +53,8 @@ export const WalletButton = () => {
   }
 
   // When connected, show styled address with disconnect button
-  const shortAddress = publicKey ? 
-    `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}` : 
+  const shortAddress = publicKey ?
+    `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}` :
     ''
 
   return (
