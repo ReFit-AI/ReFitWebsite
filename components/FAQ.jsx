@@ -9,44 +9,44 @@ export default function FAQ() {
 
   const faqs = [
     {
-      question: "How does staking work?",
-      answer: "When you trade in your device, you can choose to stake some or all of the value instead of taking instant cash. Your staked value earns SOL staking yields (5-7.5% APY) plus RFT token rewards. Lock for longer periods (up to 4 years) to earn higher multipliers - up to 10x RFT rewards for Diamond tier."
+      question: "How does the liquidity pool work?",
+      answer: "Think of it like a savings account that funds a phone flipping business. You deposit money, we use it to buy phones locally and flip them to wholesale buyers for 10-20% profit. You get 2% weekly returns (104% APY) from those profits. It's simple arbitrage - buy low locally, sell high wholesale."
     },
     {
-      question: "What are the potential returns?",
-      answer: "Returns vary based on your staking tier and RFT token value. Conservative estimates: 20-50% APR. Expected scenario: 100-400% APR. Early adopters in Diamond tier could see 500-1000% APR in Year 1. Remember: SOL yields are guaranteed by the network, while RFT value depends on market conditions."
+      question: "Where does the 2% weekly come from?",
+      answer: "Real phone sales. We buy phones from local sellers (Facebook, OfferUp, etc) and flip them same-day to established wholesale buyers. Every phone generates 10-20% profit. We split it: 80% goes to liquidity providers as your 2% weekly, 20% covers our time and operations."
     },
     {
-      question: "Can I withdraw my stake early?",
-      answer: "Flex tier has no lock - withdraw anytime. For locked tiers, you can emergency unlock with a 25-50% penalty on unclaimed RFT rewards (you keep all earned SOL). There's a 3-day cooldown period for any withdrawal."
+      question: "Is this sustainable?",
+      answer: "Yes. The phone arbitrage market is massive - people constantly upgrade devices. We've already flipped $2.3M in phones proving the model works. The 2% weekly is conservative - our margins support it even with slower weeks. Plus, you can see every phone we buy and sell on the public inventory page."
     },
     {
-      question: "Is this legit?",
-      answer: "Yes! We've been in the phone wholesale and repair business for 15 years. ReFit brings our expertise on-chain with smart contracts and instant SOL settlements. Every transaction is secured by Solana's blockchain."
+      question: "Can I withdraw anytime?",
+      answer: "After a 7-day waiting period, yes. When you request withdrawal, there's a 7-day cooldown to protect pool stability (prevents bank-run scenarios). After that, you can withdraw your full deposit plus accumulated earnings. No penalties, no tricks."
     },
     {
       question: "How fast do I get paid?",
-      answer: "For instant cash: You receive SOL in your wallet within 24 hours of device inspection. For staking: Your position activates immediately upon trade confirmation, and you start earning rewards daily."
+      answer: "Instantly when you deposit - your position starts earning immediately. Weekly distributions happen every Monday. Your earnings accumulate in your account and you can withdraw them anytime (after the initial 7-day waiting period)."
     },
     {
-      question: "What phones do you accept?",
-      answer: "We accept all major brands including iPhone (6 and newer), Samsung Galaxy, Google Pixel, and Solana phones. Even devices with cracked screens or battery issues have value. Check our instant quote tool for your specific model."
+      question: "What's the minimum deposit?",
+      answer: "1,000 SOL minimum. This ensures we can efficiently deploy capital for phone purchases. Smaller amounts create too much overhead relative to returns."
     },
     {
-      question: "What is RFT token?",
-      answer: "RFT (ReFit Token) is our ecosystem token with 1 billion total supply. 35% allocated for staking rewards over 5 years. Early stakers earn the highest share - Year 1 has 100M RFT emissions. Token utility includes governance, fee discounts, and future device purchases."
+      question: "Is this legit or a Ponzi scheme?",
+      answer: "Definitely legit. Unlike Ponzi schemes that pay old investors with new deposits, we generate real profit from actual phone sales. You can view our live inventory showing every phone purchased, its cost, sale price, and margin. Real business, real products, real profits."
     },
     {
-      question: "Why should I stake instead of taking cash?",
-      answer: "Staking turns a one-time payment into perpetual income. Your $600 iPhone trade could earn $40-400+ annually depending on your tier and RFT value. First 100 stakers get bonus APY and founding member benefits. It's perfect if you don't need immediate liquidity."
+      question: "Why phones specifically?",
+      answer: "Phones are perfect for arbitrage: high value-to-weight ratio, massive market (billions of devices), predictable pricing, and quick turnover. We've spent years building wholesale relationships that give us instant liquidity. Buy Monday, sell Tuesday, profit lands in the pool."
     },
     {
-      question: "How does the validator work?",
-      answer: "All staked SOL goes into our Solana validator, earning network staking rewards. We pass through 95% of rewards (5% commission). The validator strengthens Solana's network while generating sustainable yield for your trade-in value."
+      question: "What are the risks?",
+      answer: "Main risks: (1) Phone market changes reducing margins, (2) Large coordinated withdrawal, (3) Smart contract bugs. We mitigate these with diverse phone models, the 7-day withdrawal cooldown, and audited contracts. You can also watch the public inventory to verify we're actively trading."
     },
     {
       question: "Why Solana?",
-      answer: "Solana offers instant settlements, minimal fees, 6-7% staking yields, and the infrastructure we need for tokenizing inventory. Plus, with Solana Mobile integration, we can create seamless experiences for Saga and Seeker users."
+      answer: "Speed and cost. Solana's instant transactions and near-zero fees let us pay out weekly returns efficiently. Ethereum would cost $50+ per distribution - that's your profit gone in gas fees. Solana makes it practical to run a high-frequency profit-sharing pool."
     }
   ]
 
@@ -65,13 +65,13 @@ export default function FAQ() {
             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-800/50 transition-colors"
           >
             <span className="font-semibold text-lg">{faq.question}</span>
-            <ChevronDown 
+            <ChevronDown
               className={`h-5 w-5 text-gray-400 transition-transform ${
                 openIndex === index ? 'rotate-180' : ''
               }`}
             />
           </button>
-          
+
           <AnimatePresence>
             {openIndex === index && (
               <motion.div
