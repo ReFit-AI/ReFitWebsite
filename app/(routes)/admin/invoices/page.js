@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import {
   FileText,
   Plus,
-  Eye,
   Download,
   Send,
   CheckCircle,
@@ -56,7 +55,7 @@ export default function AdminInvoicesPage() {
     console.log('Access granted, fetching data')
     setLoading(false)
     fetchData()
-  }, [connected, publicKey])
+  }, [connected, publicKey, router])
 
   async function fetchData() {
     try {

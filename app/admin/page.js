@@ -88,15 +88,11 @@ export default function AdminDashboard() {
 
   // Calculate key metrics
   const totalDeposited = stats?.total_deposits || 0
-  const currentBalance = stats?.current_balance || 0
-  const totalDistributed = stats?.total_distributed || 0
   const platformFees = stats?.platform_fees || 0
   const activeDepositors = stats?.active_depositors || 0
 
   // Calculate weekly requirement
   const weeklyRequired = totalDeposited * 0.02 // 2% weekly
-  const yourShare = weeklyRequired * 0.2 // 20% platform fee
-  const lpShare = weeklyRequired * 0.8 // 80% to LPs
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">

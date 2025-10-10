@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { Connection, PublicKey } from '@solana/web3.js'
 
 // Minimum deposit amount
 const MIN_DEPOSIT = 1000

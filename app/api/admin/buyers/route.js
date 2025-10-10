@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
 // GET - List all buyers
-export async function GET(request) {
+export async function GET() {
   try {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,

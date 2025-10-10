@@ -7,7 +7,6 @@ import {
   Package,
   Plus,
   Upload,
-  FileText,
   Edit,
   Trash2,
   Save,
@@ -38,7 +37,7 @@ export default function AdminInventoryPage() {
     }
 
     fetchInventory()
-  }, [connected, publicKey])
+  }, [connected, publicKey, router])
 
   async function fetchInventory() {
     try {

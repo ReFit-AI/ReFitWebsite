@@ -9,13 +9,10 @@ import {
   TrendingUp,
   Clock,
   Coins,
-  ArrowUpRight,
-  ArrowDownRight,
   Calendar,
   Shield,
   AlertCircle,
   CheckCircle,
-  XCircle,
   Loader2,
   LogOut,
   LayoutDashboard
@@ -487,7 +484,7 @@ export default function DashboardPage() {
                         <p className="font-bold mb-1">7-Day Waiting Period</p>
                         <p className="text-xs">
                           Your withdrawal will be available for processing 7 days after this request.
-                          This protects the pool's stability.
+                          This protects the pool&apos;s stability.
                         </p>
                       </div>
                     </div>

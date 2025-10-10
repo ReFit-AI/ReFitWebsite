@@ -10,7 +10,6 @@ import {
   Zap,
   Activity,
   ArrowUpRight,
-  Award,
   Shield,
   BarChart3,
   Package,
@@ -347,7 +346,7 @@ export default function StatsPage() {
                     First distribution coming Monday!
                   </div>
                 ) : (
-                  distributions.slice(0, 5).map((dist, index) => (
+                  distributions.slice(0, 5).map((dist) => (
                     <div key={dist.id} className="flex items-center justify-between">
                       <div className="text-sm">
                         Week {dist.week_number}

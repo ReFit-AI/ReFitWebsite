@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
 // GET - Fetch all invoices
-export async function GET(request) {
+export async function GET() {
   try {
     const { data, error } = await supabase
       .from('invoices')

@@ -10,7 +10,6 @@ import {
   Users,
   Zap,
   Target,
-  Rocket,
   Trophy,
   BarChart3,
   Coins
@@ -225,7 +224,7 @@ export default function RoadmapPage() {
           </p>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             I buy phones locally at market rate, flip them to wholesale buyers same-day at 10-20% margins.
-            You get 2% weekly returns from the profits. That's it.
+            You get 2% weekly returns from the profits. That&apos;s it.
           </p>
         </motion.div>
 
@@ -385,7 +384,7 @@ export default function RoadmapPage() {
                 <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
                   <div className="text-2xl font-bold text-purple-400 mb-1">$2.3M</div>
                   <p className="text-sm text-gray-400">
-                    Revenue already generated. This isn't theoretical.
+                    Revenue already generated. This isn&apos;t theoretical.
                   </p>
                 </div>
                 <div className="p-4 bg-black/50 rounded-lg border border-gray-800">

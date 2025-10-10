@@ -8,8 +8,6 @@ import {
   DollarSign,
   ShoppingCart,
   Activity,
-  ArrowUpRight,
-  Filter,
   Search
 } from 'lucide-react'
 
@@ -285,7 +283,6 @@ function InventoryRow({ item }) {
   const shippingOut = parseFloat(item.shipping_cost_out || 0)
   const totalShipping = shippingIn + shippingOut
 
-  const grossProfit = item.price_sold ? item.price_sold - item.price_paid : 0
   const netProfit = item.price_sold ? item.price_sold - item.price_paid - totalShipping : 0
 
   const totalCost = item.price_paid + totalShipping

@@ -78,10 +78,10 @@ export default function SetupPage() {
                   <div className="font-medium text-white mb-2">Manual Setup Required:</div>
                   <ol className="list-decimal list-inside space-y-1">
                     <li>Go to <a href="https://supabase.com/dashboard" target="_blank" className="text-blue-400 hover:underline">Supabase Dashboard</a></li>
-                    <li>Click "SQL Editor" in the left sidebar</li>
+                    <li>Click &quot;SQL Editor&quot; in the left sidebar</li>
                     <li>Copy SQL from: <code className="text-green-400">supabase/migrations/20250108_inventory_system.sql</code></li>
                     <li>Paste and run it in the SQL editor</li>
-                    <li>Come back here and click "Import Data" again</li>
+                    <li>Come back here and click &quot;Import Data&quot; again</li>
                   </ol>
                 </div>
               )}

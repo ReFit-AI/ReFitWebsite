@@ -5,7 +5,6 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/navigation'
 import {
   BarChart3,
-  Download,
   Calendar,
   DollarSign,
   TrendingUp,
@@ -13,7 +12,6 @@ import {
   FileText,
   FileSpreadsheet
 } from 'lucide-react'
-import * as XLSX from 'xlsx'
 
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
 
@@ -38,7 +36,7 @@ export default function AdminReportsPage() {
 
     setLoading(false)
     fetchData()
-  }, [connected, publicKey])
+  }, [connected, publicKey, router])
 
   async function fetchData() {
     try {
@@ -98,6 +96,7 @@ export default function AdminReportsPage() {
     : 0
 
   function exportInventoryReport() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const XLSX = require('xlsx')
 
     const data = soldItems.map(item => ({
@@ -166,6 +165,7 @@ export default function AdminReportsPage() {
   }
 
   function exportInvoiceReport() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const XLSX = require('xlsx')
 
     const data = filteredInvoices.map(inv => ({

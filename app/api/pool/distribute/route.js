@@ -11,7 +11,7 @@ export async function POST(request) {
     // This will be handled by middleware/auth in production
 
     const body = await request.json()
-    const { weeklyProfit, phonesSold, adminSecret } = body // Total profit this week from phone flips
+    const { weeklyProfit, adminSecret } = body // Total profit this week from phone flips
 
     // Verify admin secret (server-side only, never exposed to client)
     if (process.env.NODE_ENV === 'production') {
@@ -52,9 +52,6 @@ export async function POST(request) {
         message: 'No active deposits to distribute to'
       })
     }
-
-    // Calculate total pool size
-    const totalPoolSize = deposits.reduce((sum, d) => sum + parseFloat(d.amount), 0)
 
     // Create distribution record
     const { data: distribution, error: distError } = await supabase

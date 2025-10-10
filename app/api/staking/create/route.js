@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { Connection, PublicKey } from '@solana/web3.js';
-
-// Squads multisig vault address (set this in your .env)
-const SQUADS_VAULT_ADDRESS = process.env.NEXT_PUBLIC_SQUADS_VAULT_ADDRESS;
 
 // Tier configurations
 const TIERS = {

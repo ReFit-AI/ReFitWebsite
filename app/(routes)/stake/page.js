@@ -8,12 +8,10 @@ import {
   Transaction,
   SystemProgram,
   PublicKey,
-  ComputeBudgetProgram,
-  TransactionMessage,
-  VersionedTransaction
+  ComputeBudgetProgram
 } from '@solana/web3.js'
-import { ArrowRight, Zap, Clock, DollarSign, Coins, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
-import { SQUADS_CONFIG, formatVaultAddress } from '@/lib/squads'
+import { ArrowRight, Zap, DollarSign, Coins, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { SQUADS_CONFIG } from '@/lib/squads'
 
 export default function StakePage() {
   const [amount, setAmount] = useState('1000')
@@ -374,7 +372,7 @@ export default function StakePage() {
               <CheckCircle className="w-5 h-5 text-green-400" />
               <div>
                 <p className="font-bold text-green-400">Deposit Successful!</p>
-                <p className="text-sm text-green-300">You'll earn ${weeklyReturn.toFixed(0)}/week + {rftPerWeek} RFT</p>
+                <p className="text-sm text-green-300">You&apos;ll earn ${weeklyReturn.toFixed(0)}/week + {rftPerWeek} RFT</p>
               </div>
             </motion.div>
           )}
