@@ -184,6 +184,11 @@ class ProductionUserProfileService {
 
       return user;
     } catch (error) {
+      // Silently handle table not existing (users table is optional)
+      if (error?.code === '42P01' || error?.message?.includes('relation') || error?.message?.includes('does not exist')) {
+        return null;
+      }
+
       // Only log error if it's not from a liquidity pool page
       const isLPPage = typeof window !== 'undefined' &&
         (window.location.pathname.includes('/stake') ||
@@ -191,16 +196,11 @@ class ProductionUserProfileService {
          window.location.pathname.includes('/dashboard') ||
          window.location.pathname.includes('/stats'));
 
+      // Only log real errors in development
       if (!isLPPage && process.env.NODE_ENV === 'development') {
-        // Only log if there's actual error content
         const hasError = error?.message || error?.code || error?.details;
         if (hasError) {
-          console.error('Get profile error:', {
-            message: error?.message || 'Unknown error',
-            code: error?.code,
-            details: error?.details,
-            hint: error?.hint
-          });
+          console.warn('Profile fetch failed (non-critical):', error?.message || error?.code);
         }
       }
       return null;
