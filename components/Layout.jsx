@@ -50,7 +50,7 @@ const Layout = ({ children }) => {
       path: '/stake',
       label: 'Stake',
       icon: Coins,
-      description: 'Earn 2% weekly',
+      description: 'Earn 8% monthly',
       highlight: true // New feature highlight
     },
   ]
@@ -163,9 +163,14 @@ const Layout = ({ children }) => {
                 {/* Glow effect on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-green-600 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
               </div>
-              <span className="text-xl font-bold tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-green-600 transition-all duration-300">
-                ReFit
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-green-600 transition-all duration-300">
+                  ReFit
+                </span>
+                <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded uppercase">
+                  Beta
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation - Organized and Intuitive */}

@@ -192,13 +192,16 @@ class ProductionUserProfileService {
          window.location.pathname.includes('/stats'));
 
       if (!isLPPage && process.env.NODE_ENV === 'development') {
-        console.error('Get profile error:', {
-          message: error?.message || 'Unknown error',
-          code: error?.code,
-          details: error?.details,
-          hint: error?.hint,
-          errorString: JSON.stringify(error)
-        });
+        // Only log if there's actual error content
+        const hasError = error?.message || error?.code || error?.details;
+        if (hasError) {
+          console.error('Get profile error:', {
+            message: error?.message || 'Unknown error',
+            code: error?.code,
+            details: error?.details,
+            hint: error?.hint
+          });
+        }
       }
       return null;
     }
