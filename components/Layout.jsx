@@ -13,12 +13,12 @@ import {
   Package,
   Info,
   Target,
-  // ShoppingCart, // Archived until inventory ready
   User,
   Sparkles,
   ClipboardList,
   Activity,
-  LayoutDashboard
+  LayoutDashboard,
+  Boxes
 } from 'lucide-react'
 import { initializeServices, cleanupServices } from '@/services'
 import { WalletButton } from './WalletButton'
@@ -63,7 +63,12 @@ const Layout = ({ children }) => {
       icon: Activity,
       description: 'Live pool stats'
     },
-    // { path: '/shop', label: 'Shop', icon: ShoppingCart }, // Archived until inventory ready
+    {
+      path: '/inventory',
+      label: 'Inventory',
+      icon: Boxes,
+      description: 'Live transparency'
+    },
   ]
 
   // Tertiary - profile/info pages (only show dashboard if connected)

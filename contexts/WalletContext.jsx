@@ -43,9 +43,9 @@ export const WalletProvider = ({ children }) => {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <SolanaWalletProvider 
-        wallets={wallets} 
-        autoConnect={false}
+      <SolanaWalletProvider
+        wallets={wallets}
+        autoConnect={true}
         onError={(error) => {
           console.log('Wallet error occurred:', error.name, error.message);
           

@@ -12,13 +12,16 @@ import {
   ArrowUpRight,
   Award,
   Shield,
-  BarChart3
+  BarChart3,
+  Package,
+  ShoppingCart
 } from 'lucide-react'
 
 export default function StatsPage() {
   const [stats, setStats] = useState(null)
   const [recentDeposits, setRecentDeposits] = useState([])
   const [distributions, setDistributions] = useState([])
+  const [inventoryStats, setInventoryStats] = useState(null)
   const [timeToDistribution, setTimeToDistribution] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -38,6 +41,10 @@ export default function StatsPage() {
         const distRes = await fetch('/api/pool/distribute')
         const distData = await distRes.json()
 
+        // Get inventory stats
+        const invRes = await fetch('/api/admin/inventory')
+        const invData = await invRes.json()
+
         if (poolData.success) {
           setStats(poolData.pool)
         }
@@ -48,6 +55,45 @@ export default function StatsPage() {
 
         if (distData.success) {
           setDistributions(distData.distributions || [])
+        }
+
+        if (invData.success) {
+          // Calculate inventory stats with shipping costs
+          const inventory = invData.inventory || []
+          const inStock = inventory.filter(i => i.status === 'in_stock')
+          const sold = inventory.filter(i => i.status === 'sold')
+          const capitalDeployed = inStock.reduce((sum, i) => sum + parseFloat(i.price_paid || 0), 0)
+          const totalRevenue = sold.reduce((sum, i) => sum + parseFloat(i.price_sold || 0), 0)
+          const totalCost = sold.reduce((sum, i) => sum + parseFloat(i.price_paid || 0), 0)
+
+          // Calculate shipping costs
+          const totalShippingCosts = sold.reduce((sum, i) =>
+            sum + parseFloat(i.shipping_cost_in || 0) + parseFloat(i.shipping_cost_out || 0), 0
+          )
+
+          // Gross profit (without shipping)
+          const grossProfit = totalRevenue - totalCost
+
+          // Net profit (with shipping)
+          const netProfit = totalRevenue - totalCost - totalShippingCosts
+
+          // Calculate margins
+          const grossMargin = totalCost > 0 ? (grossProfit / totalCost * 100) : 0
+          const netMargin = (totalCost + totalShippingCosts) > 0
+            ? (netProfit / (totalCost + totalShippingCosts) * 100)
+            : 0
+
+          setInventoryStats({
+            activeCount: inStock.length,
+            soldCount: sold.length,
+            capitalDeployed,
+            totalRevenue,
+            grossProfit,
+            netProfit,
+            totalShippingCosts,
+            grossMargin,
+            netMargin
+          })
         }
       } catch (error) {
         console.error('Failed to fetch stats:', error)
@@ -378,6 +424,93 @@ export default function StatsPage() {
             </motion.div>
           </div>
         </div>
+
+        {/* Inventory Stats Section */}
+        {inventoryStats && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mt-8"
+          >
+            <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Package className="w-5 h-5 text-blue-400" />
+                    Live Inventory - Where Capital is Deployed
+                  </h2>
+                  <p className="text-sm text-gray-400 mt-1">
+                    Real phones. Real margins. Real profits.
+                  </p>
+                </div>
+                <a
+                  href="/inventory"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                  View Full Inventory
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-6">
+                <div className="bg-gray-800/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ShoppingCart className="w-4 h-4 text-blue-400" />
+                    <span className="text-xs text-gray-400 uppercase">Active Stock</span>
+                  </div>
+                  <div className="text-2xl font-bold">{inventoryStats.activeCount}</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    ${inventoryStats.capitalDeployed.toFixed(0)} deployed
+                  </div>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Activity className="w-4 h-4 text-green-400" />
+                    <span className="text-xs text-gray-400 uppercase">Total Sales</span>
+                  </div>
+                  <div className="text-2xl font-bold">{inventoryStats.soldCount}</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    ${inventoryStats.totalRevenue.toFixed(0)} revenue
+                  </div>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="w-4 h-4 text-green-400" />
+                    <span className="text-xs text-gray-400 uppercase">Net Profit</span>
+                  </div>
+                  <div className="text-2xl font-bold text-green-400">
+                    ${inventoryStats.netProfit.toFixed(0)}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    ${inventoryStats.grossProfit.toFixed(0)} gross - ${inventoryStats.totalShippingCosts.toFixed(0)} shipping
+                  </div>
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="w-4 h-4 text-purple-400" />
+                    <span className="text-xs text-gray-400 uppercase">Net Margin</span>
+                  </div>
+                  <div className="text-2xl font-bold text-purple-400">
+                    {inventoryStats.netMargin.toFixed(1)}%
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Per sale
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-6 py-3 bg-blue-900/10 border-t border-gray-800">
+                <div className="text-sm text-gray-400 text-center">
+                  <span className="text-blue-400 font-medium">100% transparent</span> - Every phone tracked with IMEI, purchase price, and sale price
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Bottom Banner */}
         <motion.div

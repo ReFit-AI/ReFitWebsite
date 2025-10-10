@@ -1,25 +1,31 @@
-# ReFit - Solana-Powered Device Buyback Platform
+# ReFit - Phone Trade-in & Liquidity Pool Platform
 
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black)](https://refit-website.vercel.app)
 [![Status](https://img.shields.io/badge/Status-Live-success)](https://refit-website.vercel.app)
 
-ReFit is a modern device buyback platform that leverages Solana blockchain technology to provide instant payments and transparent pricing for used phones and electronics.
+ReFit is a Solana-based platform combining phone trade-in services with a staking liquidity pool. Users earn 2% weekly yields while the platform generates revenue through phone arbitrage.
 
-## Features
+## 🚀 Features
 
-- **Instant Quotes**: Get real-time pricing for your devices
-- **Solana Payments**: Receive payments directly to your Solana wallet
-- **Smart Contract Integration**: Transparent and secure transactions
-- **Mobile App**: React Native app for easy device assessment
-- **Shipping Integration**: Automated shipping label generation
+### Public
+- **Phone Trade-in**: Instant SOL/USDC payouts for used phones
+- **Liquidity Pool**: Earn 2% weekly returns (104% APY)
+- **Live Transparency**: Public inventory with real-time margins
+- **Weekly Distributions**: Automated yields every Monday
 
-## Tech Stack
+### Admin
+- **Inventory Management**: Track phones with IMEI, pricing, margins
+- **Invoice System**: Buyer management with Shippo shipping integration
+- **Profit Reports**: Excel exports for accounting and taxes
+- **Buyer Database**: Secure encrypted customer storage
 
-- **Frontend**: Next.js 15, React 19, Tailwind CSS
-- **Blockchain**: Solana Web3.js, Anchor Framework
-- **Mobile**: React Native
-- **Backend**: Next.js API Routes, Supabase
-- **Shipping**: Shippo API integration
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TailwindCSS, Framer Motion
+- **Blockchain**: Solana Web3.js, Squads Protocol (multisig)
+- **Database**: Supabase (PostgreSQL with RLS)
+- **Shipping**: Shippo API
+- **Exports**: jsPDF, xlsx
 
 ## Getting Started
 
