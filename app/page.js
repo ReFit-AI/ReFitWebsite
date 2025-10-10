@@ -61,25 +61,34 @@ export default function HomePage() {
             </h1>
             
             {/* Subheadline */}
-            <p className="text-xl sm:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto font-light">
-              Instant valuation. Get paid in USDC or SOL instantly.
+            <p className="text-xl sm:text-2xl text-gray-400 mb-4 max-w-3xl mx-auto font-light">
+              Trade in your device OR deposit cash into our phone arbitrage pool.
             </p>
-            
+
+            {/* Beta Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/30 rounded-full mb-8">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+              </span>
+              <span className="text-sm font-medium text-purple-300">BETA LAUNCH - Earn 8% Monthly (104% APY)</span>
+            </div>
+
             {/* Single CTA */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link 
-                href="/sell" 
+              <Link
+                href="/sell"
                 className="group px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 flex items-center justify-center"
               >
-                Get Instant Quote
+                Trade In Phone
                 <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link 
-                href="/stake" 
+              <Link
+                href="/stake"
                 className="px-8 py-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full text-white font-semibold text-lg hover:bg-gray-800 transition-all duration-300 flex items-center justify-center"
               >
                 <Coins className="mr-2 h-5 w-5" />
-                Learn About Staking
+                Deposit into Pool
               </Link>
             </div>
             

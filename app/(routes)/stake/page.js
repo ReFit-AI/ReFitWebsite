@@ -43,10 +43,10 @@ export default function StakePage() {
   }, [])
 
   const value = Math.max(0, parseFloat(amount) || 0)
-  const weeklyReturn = value * 0.02 // 2% weekly
-  const annualReturn = value * 1.04 // 104% annual
-  const rftPerWeek = value // 1 RFT per $1 per week
-  const rftAtLaunch = rftPerWeek * 24 // 6 months of accumulation
+  const monthlyReturn = value * 0.08 // 8% monthly (2% weekly APY)
+  const annualReturn = value * 1.04 // 104% APY
+  const rftPerMonth = value * 4 // 1 RFT per $1 per week = 4 per month
+  const rftAtLaunch = rftPerMonth * 6 // 6 months of accumulation
 
   // Handle deposit
   const handleDeposit = async () => {
@@ -234,10 +234,19 @@ export default function StakePage() {
               </span>
             </motion.div>
 
+            {/* Beta Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/30 rounded-full mb-6">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+              </span>
+              <span className="text-sm font-medium text-purple-300">BETA LAUNCH</span>
+            </div>
+
             {/* Main Headline */}
             <h1 className="text-6xl md:text-7xl font-bold mb-6 tracking-tight">
               <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                2% Weekly Returns
+                8% Monthly Returns
               </span>
             </h1>
 
@@ -246,7 +255,7 @@ export default function StakePage() {
               From real phone arbitrage profits
             </p>
             <p className="text-lg text-gray-500">
-              Plus earn RFT tokens for early supporters
+              104% APY | Distributed first Monday of each month
             </p>
           </motion.div>
         </div>
@@ -298,9 +307,9 @@ export default function StakePage() {
               <div className="space-y-3">
                 <div>
                   <div className="text-3xl font-bold text-white">
-                    ${weeklyReturn.toFixed(0)}<span className="text-lg text-gray-500">/week</span>
+                    ${monthlyReturn.toFixed(0)}<span className="text-lg text-gray-500">/month</span>
                   </div>
-                  <div className="text-sm text-gray-500">2% weekly yield</div>
+                  <div className="text-sm text-gray-500">8% monthly yield</div>
                 </div>
 
                 <div className="pt-3 border-t border-gray-800">
@@ -322,7 +331,7 @@ export default function StakePage() {
               <div className="space-y-3">
                 <div>
                   <div className="text-3xl font-bold text-purple-300">
-                    {rftPerWeek.toLocaleString()}<span className="text-lg text-purple-400"> RFT/week</span>
+                    {rftPerMonth.toLocaleString()}<span className="text-lg text-purple-400"> RFT/month</span>
                   </div>
                   <div className="text-sm text-purple-400">Token rewards</div>
                 </div>
@@ -372,7 +381,7 @@ export default function StakePage() {
               <CheckCircle className="w-5 h-5 text-green-400" />
               <div>
                 <p className="font-bold text-green-400">Deposit Successful!</p>
-                <p className="text-sm text-green-300">You&apos;ll earn ${weeklyReturn.toFixed(0)}/week + {rftPerWeek} RFT</p>
+                <p className="text-sm text-green-300">You&apos;ll earn ${monthlyReturn.toFixed(0)}/month + {rftPerMonth} RFT</p>
               </div>
             </motion.div>
           )}
@@ -421,7 +430,7 @@ export default function StakePage() {
 
               <div>
                 <div className="text-4xl font-bold text-blue-400 mb-2">3.</div>
-                <h3 className="font-bold mb-2">You Earn 2% Weekly</h3>
+                <h3 className="font-bold mb-2">You Earn 8% Monthly</h3>
                 <p className="text-sm text-gray-400">
                   Plus RFT tokens for being an early supporter
                 </p>
@@ -432,7 +441,7 @@ export default function StakePage() {
               <p className="text-sm text-gray-300">
                 <span className="font-bold text-white">Proven Track Record:</span> $2.3M in phone trading revenue.
                 We buy phones from consumers at market rate, sell to wholesale buyers same-day at 10-20% markup.
-                You get 2% weekly from these profits. Simple, transparent, profitable.
+                You get 8% monthly from these profits (distributed first Monday of each month). Simple, transparent, profitable.
               </p>
             </div>
           </div>

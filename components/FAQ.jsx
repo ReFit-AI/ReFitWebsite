@@ -10,15 +10,19 @@ export default function FAQ() {
   const faqs = [
     {
       question: "How does the liquidity pool work?",
-      answer: "Think of it like a savings account that funds a phone flipping business. You deposit money, we use it to buy phones locally and flip them to wholesale buyers for 10-20% profit. You get 2% weekly returns (104% APY) from those profits. It's simple arbitrage - buy low locally, sell high wholesale."
+      answer: "Think of it like a savings account that funds a phone flipping business. You deposit money, we use it to buy phones on eBay and flip them to wholesale buyers for 10-20% profit. You get 8% monthly returns (104% APY) from those profits. It's simple arbitrage - buy low on eBay, sell high to wholesale."
     },
     {
-      question: "Where does the 2% weekly come from?",
-      answer: "Real phone sales. We buy phones from local sellers (Facebook, OfferUp, etc) and flip them same-day to established wholesale buyers. Every phone generates 10-20% profit. We split it: 80% goes to liquidity providers as your 2% weekly, 20% covers our time and operations."
+      question: "Where does the 8% monthly come from?",
+      answer: "Real phone sales. We buy underpriced phones on eBay and flip them same-day to established wholesale buyers. Every phone generates 10-20% profit. We split it: 80% goes to liquidity providers as your 8% monthly, 20% covers our time and operations."
+    },
+    {
+      question: "Is this in beta? What does that mean?",
+      answer: "Yes, we're in beta launch with early supporters. This means we're limiting pool size while we optimize operations. We've already flipped $2.3M in phones proving the model works. Beta lets us perfect the system with a smaller group before scaling. You get early access, better support, and input on features."
     },
     {
       question: "Is this sustainable?",
-      answer: "Yes. The phone arbitrage market is massive - people constantly upgrade devices. We've already flipped $2.3M in phones proving the model works. The 2% weekly is conservative - our margins support it even with slower weeks. Plus, you can see every phone we buy and sell on the public inventory page."
+      answer: "Yes. The phone arbitrage market is massive - eBay alone has thousands of listings daily. We've already flipped $2.3M in phones proving the model works. The 8% monthly is conservative - our margins support it even with slower weeks. Plus, you can see every phone we buy and sell on the public inventory page."
     },
     {
       question: "Can I withdraw anytime?",
@@ -26,15 +30,15 @@ export default function FAQ() {
     },
     {
       question: "How fast do I get paid?",
-      answer: "Instantly when you deposit - your position starts earning immediately. Weekly distributions happen every Monday. Your earnings accumulate in your account and you can withdraw them anytime (after the initial 7-day waiting period)."
+      answer: "Your position starts earning immediately when you deposit. Monthly distributions happen the first Monday of each month. Your earnings accumulate in your account and you can withdraw them anytime (after the initial 7-day waiting period)."
     },
     {
       question: "What's the minimum deposit?",
-      answer: "$1,000 minimum. That's about the cost of a new iPhone - except instead of losing value, you earn $20/week in passive income. This ensures we can efficiently deploy capital for phone purchases while keeping the pool accessible to everyone."
+      answer: "$1,000 minimum. That's about the cost of a new iPhone - except instead of losing value, you earn $80/month in passive income. This ensures we can efficiently deploy capital for phone purchases while keeping the pool accessible to everyone."
     },
     {
       question: "Why phones specifically?",
-      answer: "Phones are perfect for arbitrage: high value-to-weight ratio, massive market (billions of devices), predictable pricing, and quick turnover. We've spent years building wholesale relationships that give us instant liquidity. Buy Monday, sell Tuesday, profit lands in the pool."
+      answer: "Phones are perfect for arbitrage: high value-to-weight ratio, massive eBay market (thousands of listings daily), predictable pricing, and quick turnover. We've spent years building wholesale relationships that give us instant liquidity. Buy Monday, sell Tuesday, profit lands in the pool."
     },
     {
       question: "What are the risks?",
@@ -42,7 +46,11 @@ export default function FAQ() {
     },
     {
       question: "Why Solana?",
-      answer: "Speed and cost. Solana's instant transactions and near-zero fees let us pay out weekly returns efficiently. Ethereum would cost $50+ per distribution - that's your profit gone in gas fees. Solana makes it practical to run a high-frequency profit-sharing pool."
+      answer: "Speed and cost. Solana's instant transactions and near-zero fees let us pay out monthly returns efficiently. Ethereum would cost $50+ per distribution - that's your profit gone in gas fees. Solana makes it practical to run a profit-sharing pool with minimal overhead."
+    },
+    {
+      question: "Can I trade in my phone instead of depositing cash?",
+      answer: "Yes! When you trade in your device, you can choose to deposit the value directly into the pool instead of taking cash. This way your old phone becomes a passive income generator earning 8% monthly instead of a one-time payment."
     }
   ]
 
