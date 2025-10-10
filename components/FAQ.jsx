@@ -30,11 +30,7 @@ export default function FAQ() {
     },
     {
       question: "What's the minimum deposit?",
-      answer: "1,000 SOL minimum. This ensures we can efficiently deploy capital for phone purchases. Smaller amounts create too much overhead relative to returns."
-    },
-    {
-      question: "Is this legit or a Ponzi scheme?",
-      answer: "Definitely legit. Unlike Ponzi schemes that pay old investors with new deposits, we generate real profit from actual phone sales. You can view our live inventory showing every phone purchased, its cost, sale price, and margin. Real business, real products, real profits."
+      answer: "$1,000 minimum. That's about the cost of a new iPhone - except instead of losing value, you earn $20/week in passive income. This ensures we can efficiently deploy capital for phone purchases while keeping the pool accessible to everyone."
     },
     {
       question: "Why phones specifically?",
