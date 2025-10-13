@@ -3,7 +3,7 @@
 // Force dynamic rendering (no prerender)
 export const dynamic = 'force-dynamic'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react'
@@ -18,7 +18,7 @@ import { ArrowRight, Zap, DollarSign, Coins, Loader2, CheckCircle, AlertCircle }
 import { SQUADS_CONFIG } from '@/lib/squads'
 import BetaDisclaimerModal from '@/components/BetaDisclaimerModal'
 
-export default function StakePage() {
+function StakePageContent() {
   const searchParams = useSearchParams()
   const [amount, setAmount] = useState('1000')
   const { connected, publicKey, signTransaction } = useWallet()
@@ -520,5 +520,20 @@ export default function StakePage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function StakePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    }>
+      <StakePageContent />
+    </Suspense>
   )
 }

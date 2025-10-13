@@ -249,39 +249,28 @@ export default function AdminInventoryPage() {
     a.click()
   }
 
-  // Show loading while wallet is connecting or data is loading
-  if (!connected || !publicKey || loading) {
+  // Show loading while wallet is connecting or checking auth
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
           <p className="text-gray-400">
-            {!connected ? 'Connecting wallet...' : 'Loading inventory...'}
+            {authLoading ? 'Connecting wallet...' : 'Loading inventory...'}
           </p>
         </div>
       </div>
     )
   }
 
-  // Check if admin wallet (double check in render)
-  if (publicKey.toString() !== ADMIN_WALLET) {
+  // Check if admin wallet
+  if (!isAdmin) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <p className="text-xl mb-2">Admin Access Required</p>
           <p className="text-gray-400">Please connect with admin wallet</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Connecting wallet...</p>
         </div>
       </div>
     )

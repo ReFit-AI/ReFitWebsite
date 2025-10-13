@@ -3,7 +3,7 @@
 // Force dynamic rendering (no prerender)
 export const dynamic = 'force-dynamic'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useWallet } from '@solana/wallet-adapter-react'
 import {
@@ -19,7 +19,7 @@ import {
 
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
 
-export default function NewInvoicePage() {
+function NewInvoiceContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { publicKey, connected } = useWallet()
@@ -542,5 +542,20 @@ export default function NewInvoicePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function NewInvoicePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    }>
+      <NewInvoiceContent />
+    </Suspense>
   )
 }
