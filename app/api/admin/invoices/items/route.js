@@ -4,13 +4,26 @@ import { createClient } from '@supabase/supabase-js';
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
 // Use service role for admin operations (bypasses RLS)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const getSupabase = () => {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return null;
+  }
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+};
 
 // PATCH - Update invoice item price
 export async function PATCH(request) {
+  const supabase = getSupabase();
+
+  if (!supabase) {
+    return NextResponse.json({
+      success: false,
+      error: 'Database not configured'
+    }, { status: 500 });
+  }
   try {
     const body = await request.json();
     const { walletAddress, itemId, price } = body;

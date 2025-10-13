@@ -5,13 +5,26 @@ import { validateInvoiceData, sanitizeInvoiceData } from '@/lib/invoiceValidatio
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
 // Use service role for admin operations (bypasses RLS)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const getSupabase = () => {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return null;
+  }
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+};
 
 // GET - Fetch all invoices or single invoice
 export async function GET(request) {
+  const supabase = getSupabase();
+
+  if (!supabase) {
+    return NextResponse.json({
+      success: false,
+      error: 'Database not configured'
+    }, { status: 500 });
+  }
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -76,6 +89,15 @@ export async function GET(request) {
 
 // POST - Create new invoice
 export async function POST(request) {
+  const supabase = getSupabase();
+
+  if (!supabase) {
+    return NextResponse.json({
+      success: false,
+      error: 'Database not configured'
+    }, { status: 500 });
+  }
+
   try {
     const body = await request.json();
     const { walletAddress, invoice } = body;
@@ -186,6 +208,15 @@ export async function POST(request) {
 
 // DELETE - Delete invoice
 export async function DELETE(request) {
+  const supabase = getSupabase();
+
+  if (!supabase) {
+    return NextResponse.json({
+      success: false,
+      error: 'Database not configured'
+    }, { status: 500 });
+  }
+
   try {
     const body = await request.json();
     const { walletAddress, id } = body;
@@ -245,6 +276,15 @@ export async function DELETE(request) {
 
 // PATCH - Update invoice
 export async function PATCH(request) {
+  const supabase = getSupabase();
+
+  if (!supabase) {
+    return NextResponse.json({
+      success: false,
+      error: 'Database not configured'
+    }, { status: 500 });
+  }
+
   try {
     const body = await request.json();
     const { walletAddress, id, updates } = body;
