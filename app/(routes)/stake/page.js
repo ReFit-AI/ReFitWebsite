@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering (no prerender)
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'

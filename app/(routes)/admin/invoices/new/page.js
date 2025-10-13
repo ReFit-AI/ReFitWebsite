@@ -1,14 +1,15 @@
 'use client'
 
+// Force dynamic rendering (no prerender)
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useWallet } from '@solana/wallet-adapter-react'
 import {
   FileText,
   Package,
-  DollarSign,
   User,
-  Plus,
   Trash2,
   Save,
   ArrowLeft,

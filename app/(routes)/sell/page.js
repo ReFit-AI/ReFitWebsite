@@ -63,7 +63,8 @@ export default function SellPage() {
     setCurrentStep(2)
   }
 
-  const [depositToPool, setDepositToPool] = useState(false)
+  // Future feature: deposit trade-in value directly to pool
+  // const [depositToPool, setDepositToPool] = useState(false)
 
   const handleAcceptQuote = () => {
     setCurrentStep(3)

@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
@@ -12,7 +14,8 @@ import {
   Percent,
   Calendar,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  // Plus - commented out as not currently used
 } from 'lucide-react'
 
 export default function AnalyticsPage() {

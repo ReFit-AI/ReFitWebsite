@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
@@ -20,6 +22,7 @@ import {
 import { downloadInvoicePDF, downloadInvoiceExcel } from '@/lib/invoiceExport'
 
 export default function AdminInvoicesPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter()
   const { isAdmin, authLoading, publicKey } = useAdminAuth()
   const [invoices, setInvoices] = useState([])

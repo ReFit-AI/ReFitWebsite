@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
@@ -14,8 +16,7 @@ import {
   Download,
   AlertCircle,
   Filter,
-  FileText,
-  ChevronDown
+  FileText
 } from 'lucide-react'
 
 export default function AdminInventoryPage() {

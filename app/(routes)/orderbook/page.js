@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { TrendingUp, TrendingDown, Activity, DollarSign, Package, ArrowUpDown } from 'lucide-react'
+import { useState } from 'react'
+import { TrendingUp, TrendingDown, Activity, Package, ArrowUpDown } from 'lucide-react'
 
 export default function OrderbookPage() {
   const [selectedModel, setSelectedModel] = useState('iPhone 15 Pro Max')
@@ -232,7 +232,7 @@ export default function OrderbookPage() {
                     const wickTopHeight = candle.high - bodyTop
                     const wickBottomHeight = bodyBottom - candle.low
 
-                    const bodyTopPercent = ((bodyTop - minPrice) / range) * 100
+                    // Calculate percentages for rendering
                     const bodyHeightPercent = (bodyHeight / range) * 100
                     const wickTopPercent = (wickTopHeight / range) * 100
                     const wickBottomPercent = (wickBottomHeight / range) * 100

@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -9,15 +11,12 @@ import {
   DollarSign,
   User,
   Printer,
-  Mail,
   ArrowLeft,
   CheckCircle,
-  Clock,
   AlertCircle,
   Truck,
   Download,
   FileSpreadsheet,
-  Edit,
   Plus
 } from 'lucide-react'
 import { downloadInvoicePDF, downloadInvoiceExcel } from '@/lib/invoiceExport'
