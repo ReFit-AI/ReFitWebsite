@@ -210,14 +210,13 @@ const ShippingSelection = ({
       {/* Shipping Info */}
       <div className="mt-6 p-4 bg-green-900/10 rounded-lg border border-green-900/30">
         <h4 className="text-sm font-semibold text-green-400 mb-2">
-          Free USPS Priority Mail Shipping:
+          Free Prepaid Shipping Label:
         </h4>
         <ul className="space-y-1 text-sm text-gray-400">
-          <li>• We'll email you a prepaid Priority Mail label</li>
-          <li>• Includes up to $100 insurance coverage</li>
-          <li>• Free tracking from pickup to delivery</li>
-          <li>• Typically arrives in 1-3 business days</li>
-          <li>• Drop off at any USPS location or schedule a pickup</li>
+          <li>• We cover all shipping costs - it's free for you</li>
+          <li>• We'll email you a prepaid shipping label</li>
+          <li>• Fully insured with tracking from pickup to delivery</li>
+          <li>• Drop off at UPS/USPS location or schedule a pickup</li>
           <li>• Get paid instantly once we verify your device</li>
         </ul>
       </div>

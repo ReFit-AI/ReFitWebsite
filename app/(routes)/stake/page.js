@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react'
+import { useSearchParams } from 'next/navigation'
 import {
   Transaction,
   SystemProgram,
@@ -12,8 +13,10 @@ import {
 } from '@solana/web3.js'
 import { ArrowRight, Zap, DollarSign, Coins, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 import { SQUADS_CONFIG } from '@/lib/squads'
+import BetaDisclaimerModal from '@/components/BetaDisclaimerModal'
 
 export default function StakePage() {
+  const searchParams = useSearchParams()
   const [amount, setAmount] = useState('1000')
   const { connected, publicKey, signTransaction } = useWallet()
   const { connection } = useConnection()
@@ -21,6 +24,25 @@ export default function StakePage() {
   const [isDepositing, setIsDepositing] = useState(false)
   const [depositStatus, setDepositStatus] = useState(null) // 'success', 'error', or null
   const [errorMessage, setErrorMessage] = useState('')
+  const [showBetaModal, setShowBetaModal] = useState(false)
+  const [hasAcceptedBetaTerms, setHasAcceptedBetaTerms] = useState(false)
+
+  // Check for trade-in redirect with pre-filled amount
+  useEffect(() => {
+    const urlAmount = searchParams.get('amount')
+    const source = searchParams.get('source')
+    if (urlAmount && source === 'tradein') {
+      setAmount(urlAmount)
+    }
+  }, [searchParams])
+
+  // Check if user has already accepted beta terms
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const accepted = localStorage.getItem('betaTermsAccepted')
+      setHasAcceptedBetaTerms(accepted === 'true')
+    }
+  }, [])
 
   // Fetch real bonus slots remaining
   useEffect(() => {
@@ -48,7 +70,25 @@ export default function StakePage() {
   const rftPerMonth = value * 4 // 1 RFT per $1 per week = 4 per month
   const rftAtLaunch = rftPerMonth * 6 // 6 months of accumulation
 
-  // Handle deposit
+  // Handle beta acceptance
+  const handleAcceptBetaTerms = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('betaTermsAccepted', 'true')
+      setHasAcceptedBetaTerms(true)
+      setShowBetaModal(false)
+    }
+  }
+
+  // Handle deposit button click - show modal if needed
+  const handleDepositClick = () => {
+    if (!hasAcceptedBetaTerms) {
+      setShowBetaModal(true)
+      return
+    }
+    handleDeposit()
+  }
+
+  // Handle actual deposit
   const handleDeposit = async () => {
     if (!publicKey || !signTransaction || value < 1000) return
 
@@ -212,6 +252,13 @@ export default function StakePage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Beta Disclaimer Modal */}
+      <BetaDisclaimerModal
+        isOpen={showBetaModal}
+        onClose={() => setShowBetaModal(false)}
+        onAccept={handleAcceptBetaTerms}
+      />
+
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-green-900/20" />
@@ -349,7 +396,7 @@ export default function StakePage() {
           {/* CTA Button */}
           {connected ? (
             <button
-              onClick={handleDeposit}
+              onClick={handleDepositClick}
               disabled={value < 1000 || isDepositing || depositStatus === 'success'}
               className="w-full flex items-center justify-center gap-3 px-8 py-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-xl font-bold hover:shadow-2xl hover:shadow-purple-500/50 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
             >

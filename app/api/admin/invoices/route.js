@@ -1,31 +1,70 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+import { validateInvoiceData, sanitizeInvoiceData } from '@/lib/invoiceValidation';
 
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
-// GET - Fetch all invoices
-export async function GET() {
+// Use service role for admin operations (bypasses RLS)
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+// GET - Fetch all invoices or single invoice
+export async function GET(request) {
   try {
-    const { data, error } = await supabase
-      .from('invoices')
-      .select(`
-        *,
-        invoice_items (
-          id,
-          model,
-          imei,
-          price,
-          inventory_id
-        )
-      `)
-      .order('created_at', { ascending: false });
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
-    if (error) throw error;
+    if (id) {
+      // Fetch single invoice with buyer details
+      const { data, error } = await supabase
+        .from('invoices')
+        .select(`
+          *,
+          buyers (*),
+          invoice_items (
+            id,
+            model,
+            imei,
+            price,
+            cost,
+            inventory_id
+          )
+        `)
+        .eq('id', id)
+        .single();
 
-    return NextResponse.json({
-      success: true,
-      invoices: data || []
-    });
+      if (error) throw error;
+
+      return NextResponse.json({
+        success: true,
+        invoice: data
+      });
+    } else {
+      // Fetch all invoices
+      const { data, error } = await supabase
+        .from('invoices')
+        .select(`
+          *,
+          buyers (name, email, company),
+          invoice_items (
+            id,
+            model,
+            imei,
+            price,
+            inventory_id
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      return NextResponse.json({
+        success: true,
+        invoices: data || []
+      });
+    }
   } catch (error) {
     console.error('Error fetching invoices:', error);
     return NextResponse.json(
@@ -49,57 +88,76 @@ export async function POST(request) {
       );
     }
 
-    const supabaseAdmin = supabase;
+    // Validate invoice data
+    const validationErrors = validateInvoiceData(invoice);
+    if (validationErrors.length > 0) {
+      return NextResponse.json(
+        { success: false, error: validationErrors.join('; ') },
+        { status: 400 }
+      );
+    }
+
+    // Sanitize and structure the invoice data
+    const sanitizedInvoice = sanitizeInvoiceData(invoice);
 
     // Generate invoice number
     const invoiceNumber = `INV-${Date.now()}`;
 
-    // Calculate total
-    const totalAmount = invoice.items.reduce((sum, item) => sum + parseFloat(item.price), 0);
+    // Create invoice payload with all required fields
+    const invoicePayload = {
+      invoice_number: invoiceNumber,
+      buyer_id: sanitizedInvoice.buyer_id,
+      subtotal: sanitizedInvoice.subtotal,
+      total: sanitizedInvoice.total,
+      total_amount: sanitizedInvoice.total_amount, // Keep for backwards compatibility
+      notes: sanitizedInvoice.notes,
+      payment_terms: sanitizedInvoice.payment_terms,
+      shipping_method: sanitizedInvoice.shipping_method,
+      status: sanitizedInvoice.status,
+      due_date: sanitizedInvoice.due_date
+    };
 
-    // Create invoice with structured address
-    const { data: invoiceData, error: invoiceError } = await supabaseAdmin
+    // Add buyer details if no buyer_id (for backwards compatibility)
+    if (!sanitizedInvoice.buyer_id) {
+      invoicePayload.buyer_name = sanitizedInvoice.buyer_name;
+      invoicePayload.buyer_email = sanitizedInvoice.buyer_email;
+      invoicePayload.buyer_phone = sanitizedInvoice.buyer_phone;
+      invoicePayload.buyer_address = sanitizedInvoice.buyer_address;
+      invoicePayload.buyer_city = sanitizedInvoice.buyer_city;
+      invoicePayload.buyer_state = sanitizedInvoice.buyer_state;
+      invoicePayload.buyer_zip = sanitizedInvoice.buyer_zip;
+      invoicePayload.buyer_country = sanitizedInvoice.buyer_country;
+    }
+
+    // Create invoice
+    const { data: invoiceData, error: invoiceError } = await supabase
       .from('invoices')
-      .insert({
-        invoice_number: invoiceNumber,
-        buyer_name: invoice.buyer_name,
-        buyer_email: invoice.buyer_email,
-        buyer_phone: invoice.buyer_phone,
-        buyer_address_line1: invoice.buyer_address_line1,
-        buyer_address_line2: invoice.buyer_address_line2,
-        buyer_city: invoice.buyer_city,
-        buyer_state: invoice.buyer_state,
-        buyer_zip: invoice.buyer_zip,
-        buyer_country: invoice.buyer_country || 'US',
-        total_amount: totalAmount,
-        notes: invoice.notes,
-        status: invoice.status || 'draft',
-        due_date: invoice.due_date || null
-      })
+      .insert(invoicePayload)
       .select()
       .single();
 
     if (invoiceError) throw invoiceError;
 
-    // Create invoice items
-    const itemsData = invoice.items.map(item => ({
+    // Create invoice items with sanitized data
+    const itemsData = sanitizedInvoice.items.map(item => ({
       invoice_id: invoiceData.id,
       inventory_id: item.inventory_id,
       model: item.model,
       imei: item.imei,
-      price: item.price
+      price: item.price,
+      cost: item.cost
     }));
 
-    const { error: itemsError } = await supabaseAdmin
+    const { error: itemsError } = await supabase
       .from('invoice_items')
       .insert(itemsData);
 
     if (itemsError) throw itemsError;
 
     // Update inventory items to sold status
-    for (const item of invoice.items) {
+    for (const item of sanitizedInvoice.items) {
       if (item.inventory_id) {
-        await supabaseAdmin
+        await supabase
           .from('inventory')
           .update({
             status: 'sold',
@@ -126,6 +184,65 @@ export async function POST(request) {
   }
 }
 
+// DELETE - Delete invoice
+export async function DELETE(request) {
+  try {
+    const body = await request.json();
+    const { walletAddress, id } = body;
+
+    // Verify admin
+    if (walletAddress !== ADMIN_WALLET) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 403 }
+      );
+    }
+
+    // First, restore inventory items to in_stock status
+    const { data: invoiceItems } = await supabase
+      .from('invoice_items')
+      .select('inventory_id')
+      .eq('invoice_id', id);
+
+    if (invoiceItems && invoiceItems.length > 0) {
+      for (const item of invoiceItems) {
+        if (item.inventory_id) {
+          await supabase
+            .from('inventory')
+            .update({
+              status: 'in_stock',
+              price_sold: null,
+              sold_at: null
+            })
+            .eq('id', item.inventory_id);
+        }
+      }
+    }
+
+    // Delete invoice items first (due to foreign key)
+    await supabase
+      .from('invoice_items')
+      .delete()
+      .eq('invoice_id', id);
+
+    // Delete the invoice
+    const { error } = await supabase
+      .from('invoices')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting invoice:', error);
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
 // PATCH - Update invoice
 export async function PATCH(request) {
   try {
@@ -140,14 +257,12 @@ export async function PATCH(request) {
       );
     }
 
-    const supabaseAdmin = supabase;
-
     // If marking as paid, set paid_at
     if (updates.status === 'paid' && !updates.paid_at) {
       updates.paid_at = new Date().toISOString();
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from('invoices')
       .update(updates)
       .eq('id', id)
@@ -169,38 +284,3 @@ export async function PATCH(request) {
   }
 }
 
-// DELETE - Delete invoice
-export async function DELETE(request) {
-  try {
-    const body = await request.json();
-    const { walletAddress, id } = body;
-
-    // Verify admin
-    if (walletAddress !== ADMIN_WALLET) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 403 }
-      );
-    }
-
-    const supabaseAdmin = supabase;
-
-    // Delete invoice (cascade will delete items)
-    const { error } = await supabaseAdmin
-      .from('invoices')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
-
-    return NextResponse.json({
-      success: true
-    });
-  } catch (error) {
-    console.error('Error deleting invoice:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
-  }
-}

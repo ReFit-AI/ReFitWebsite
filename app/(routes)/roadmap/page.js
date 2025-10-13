@@ -12,160 +12,163 @@ import {
   Target,
   Trophy,
   BarChart3,
-  Coins
+  Coins,
+  Package,
+  Layers,
+  ShoppingCart
 } from 'lucide-react'
 
 export default function RoadmapPage() {
   const phases = [
     {
       phase: "Phase 1",
-      title: "Prove It Works",
-      timeline: "Today - Week 4",
-      status: "in-progress",
-      goal: "$10K Pool",
-      description: "Simple phone arbitrage. Buy local, flip wholesale, pay LPs 2% weekly.",
+      title: "Build The Infrastructure",
+      timeline: "Q1 2025 - COMPLETE",
+      status: "live",
+      goal: "Operating System Live",
+      description: "Built end-to-end inventory management, invoicing, and shipping infrastructure. Processed real transactions to validate the model.",
       items: [
         {
-          title: "Live Deposits",
-          description: "Pool is live. Deposit USDC, earn 2% weekly from phone arbitrage profits. First 100 get 1.5x RFT bonus.",
-          icon: DollarSign,
+          title: "Inventory Management System",
+          description: "Full CRUD system for tracking phones from purchase to sale. Real-time status updates, margin calculations, and performance analytics.",
+          icon: Package,
           status: "live",
-          metric: "104% APY"
+          metric: "29 units tracked"
         },
         {
-          title: "Manual Phone Flipping",
-          description: "Buy phones at market rate locally. Sell to wholesale buyers same-day at 10-20% margins. Keep it simple.",
-          icon: Target,
+          title: "Invoice & Shipping System",
+          description: "Generate professional invoices with QR codes, create shipping labels, track shipments. Full integration with real buyers.",
+          icon: ShoppingCart,
           status: "live",
-          metric: "$2.3M proven revenue"
+          metric: "Automated workflows"
         },
         {
-          title: "Weekly Distributions",
-          description: "Every Monday at noon - 2% returns distributed to all depositors automatically. Transparent, consistent.",
-          icon: TrendingUp,
+          title: "Business Analytics Dashboard",
+          description: "Real-time metrics on revenue, profit, margins, inventory turnover. Apple-inspired design with glassmorphic UI.",
+          icon: BarChart3,
           status: "live",
-          metric: "Every Monday"
+          metric: "$12K+ tracked"
         },
         {
-          title: "Early Bird Bonus",
-          description: "First 100 depositors get 1.5x RFT tokens. Lock in founder status while slots remain.",
+          title: "Admin Authentication",
+          description: "Wallet-based admin access with proper security. Only authorized wallet can access backend operations.",
           icon: Zap,
           status: "live",
-          metric: "Limited slots"
+          metric: "Solana secured"
         }
       ]
     },
     {
       phase: "Phase 2",
-      title: "Scale Capital",
-      timeline: "Weeks 5-12",
-      status: "upcoming",
-      goal: "$100K Pool",
-      description: "More capital = better deals = higher margins. Compound the advantage.",
+      title: "Launch The Pool",
+      timeline: "Q2 2025",
+      status: "in-progress",
+      goal: "$50K Initial Pool",
+      description: "Open capital pool for LPs. Use proven infrastructure to deploy capital at scale. Start weekly distributions from real profits.",
       items: [
         {
-          title: "Grow The Pool",
-          description: "Reach $100K in deposits. More buying power means I can negotiate better deals and take on larger opportunities.",
-          icon: BarChart3,
+          title: "Pool Smart Contract",
+          description: "Solana program for USDC deposits, withdrawal queue, and weekly distribution logic. Audited, secure, transparent.",
+          icon: Layers,
           status: "upcoming",
-          metric: "$100K target"
+          metric: "Solana native"
         },
         {
-          title: "Better Sourcing",
-          description: "Build relationships with more sellers. Craigslist, OfferUp, Facebook Marketplace. Volume creates consistency.",
-          icon: Users,
-          status: "upcoming",
-          metric: "10+ weekly deals"
-        },
-        {
-          title: "Multiple Buyers",
-          description: "3-5 wholesale buyers compete for inventory. Better prices, faster flips, less risk. Market competition works for us.",
-          icon: TrendingUp,
-          status: "upcoming",
-          metric: "Same-day flips"
-        },
-        {
-          title: "Sustainable Income",
-          description: "Pool generates $10K+/month for me personally while paying LPs 2% weekly. Sustainable, honest business.",
+          title: "LP Deposits Live",
+          description: "Public pool goes live. Deposit USDC, earn 2% weekly from phone arbitrage profits. First 100 depositors get 1.5x RFT bonus.",
           icon: DollarSign,
           status: "upcoming",
-          metric: "Family supported"
+          metric: "104% APY target"
+        },
+        {
+          title: "Weekly Distributions",
+          description: "Every Monday - automated 2% returns to all LPs. Using existing systems to buy phones, flip to wholesale, distribute profits.",
+          icon: TrendingUp,
+          status: "upcoming",
+          metric: "Automated payouts"
+        },
+        {
+          title: "RFT Accumulation",
+          description: "LPs earn RFT tokens for every dollar deposited. Early supporters get 1.5x rate. Tokens accumulate until Phase 4 launch.",
+          icon: Coins,
+          status: "upcoming",
+          metric: "1-1.5x multiplier"
         }
       ]
     },
     {
       phase: "Phase 3",
-      title: "Automate & Expand",
-      timeline: "Months 3-6",
+      title: "Scale The Operations",
+      timeline: "Q3 2025",
       status: "upcoming",
-      goal: "$500K Pool",
-      description: "Keep the model simple, just do it better and faster.",
+      goal: "$250K Pool",
+      description: "More capital = better deals = higher margins. Build team, improve systems, increase volume. Prove the model at scale.",
       items: [
         {
-          title: "Hire Help",
-          description: "Bring on someone to handle logistics - pickups, testing, shipping. I focus on deals and pool management.",
-          icon: Users,
-          status: "upcoming",
-          metric: "First hire"
-        },
-        {
-          title: "Better Systems",
-          description: "Inventory tracking, automatic buyer matching, streamlined workflows. Same model, less friction.",
-          icon: Target,
-          status: "upcoming",
-          metric: "2x efficiency"
-        },
-        {
-          title: "Consistent Volume",
-          description: "20-30 phones weekly. Predictable margins. Reliable returns for LPs. The boring path to success.",
+          title: "Grow Pool to $250K",
+          description: "More buying power means better wholesale relationships, bulk deals, and negotiating leverage. Capital compounds the advantage.",
           icon: BarChart3,
           status: "upcoming",
-          metric: "$50K weekly volume"
+          metric: "$250K target"
         },
         {
-          title: "Track Record",
-          description: "6 months of consistent 2% weekly returns. Proof the model works. Trust is earned, not claimed.",
+          title: "Hire Operations Team",
+          description: "Bring on help for pickups, testing, shipping. Focus founder time on deal sourcing and pool management.",
+          icon: Users,
+          status: "upcoming",
+          metric: "2-3 team members"
+        },
+        {
+          title: "Multiple Buyer Network",
+          description: "3-5 wholesale buyers competing for inventory. Better prices, faster flips, reduced risk. Market competition works for LPs.",
+          icon: Target,
+          status: "upcoming",
+          metric: "Same-day liquidity"
+        },
+        {
+          title: "Consistent Track Record",
+          description: "26+ weeks of 2% returns. Proof the model works at scale. Build trust through performance, not promises.",
           icon: Trophy,
           status: "upcoming",
-          metric: "26 distributions"
+          metric: "6+ months live"
         }
       ]
     },
     {
       phase: "Phase 4",
-      title: "Token Launch",
-      timeline: "Month 6+",
+      title: "Launch The Marketplace",
+      timeline: "Q4 2025",
       status: "upcoming",
-      goal: "RFT Goes Live",
-      description: "Reward early believers. Let the community own the upside.",
+      goal: "Orderbook Goes Live",
+      description: "Transform from pool-only model to full marketplace. Let anyone trade phones wholesale with on-chain settlement. This is where it gets interesting.",
       items: [
         {
+          title: "Public Orderbook",
+          description: "DEX-style interface for wholesale phone trading. Buyers and sellers post orders, Solana handles settlement. Real-time price discovery.",
+          icon: ShoppingCart,
+          status: "upcoming",
+          metric: "Live marketplace"
+        },
+        {
+          title: "Pool Becomes Liquidity Provider",
+          description: "LP capital automatically deployed to capture arbitrage on the orderbook. Pool acts as market maker, earns from spreads + margins.",
+          icon: Layers,
+          status: "upcoming",
+          metric: "Automated capital"
+        },
+        {
+          title: "Transaction Fee Model",
+          description: "Marketplace takes 2-3% per trade. Fees distributed to RFT holders. Volume creates sustainable revenue beyond arbitrage profits.",
+          icon: DollarSign,
+          status: "upcoming",
+          metric: "Protocol revenue"
+        },
+        {
           title: "RFT Token Launch",
-          description: "Convert accumulated RFT points to actual tokens. Early depositors have 6 months of accumulation at 1-1.5x rate.",
+          description: "Convert accumulated points to actual tokens. List on Raydium/Jupiter. Early LPs have 6-12 months of accumulation at 1.5x rate.",
           icon: Coins,
           status: "upcoming",
           metric: "Airdrop to LPs"
-        },
-        {
-          title: "Liquidity Pool",
-          description: "List RFT on Raydium/Jupiter. Let the market decide value. Early LPs have the most tokens.",
-          icon: TrendingUp,
-          status: "upcoming",
-          metric: "Public trading"
-        },
-        {
-          title: "Protocol Governance",
-          description: "RFT holders vote on pool parameters, fee structure, expansion plans. You own what you helped build.",
-          icon: Users,
-          status: "upcoming",
-          metric: "Decentralized"
-        },
-        {
-          title: "Revenue Share",
-          description: "Platform fees (beyond LP returns) distributed to RFT holders. Real yield + token appreciation.",
-          icon: DollarSign,
-          status: "upcoming",
-          metric: "Hold to earn"
         }
       ]
     }
@@ -214,21 +217,21 @@ export default function RoadmapPage() {
           className="text-center mb-16 max-w-4xl mx-auto"
         >
           <h1 className="text-5xl sm:text-6xl font-bold mb-6">
-            <span className="block text-white">Phone Arbitrage</span>
+            <span className="block text-white">Building The First</span>
             <span className="block bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
-              Meets DeFi
+              On-Chain RWA Marketplace
             </span>
           </h1>
           <p className="text-xl text-gray-300 mb-4">
-            Simple business model. Crazy returns. Real profits.
+            Capital layer + Trading layer. DeFi meets real-world arbitrage.
           </p>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            I buy phones locally at market rate, flip them to wholesale buyers same-day at 10-20% margins.
-            You get 2% weekly returns from the profits. That&apos;s it.
+            We built the infrastructure. Now we&apos;re launching the pool. Then we open the marketplace.
+            Every phase builds on the last.
           </p>
         </motion.div>
 
-        {/* The Truth Box */}
+        {/* The Vision Box */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -237,24 +240,27 @@ export default function RoadmapPage() {
         >
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl mb-2">📱</div>
-              <h3 className="font-bold mb-2">I Buy Phones</h3>
-              <p className="text-sm text-gray-400">Local sellers. Fair market prices. Cash or USDC.</p>
+              <div className="text-4xl mb-2">💰</div>
+              <h3 className="font-bold mb-2">Pool Provides Capital</h3>
+              <p className="text-sm text-gray-400">LPs deposit USDC. We deploy it into proven phone arbitrage. 2% weekly returns from real profits.</p>
             </div>
             <div>
-              <div className="text-4xl mb-2">💵</div>
-              <h3 className="font-bold mb-2">Flip Same-Day</h3>
-              <p className="text-sm text-gray-400">Wholesale buyers pay 10-20% over what I paid. Proven model.</p>
+              <div className="text-4xl mb-2">📊</div>
+              <h3 className="font-bold mb-2">Marketplace Scales Volume</h3>
+              <p className="text-sm text-gray-400">DEX-style orderbook for wholesale trading. Anyone can buy/sell. Solana handles settlement. Pool acts as liquidity provider.</p>
             </div>
             <div>
-              <div className="text-4xl mb-2">📈</div>
-              <h3 className="font-bold mb-2">You Get 2% Weekly</h3>
-              <p className="text-sm text-gray-400">104% APY from real profits. Plus RFT tokens for early believers.</p>
+              <div className="text-4xl mb-2">🔄</div>
+              <h3 className="font-bold mb-2">Flywheel Effect</h3>
+              <p className="text-sm text-gray-400">More capital → better deals → more volume → higher fees → bigger returns → attracts more capital.</p>
             </div>
           </div>
           <div className="text-center mt-6 pt-6 border-t border-gray-800">
-            <p className="text-yellow-400 font-bold text-lg">
-              ⚡ LIVE NOW - First 100 depositors get 1.5x RFT bonus
+            <p className="text-green-400 font-bold text-lg mb-2">
+              ✅ Phase 1 Complete - Infrastructure is live
+            </p>
+            <p className="text-sm text-gray-400">
+              29 phones processed • $12K revenue • 13.6% margins • Full inventory/invoicing system operational
             </p>
           </div>
         </motion.div>
@@ -276,8 +282,10 @@ export default function RoadmapPage() {
                 {/* Phase marker */}
                 <div className="absolute left-0 top-0 w-16 h-16 flex items-center justify-center">
                   <div className={`w-4 h-4 rounded-full ${
-                    phase.status === 'in-progress'
+                    phase.status === 'live'
                       ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-lg shadow-green-500/50'
+                      : phase.status === 'in-progress'
+                      ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg shadow-yellow-500/50'
                       : 'bg-gradient-to-br from-gray-600 to-gray-700'
                   }`} />
                 </div>
@@ -290,8 +298,14 @@ export default function RoadmapPage() {
                       <span className="px-3 py-1 bg-gradient-to-r from-purple-600/20 to-green-600/20 border border-purple-500/50 rounded-full text-sm font-bold text-purple-400">
                         {phase.timeline}
                       </span>
-                      <span className="px-3 py-1 bg-green-900/30 border border-green-500/50 rounded-full text-sm font-bold text-green-400">
-                        Goal: {phase.goal}
+                      <span className={`px-3 py-1 border rounded-full text-sm font-bold ${
+                        phase.status === 'live'
+                          ? 'bg-green-900/30 border-green-500/50 text-green-400'
+                          : phase.status === 'in-progress'
+                          ? 'bg-yellow-900/30 border-yellow-500/50 text-yellow-400'
+                          : 'bg-gray-900/30 border-gray-500/50 text-gray-400'
+                      }`}>
+                        {phase.goal}
                       </span>
                     </div>
                     <h3 className="text-xl text-gray-300 mb-2">{phase.title}</h3>
@@ -359,76 +373,110 @@ export default function RoadmapPage() {
           </div>
         </div>
 
-        {/* Bottom CTA */}
+        {/* Why This Works Box */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-20 text-center"
+          className="mt-20"
         >
-          <div className="max-w-3xl mx-auto p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 to-green-500/10 border border-gray-700">
-            <h3 className="text-2xl font-bold mb-4">The Math Is Dead Simple</h3>
-            <div className="bg-black/50 rounded-lg p-6 mb-6 font-mono text-sm text-left max-w-xl mx-auto">
-              <div className="text-gray-400 mb-2">You deposit: <span className="text-white font-bold">$5,000 USDC</span></div>
-              <div className="text-gray-400 mb-2">Weekly return: <span className="text-green-400 font-bold">$100 (2%)</span></div>
-              <div className="text-gray-400 mb-2">Annual return: <span className="text-green-400 font-bold">$5,200 (104% APY)</span></div>
-              <div className="text-gray-400 mb-4">RFT tokens: <span className="text-purple-400 font-bold">5,000-7,500 RFT (accumulating weekly)</span></div>
-              <div className="border-t border-gray-700 pt-3 mt-3">
-                <div className="text-yellow-400 font-bold">Real profits from phone arbitrage. Not promises.</div>
-              </div>
-            </div>
+          <div className="max-w-4xl mx-auto p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 to-green-500/10 border border-gray-700">
+            <h3 className="text-2xl font-bold mb-6 text-center">Why This Model Works</h3>
 
-            <div className="mb-6">
-              <h4 className="text-lg font-semibold mb-4 text-gray-300">Why I Can Offer This</h4>
-              <div className="grid md:grid-cols-3 gap-4 text-left">
-                <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
-                  <div className="text-2xl font-bold text-purple-400 mb-1">$2.3M</div>
-                  <p className="text-sm text-gray-400">
-                    Revenue already generated. This isn&apos;t theoretical.
-                  </p>
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
+                <h4 className="text-lg font-semibold mb-3 text-purple-400">Traditional Arbitrage Problem</h4>
+                <p className="text-sm text-gray-400 mb-3">
+                  Individual traders are capital-constrained. You can only buy what you can afford. Miss deals when cash is tied up.
+                </p>
+                <div className="text-xs text-gray-500">
+                  • Limited buying power<br/>
+                  • Can&apos;t scale operations<br/>
+                  • Miss time-sensitive deals
                 </div>
-                <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
-                  <div className="text-2xl font-bold text-green-400 mb-1">10-20%</div>
-                  <p className="text-sm text-gray-400">
-                    Margins on every phone. I take 20%, LPs get 80% as 2% weekly.
-                  </p>
-                </div>
-                <div className="p-4 bg-black/50 rounded-lg border border-gray-800">
-                  <div className="text-2xl font-bold text-pink-400 mb-1">Same-Day</div>
-                  <p className="text-sm text-gray-400">
-                    Flips to wholesale. No inventory risk. Fast capital rotation.
-                  </p>
+              </div>
+
+              <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
+                <h4 className="text-lg font-semibold mb-3 text-green-400">Pool + Marketplace Solution</h4>
+                <p className="text-sm text-gray-400 mb-3">
+                  Aggregate capital from LPs. Deploy at scale. Eventually open marketplace for anyone to trade. Pool becomes liquidity provider.
+                </p>
+                <div className="text-xs text-gray-500">
+                  • Unlimited buying power<br/>
+                  • Capture every deal<br/>
+                  • Marketplace fees create moat
                 </div>
               </div>
             </div>
 
-            <div className="text-center mb-6">
-              <p className="text-lg font-bold text-white mb-2">
-                No complicated DeFi. No validators. No BS.
-              </p>
-              <p className="text-sm text-gray-400">
-                Just phone arbitrage that actually works + a liquidity pool that pays you weekly.
-              </p>
+            <div className="bg-gradient-to-br from-purple-900/30 to-green-900/30 rounded-lg p-6 border border-purple-500/30 mb-6">
+              <h4 className="text-lg font-semibold mb-3 text-center">The Flywheel</h4>
+              <div className="flex items-center justify-center gap-3 flex-wrap text-sm">
+                <span className="px-3 py-1 bg-purple-500/20 rounded-lg border border-purple-500/30">More Capital</span>
+                <span className="text-gray-500">→</span>
+                <span className="px-3 py-1 bg-blue-500/20 rounded-lg border border-blue-500/30">Better Deals</span>
+                <span className="text-gray-500">→</span>
+                <span className="px-3 py-1 bg-green-500/20 rounded-lg border border-green-500/30">Higher Volume</span>
+                <span className="text-gray-500">→</span>
+                <span className="px-3 py-1 bg-yellow-500/20 rounded-lg border border-yellow-500/30">More Fees</span>
+                <span className="text-gray-500">→</span>
+                <span className="px-3 py-1 bg-pink-500/20 rounded-lg border border-pink-500/30">Bigger Returns</span>
+                <span className="text-gray-500">→</span>
+                <span className="px-3 py-1 bg-purple-500/20 rounded-lg border border-purple-500/30">Attracts More Capital</span>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/stake"
-                className="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 group"
-              >
-                Start Earning 2% Weekly
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="/stats"
-                className="inline-flex items-center justify-center px-8 py-3 bg-gray-800 border border-gray-700 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-300"
-              >
-                View Live Stats
-              </Link>
+            <div className="bg-black/50 rounded-lg p-6 mb-6">
+              <h4 className="text-lg font-semibold mb-4">What Makes This Defensible</h4>
+              <div className="grid md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <div className="text-2xl font-bold text-purple-400 mb-1">Infrastructure</div>
+                  <p className="text-gray-400">
+                    Built real inventory/invoicing system. Not vaporware. Actual proven technology.
+                  </p>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-400 mb-1">Network Effects</div>
+                  <p className="text-gray-400">
+                    More buyers/sellers → better prices → more participants. Marketplace compounds.
+                  </p>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-pink-400 mb-1">Capital Moat</div>
+                  <p className="text-gray-400">
+                    Pool LPs get first access to deals. Marketplace fees create sustainable revenue.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="mt-6 text-xs text-gray-500">
-              First 100 depositors get 1.5x RFT bonus. Early supporters get rewarded.
+            <div className="text-center">
+              <p className="text-lg font-bold text-white mb-4">
+                This isn&apos;t just a pool. It&apos;s not just a marketplace.
+              </p>
+              <p className="text-base text-gray-300 mb-6">
+                It&apos;s the first liquidity layer for real-world arbitrage, with on-chain settlement and transparent price discovery.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/stake"
+                  className="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 group"
+                >
+                  Join The Pool (Coming Soon)
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/admin/analytics"
+                  className="inline-flex items-center justify-center px-8 py-3 bg-gray-800 border border-gray-700 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-300"
+                >
+                  View Phase 1 Results
+                </Link>
+              </div>
+
+              <div className="mt-6 text-xs text-gray-500">
+                Pool launching Q2 2025 • First 100 depositors get 1.5x RFT bonus
+              </div>
             </div>
           </div>
         </motion.div>

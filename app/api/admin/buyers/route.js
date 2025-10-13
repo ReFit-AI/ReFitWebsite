@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { validateBuyerData, sanitizeBuyerData } from '@/lib/invoiceValidation';
 
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
@@ -43,6 +44,18 @@ export async function POST(request) {
       );
     }
 
+    // Validate buyer data
+    const validationErrors = validateBuyerData(buyer);
+    if (validationErrors.length > 0) {
+      return NextResponse.json(
+        { success: false, error: validationErrors.join('; ') },
+        { status: 400 }
+      );
+    }
+
+    // Sanitize buyer data
+    const sanitizedBuyer = sanitizeBuyerData(buyer);
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -50,7 +63,7 @@ export async function POST(request) {
 
     const { data, error } = await supabase
       .from('buyers')
-      .insert([buyer])
+      .insert([sanitizedBuyer])
       .select()
       .single();
 

@@ -131,46 +131,73 @@ export async function POST(request) {
       throw new Error(`Shipment creation failed: ${shipment.messages?.map(m => m.text).join(', ')}`);
     }
 
-    // Filter for USPS Priority Mail only
-    const rates = shipment.rates
-      .filter(rate => 
-        rate.provider === 'USPS' && 
-        rate.amount && 
-        rate.servicelevel &&
-        rate.servicelevel.name && 
-        rate.servicelevel.name.toLowerCase().includes('priority mail') &&
-        !rate.servicelevel.name.toLowerCase().includes('express')
-      )
+    // Filter for UPS Ground and USPS Priority Mail
+    const filteredRates = shipment.rates
+      .filter(rate => {
+        if (!rate.amount || !rate.servicelevel || !rate.servicelevel.name) return false;
+
+        const serviceName = rate.servicelevel.name.toLowerCase();
+
+        // Accept UPS Ground
+        if (rate.provider === 'UPS' && serviceName.includes('ground')) {
+          return true;
+        }
+
+        // Accept USPS Priority Mail (but not Express)
+        if (rate.provider === 'USPS' &&
+            serviceName.includes('priority mail') &&
+            !serviceName.includes('express')) {
+          return true;
+        }
+
+        return false;
+      })
       .map(rate => ({
         carrier: rate.provider,
-        service: 'Priority Mail',
+        service: rate.servicelevel.name,
         price: 0.00, // Show as free since we're covering shipping costs
         currency: rate.currency,
-        estimatedDays: rate.estimatedDays || rate.days || 3, // Priority Mail is typically 1-3 days
+        estimatedDays: rate.estimatedDays || rate.days ||
+                      (rate.provider === 'UPS' ? 5 : 3), // UPS Ground 1-5 days, USPS Priority 1-3 days
         rateId: rate.objectId, // Use real Shippo rate ID
         attributes: ['prepaid', 'insured', 'tracking'],
         actualCost: parseFloat(rate.amount) // Store actual cost for our records
-      }))
-      .slice(0, 1); // Only take the first Priority Mail option
+      }));
+
+    // Sort by: 1) Actual cost (cheapest first), 2) Speed (faster first if same cost)
+    const rates = filteredRates
+      .sort((a, b) => {
+        // First sort by actual cost
+        if (a.actualCost !== b.actualCost) {
+          return a.actualCost - b.actualCost;
+        }
+        // If same cost, prefer faster delivery
+        return a.estimatedDays - b.estimatedDays;
+      })
+      .slice(0, 2); // Show top 2 options (usually UPS Ground + USPS Priority)
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`Found ${rates.length} USPS rates`);
+      console.log(`Found ${rates.length} shipping rates (UPS Ground / USPS Priority)`);
+      rates.forEach(rate => {
+        console.log(`  - ${rate.carrier} ${rate.service}: $${rate.actualCost} (${rate.estimatedDays} days)`);
+      });
     }
 
-    // If no USPS Priority Mail rates found, use fallback
+    // If no rates found, use fallback
     if (rates.length === 0) {
-      console.warn('No USPS Priority Mail rates found, using fallback');
+      console.warn('No UPS Ground or USPS Priority Mail rates found, using fallback');
       return NextResponse.json({
         success: true,
         rates: [
           {
-            carrier: 'USPS',
-            service: 'Priority Mail',
+            carrier: 'UPS',
+            service: 'Ground',
             price: 0.00,
             currency: 'USD',
-            estimatedDays: 3,
-            rateId: 'fallback-priority',
-            attributes: ['prepaid', 'insured', 'tracking']
+            estimatedDays: 5,
+            rateId: 'fallback-ups-ground',
+            attributes: ['prepaid', 'insured', 'tracking'],
+            actualCost: 0.00
           }
         ]
       });

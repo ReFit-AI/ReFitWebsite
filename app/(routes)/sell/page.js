@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck } from 'lucide-react'
+import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'react-hot-toast'
@@ -63,8 +63,16 @@ export default function SellPage() {
     setCurrentStep(2)
   }
 
+  const [depositToPool, setDepositToPool] = useState(false)
+
   const handleAcceptQuote = () => {
     setCurrentStep(3)
+  }
+
+  const handleDepositToPool = () => {
+    // Redirect to stake page with pre-filled amount
+    const depositAmount = Math.floor(priceQuote?.usdPrice || 0)
+    window.location.href = `/stake?amount=${depositAmount}&source=tradein`
   }
 
   const handleSaveAddress = async (addressData) => {
@@ -250,6 +258,43 @@ export default function SellPage() {
                   <SeekerComparison tradeInValue={priceQuote.usdPrice} />
                 </div>
 
+                {/* Pool Deposit Option */}
+                <div className="bg-gradient-to-br from-purple-900/30 to-green-900/30 rounded-2xl p-6 border border-purple-500/30">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="w-6 h-6 text-purple-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-2">Earn Passive Income Instead?</h3>
+                      <p className="text-gray-300 mb-4">
+                        Instead of taking ${priceQuote.usdPrice} cash, deposit it into our liquidity pool
+                        and earn <span className="text-green-400 font-bold">8% monthly (104% APY)</span>.
+                        Your old phone becomes a passive income generator!
+                      </p>
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-black/30 rounded-lg p-3">
+                          <div className="text-sm text-gray-400">Monthly Returns</div>
+                          <div className="text-xl font-bold text-green-400">
+                            ${(priceQuote.usdPrice * 0.08).toFixed(0)}/mo
+                          </div>
+                        </div>
+                        <div className="bg-black/30 rounded-lg p-3">
+                          <div className="text-sm text-gray-400">Annual Returns</div>
+                          <div className="text-xl font-bold text-purple-400">
+                            ${(priceQuote.usdPrice * 1.04).toFixed(0)}/yr
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleDepositToPool}
+                        className="w-full py-3 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+                      >
+                        Deposit ${priceQuote.usdPrice} to Pool Instead
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button
                     onClick={() => setCurrentStep(1)}
@@ -261,7 +306,7 @@ export default function SellPage() {
                     onClick={handleAcceptQuote}
                     className="btn-primary flex-1"
                   >
-                    Accept Quote
+                    Ship Device for ${priceQuote.usdPrice} Cash
                   </button>
                 </div>
               </div>

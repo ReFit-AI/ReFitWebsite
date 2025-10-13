@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/navigation'
+import { useAdminAuth } from '@/hooks/useAdminAuth'
 import {
   FileText,
   Plus,
@@ -14,15 +14,14 @@ import {
   Truck,
   Package,
   FileDown,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Trash2
 } from 'lucide-react'
 import { downloadInvoicePDF, downloadInvoiceExcel } from '@/lib/invoiceExport'
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
-
 export default function AdminInvoicesPage() {
-  const { publicKey, connected } = useWallet()
   const router = useRouter()
+  const { isAdmin, authLoading, publicKey } = useAdminAuth()
   const [invoices, setInvoices] = useState([])
   const [inventory, setInventory] = useState([])
   const [fromAddress, setFromAddress] = useState(null)
@@ -30,32 +29,11 @@ export default function AdminInvoicesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
 
   useEffect(() => {
-    console.log('Invoice page - connected:', connected)
-    console.log('Invoice page - publicKey:', publicKey?.toString())
-    console.log('Invoice page - ADMIN_WALLET:', ADMIN_WALLET)
-
-    // Wait for wallet to fully initialize before redirecting
-    if (!connected) {
-      console.log('Waiting for wallet connection...')
-      return
+    if (!authLoading && isAdmin) {
+      setLoading(false)
+      fetchData()
     }
-
-    if (!publicKey) {
-      console.log('Redirecting: no publicKey')
-      router.push('/stake')
-      return
-    }
-
-    if (publicKey.toString() !== ADMIN_WALLET) {
-      console.log('Redirecting: wallet mismatch')
-      router.push('/stake')
-      return
-    }
-
-    console.log('Access granted, fetching data')
-    setLoading(false)
-    fetchData()
-  }, [connected, publicKey, router])
+  }, [authLoading, isAdmin])
 
   async function fetchData() {
     try {
@@ -70,6 +48,12 @@ export default function AdminInvoicesPage() {
         inventoryRes.json(),
         settingsRes.json()
       ])
+
+      console.log('Fetched invoices:', invoicesData)
+
+      if (!invoicesData.success) {
+        console.error('Failed to fetch invoices:', invoicesData.error)
+      }
 
       setInvoices(invoicesData.invoices || [])
       setInventory(inventoryData.inventory?.filter(i => i.status === 'in_stock') || [])
@@ -120,6 +104,31 @@ export default function AdminInvoicesPage() {
     } catch (error) {
       console.error('Error updating invoice:', error)
       alert('Failed to update invoice')
+    }
+  }
+
+  async function handleDeleteInvoice(invoiceId) {
+    if (!confirm('Are you sure you want to delete this invoice? This will restore inventory items to in_stock status.')) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/admin/invoices', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: publicKey.toString(),
+          id: invoiceId
+        })
+      })
+
+      if (!response.ok) throw new Error('Failed to delete')
+
+      alert('Invoice deleted successfully')
+      await fetchData()
+    } catch (error) {
+      console.error('Error deleting invoice:', error)
+      alert('Failed to delete invoice')
     }
   }
 
@@ -200,10 +209,13 @@ export default function AdminInvoicesPage() {
     downloadInvoiceExcel(invoice)
   }
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400" />
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">{authLoading ? 'Connecting wallet...' : 'Loading invoices...'}</p>
+        </div>
       </div>
     )
   }
@@ -241,11 +253,16 @@ export default function AdminInvoicesPage() {
           {invoices.map((invoice) => (
             <InvoiceCard
               key={invoice.id}
-              invoice={invoice}
+              invoice={{
+                ...invoice,
+                invoice_items: invoice.invoice_items || [],
+                buyer: invoice.buyer || invoice.buyers || null
+              }}
               onUpdateStatus={handleUpdateStatus}
               onDownloadPDF={handleDownloadPDF}
               onDownloadExcel={handleDownloadExcel}
               onCreateLabel={handleCreateLabel}
+              onDelete={handleDeleteInvoice}
             />
           ))}
 
@@ -270,20 +287,22 @@ export default function AdminInvoicesPage() {
   )
 }
 
-function InvoiceCard({ invoice, onUpdateStatus, onDownloadPDF, onDownloadExcel, onCreateLabel }) {
+function InvoiceCard({ invoice, onUpdateStatus, onDownloadPDF, onDownloadExcel, onCreateLabel, onDelete }) {
   const [creatingLabel, setCreatingLabel] = useState(false)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
 
   const statusConfig = {
+    pending: { icon: Clock, color: 'yellow', label: 'Pending' },
     draft: { icon: Clock, color: 'gray', label: 'Draft' },
     finalized: { icon: CheckCircle, color: 'purple', label: 'Finalized' },
     sent: { icon: Send, color: 'blue', label: 'Sent' },
     paid: { icon: CheckCircle, color: 'green', label: 'Paid' },
+    shipped: { icon: Truck, color: 'indigo', label: 'Shipped' },
     cancelled: { icon: XCircle, color: 'red', label: 'Cancelled' }
   }
 
-  const config = statusConfig[invoice.status]
-  const StatusIcon = config.icon
+  const config = statusConfig[invoice.status] || statusConfig.pending
+  const StatusIcon = config?.icon || Clock
 
   async function handleCreateLabel() {
     setCreatingLabel(true)
@@ -294,12 +313,15 @@ function InvoiceCard({ invoice, onUpdateStatus, onDownloadPDF, onDownloadExcel, 
     }
   }
 
+  const router = useRouter()
+
   return (
     <div className="bg-gray-900 rounded-lg border border-gray-800 p-6">
       <div className="flex items-start justify-between mb-4">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-xl font-bold">{invoice.invoice_number}</h3>
+            <h3 className="text-xl font-bold cursor-pointer hover:text-blue-400 transition-colors"
+                onClick={() => router.push(`/admin/invoices/${invoice.id}`)}>{invoice.invoice_number}</h3>
             <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 bg-${config.color}-400/10 text-${config.color}-400 border border-${config.color}-400/20`}>
               <StatusIcon className="w-3 h-3" />
               {config.label}
@@ -312,16 +334,22 @@ function InvoiceCard({ invoice, onUpdateStatus, onDownloadPDF, onDownloadExcel, 
         </div>
 
         <div className="text-right">
-          <div className="text-2xl font-bold">${parseFloat(invoice.total_amount).toFixed(2)}</div>
+          <div className="text-2xl font-bold">
+            ${parseFloat(invoice.total || invoice.total_amount || invoice.subtotal || 0).toFixed(2)}
+          </div>
           <div className="text-sm text-gray-400">{invoice.invoice_items?.length || 0} items</div>
         </div>
       </div>
 
-      {invoice.buyer_name && (
+      {(invoice.buyer_name || invoice.buyer?.name) && (
         <div className="mb-4 p-3 bg-gray-800 rounded-lg">
-          <div className="text-sm font-medium">{invoice.buyer_name}</div>
-          {invoice.buyer_email && (
-            <div className="text-xs text-gray-400">{invoice.buyer_email}</div>
+          <div className="text-sm font-medium">
+            {invoice.buyer?.name || invoice.buyer_name}
+          </div>
+          {(invoice.buyer?.email || invoice.buyer_email) && (
+            <div className="text-xs text-gray-400">
+              {invoice.buyer?.email || invoice.buyer_email}
+            </div>
           )}
         </div>
       )}
@@ -384,6 +412,15 @@ function InvoiceCard({ invoice, onUpdateStatus, onDownloadPDF, onDownloadExcel, 
 
       {/* Actions */}
       <div className="flex gap-2 pt-4 border-t border-gray-800">
+        {/* View Details */}
+        <button
+          onClick={() => router.push(`/admin/invoices/${invoice.id}`)}
+          className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+        >
+          <FileText className="w-4 h-4" />
+          View Details
+        </button>
+
         {/* Download Menu */}
         <div className="relative flex-1">
           <button
@@ -438,7 +475,7 @@ function InvoiceCard({ invoice, onUpdateStatus, onDownloadPDF, onDownloadExcel, 
         {/* Finalized without label: Show Create Label button */}
         {invoice.status === 'finalized' && !invoice.tracking_number && (
           <button
-            onClick={handleCreateLabel}
+            onClick={() => handleCreateLabel(invoice)}
             disabled={creatingLabel}
             className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"
           >
@@ -466,6 +503,15 @@ function InvoiceCard({ invoice, onUpdateStatus, onDownloadPDF, onDownloadExcel, 
             Mark Paid
           </button>
         )}
+
+        {/* Delete button - always visible */}
+        <button
+          onClick={() => onDelete(invoice.id)}
+          className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+        >
+          <Trash2 className="w-4 h-4" />
+          Delete
+        </button>
       </div>
     </div>
   )

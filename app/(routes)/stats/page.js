@@ -106,23 +106,30 @@ export default function StatsPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // Calculate time to next Monday noon
+  // Calculate time to first Monday of next month
   useEffect(() => {
-    const calculateTimeToMonday = () => {
+    const calculateTimeToFirstMonday = () => {
       const now = new Date()
-      const monday = new Date()
+      const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
 
-      // Set to next Monday
-      const daysUntilMonday = (8 - now.getDay()) % 7 || 7
-      monday.setDate(now.getDate() + daysUntilMonday)
-      monday.setHours(12, 0, 0, 0) // Noon
-
-      // If it's already past Monday noon this week, go to next week
-      if (monday <= now) {
-        monday.setDate(monday.getDate() + 7)
+      // Find first Monday of next month
+      let firstMonday = new Date(nextMonth)
+      while (firstMonday.getDay() !== 1) {
+        firstMonday.setDate(firstMonday.getDate() + 1)
       }
+      firstMonday.setHours(12, 0, 0, 0) // Noon
 
-      const diff = monday - now
+      // If we're past the first Monday of current month, show next month's
+      const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+      let thisMonthFirstMonday = new Date(thisMonth)
+      while (thisMonthFirstMonday.getDay() !== 1) {
+        thisMonthFirstMonday.setDate(thisMonthFirstMonday.getDate() + 1)
+      }
+      thisMonthFirstMonday.setHours(12, 0, 0, 0)
+
+      const targetDate = now < thisMonthFirstMonday ? thisMonthFirstMonday : firstMonday
+
+      const diff = targetDate - now
       const days = Math.floor(diff / (1000 * 60 * 60 * 24))
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
@@ -130,8 +137,8 @@ export default function StatsPage() {
       setTimeToDistribution(`${days}d ${hours}h ${minutes}m`)
     }
 
-    calculateTimeToMonday()
-    const timer = setInterval(calculateTimeToMonday, 60000) // Update every minute
+    calculateTimeToFirstMonday()
+    const timer = setInterval(calculateTimeToFirstMonday, 60000) // Update every minute
     return () => clearInterval(timer)
   }, [])
 
@@ -197,7 +204,7 @@ export default function StatsPage() {
             </div>
             <div className="text-sm text-gray-400">Total Value Locked</div>
             <div className="mt-2 text-xs text-green-400">
-              +2% weekly returns
+              +8% monthly returns
             </div>
           </motion.div>
 
@@ -221,7 +228,7 @@ export default function StatsPage() {
             </div>
           </motion.div>
 
-          {/* Weekly Yield */}
+          {/* Monthly Yield */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -233,9 +240,9 @@ export default function StatsPage() {
               <span className="text-xs text-purple-400 bg-purple-900/30 px-2 py-1 rounded">FIXED</span>
             </div>
             <div className="text-3xl font-bold mb-1">
-              2.00%
+              8.00%
             </div>
-            <div className="text-sm text-gray-400">Weekly Returns</div>
+            <div className="text-sm text-gray-400">Monthly Returns</div>
             <div className="mt-2 text-xs text-purple-400">
               104% APY
             </div>
@@ -257,7 +264,7 @@ export default function StatsPage() {
             </div>
             <div className="text-sm text-gray-400">Next Distribution</div>
             <div className="mt-2 text-xs text-yellow-400">
-              Every Monday
+              First Monday of month
             </div>
           </motion.div>
         </div>
@@ -349,11 +356,11 @@ export default function StatsPage() {
                   distributions.slice(0, 5).map((dist) => (
                     <div key={dist.id} className="flex items-center justify-between">
                       <div className="text-sm">
-                        Week {dist.week_number}
+                        Month {dist.week_number}
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold text-green-400">
-                          2.00%
+                          8.00%
                         </span>
                         <span className="text-xs px-2 py-1 bg-green-900/30 text-green-400 rounded">
                           ✓
@@ -392,7 +399,7 @@ export default function StatsPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-sm">Weekly Distributions</span>
+                  <span className="text-sm">Monthly Distributions</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-green-500 rounded-full" />
@@ -411,7 +418,7 @@ export default function StatsPage() {
                 className="block w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-center font-bold hover:shadow-xl hover:shadow-purple-500/20 transition-all"
               >
                 <div className="flex items-center justify-center gap-2">
-                  Start Earning 2% Weekly
+                  Start Earning 8% Monthly
                   <ArrowUpRight className="w-5 h-5" />
                 </div>
                 {bonusSlots > 0 && (

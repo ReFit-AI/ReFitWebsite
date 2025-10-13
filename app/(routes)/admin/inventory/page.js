@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/navigation'
+import { useAdminAuth } from '@/hooks/useAdminAuth'
 import {
   Package,
   Plus,
@@ -11,33 +11,29 @@ import {
   Trash2,
   Save,
   X,
-  Download
+  Download,
+  AlertCircle,
+  Filter,
+  FileText,
+  ChevronDown
 } from 'lucide-react'
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
-
 export default function AdminInventoryPage() {
-  const { publicKey, connected } = useWallet()
   const router = useRouter()
+  const { isAdmin, authLoading, publicKey } = useAdminAuth()
   const [inventory, setInventory] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
   const [uploadingCSV, setUploadingCSV] = useState(false)
+  const [filterStatus, setFilterStatus] = useState('all') // 'all', 'in_stock', 'sold'
+  const [selectedItems, setSelectedItems] = useState([])
 
   useEffect(() => {
-    if (!connected || !publicKey) {
-      router.push('/stake')
-      return
+    if (!authLoading && isAdmin) {
+      fetchInventory()
     }
-
-    if (publicKey.toString() !== ADMIN_WALLET) {
-      router.push('/stake')
-      return
-    }
-
-    fetchInventory()
-  }, [connected, publicKey, router])
+  }, [authLoading, isAdmin])
 
   async function fetchInventory() {
     try {
@@ -64,13 +60,18 @@ export default function AdminInventoryPage() {
         })
       })
 
-      if (!response.ok) throw new Error('Failed to add item')
+      const data = await response.json()
+
+      if (!response.ok) {
+        console.error('Server error:', data)
+        throw new Error(data.error || 'Failed to add item')
+      }
 
       await fetchInventory()
       setShowAddModal(false)
     } catch (error) {
       console.error('Error adding item:', error)
-      alert('Failed to add item')
+      alert(`Failed to add item: ${error.message}`)
     }
   }
 
@@ -116,6 +117,42 @@ export default function AdminInventoryPage() {
       console.error('Error deleting item:', error)
       alert('Failed to delete item')
     }
+  }
+
+  // Create invoice from selected items
+  async function createInvoiceFromSelected() {
+    if (selectedItems.length === 0) {
+      alert('Please select items to create invoice')
+      return
+    }
+
+    const items = inventory.filter(item => selectedItems.includes(item.id))
+
+    // Navigate to invoice creation page with selected items
+    const itemsData = encodeURIComponent(JSON.stringify(items))
+    router.push(`/admin/invoices/new?items=${itemsData}`)
+  }
+
+  // Toggle item selection
+  function toggleItemSelection(itemId) {
+    setSelectedItems(prev =>
+      prev.includes(itemId)
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    )
+  }
+
+  // Filter inventory based on status
+  const filteredInventory = inventory.filter(item => {
+    if (filterStatus === 'all') return true
+    return item.status === filterStatus
+  })
+
+  // Get counts for each status
+  const statusCounts = {
+    all: inventory.length,
+    in_stock: inventory.filter(i => i.status === 'in_stock').length,
+    sold: inventory.filter(i => i.status === 'sold').length
   }
 
   async function handleCSVUpload(e) {
@@ -211,10 +248,40 @@ export default function AdminInventoryPage() {
     a.click()
   }
 
-  if (loading) {
+  // Show loading while wallet is connecting or data is loading
+  if (!connected || !publicKey || loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400" />
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
+          <p className="text-gray-400">
+            {!connected ? 'Connecting wallet...' : 'Loading inventory...'}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Check if admin wallet (double check in render)
+  if (publicKey.toString() !== ADMIN_WALLET) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <p className="text-xl mb-2">Admin Access Required</p>
+          <p className="text-gray-400">Please connect with admin wallet</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Connecting wallet...</p>
+        </div>
       </div>
     )
   }
@@ -268,13 +335,75 @@ export default function AdminInventoryPage() {
         </div>
       </div>
 
+      {/* Filters and Actions Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex items-center justify-between">
+          {/* Status Filters */}
+          <div className="flex items-center gap-2">
+            <Filter className="w-5 h-5 text-gray-400" />
+            <div className="flex gap-2">
+              {['all', 'in_stock', 'sold'].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setFilterStatus(status)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    filterStatus === status
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  {status === 'all' ? 'All' : status === 'in_stock' ? 'In Stock' : 'Sold'}
+                  <span className="ml-2 text-sm">({statusCounts[status]})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Bulk Actions */}
+          {selectedItems.length > 0 && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-400">
+                {selectedItems.length} items selected
+              </span>
+              <button
+                onClick={createInvoiceFromSelected}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium flex items-center gap-2 transition-colors"
+              >
+                <FileText className="w-4 h-4" />
+                Create Invoice
+              </button>
+              <button
+                onClick={() => setSelectedItems([])}
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg font-medium transition-colors"
+              >
+                Clear Selection
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Inventory Table */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-800">
                 <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.length === filteredInventory.length && filteredInventory.length > 0}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedItems(filteredInventory.map(i => i.id))
+                        } else {
+                          setSelectedItems([])
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-gray-600 text-purple-600"
+                    />
+                  </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Model</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">IMEI</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">Paid</th>
@@ -285,10 +414,12 @@ export default function AdminInventoryPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {inventory.map((item) => (
+                {filteredInventory.map((item) => (
                   <InventoryRow
                     key={item.id}
                     item={item}
+                    isSelected={selectedItems.includes(item.id)}
+                    onToggleSelect={() => toggleItemSelection(item.id)}
                     onEdit={() => setEditingItem(item)}
                     onDelete={() => handleDeleteItem(item.id)}
                   />
@@ -319,11 +450,19 @@ export default function AdminInventoryPage() {
   )
 }
 
-function InventoryRow({ item, onEdit, onDelete }) {
+function InventoryRow({ item, isSelected, onToggleSelect, onEdit, onDelete }) {
   const profit = item.price_sold ? item.price_sold - item.price_paid : 0
 
   return (
-    <tr className="hover:bg-gray-800/50">
+    <tr className={`hover:bg-gray-800/50 ${isSelected ? 'bg-purple-900/10' : ''}`}>
+      <td className="px-6 py-4">
+        <input
+          type="checkbox"
+          checked={isSelected || false}
+          onChange={onToggleSelect}
+          className="w-4 h-4 rounded border-gray-600 text-purple-600"
+        />
+      </td>
       <td className="px-6 py-4">
         <div className="font-medium">{item.model}</div>
         {item.condition && (
@@ -359,15 +498,29 @@ function InventoryRow({ item, onEdit, onDelete }) {
       </td>
       <td className="px-6 py-4">
         <div className="flex gap-2">
+          {item.status === 'in_stock' && (
+            <button
+              onClick={() => {
+                const itemsData = encodeURIComponent(JSON.stringify([item]))
+                window.location.href = `/admin/invoices/new?items=${itemsData}`
+              }}
+              className="p-1 hover:bg-gray-700 rounded transition-colors"
+              title="Create Invoice"
+            >
+              <FileText className="w-4 h-4 text-green-400" />
+            </button>
+          )}
           <button
             onClick={onEdit}
             className="p-1 hover:bg-gray-700 rounded transition-colors"
+            title="Edit"
           >
             <Edit className="w-4 h-4 text-blue-400" />
           </button>
           <button
             onClick={onDelete}
             className="p-1 hover:bg-gray-700 rounded transition-colors"
+            title="Delete"
           >
             <Trash2 className="w-4 h-4 text-red-400" />
           </button>
