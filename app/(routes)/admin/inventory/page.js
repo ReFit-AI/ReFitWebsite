@@ -38,7 +38,11 @@ export default function AdminInventoryPage() {
 
   async function fetchInventory() {
     try {
-      const response = await fetch('/api/admin/inventory')
+      const response = await fetch('/api/admin/inventory', {
+        headers: {
+          'x-admin-wallet': publicKey?.toString() || ''
+        }
+      })
       if (!response.ok) throw new Error('Failed to fetch')
 
       const data = await response.json()

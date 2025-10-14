@@ -3,9 +3,20 @@ import { supabase } from '@/lib/supabase';
 
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
-// GET - Fetch all inventory
-export async function GET() {
+// GET - Fetch all inventory (ADMIN ONLY)
+export async function GET(request) {
   try {
+    // Check for admin authentication header
+    const authHeader = request.headers.get('x-admin-wallet');
+
+    // Verify admin wallet
+    if (!authHeader || authHeader !== ADMIN_WALLET) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized - Admin access required' },
+        { status: 401 }
+      );
+    }
+
     if (!supabase) {
       console.error('Supabase client not initialized - check environment variables');
       return NextResponse.json(
