@@ -52,6 +52,14 @@ next-env.d.ts
 # Wholesale price sheets (confidential)
 PriceLists/*.csv
 PriceLists/*.xlsx
+PriceLists/
+
+# Supplier pricing data (confidential)
+data/kt-corp-pricing*.json
+data/*atlas*.json
+data/supplier-pricing-*-OLD.json
+PRICE_COMPARISON_ANALYSIS.md
+GET_SUPABASE_KEYS.md
 
 # Archive directories (old migrations and scripts)
 **/archive/
