@@ -6,6 +6,14 @@ const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 // GET - Fetch all inventory
 export async function GET() {
   try {
+    if (!supabase) {
+      console.error('Supabase client not initialized - check environment variables');
+      return NextResponse.json(
+        { success: false, error: 'Database not configured. Please check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.' },
+        { status: 500 }
+      );
+    }
+
     const { data, error } = await supabase
       .from('inventory')
       .select('*')
