@@ -179,6 +179,21 @@ export default function TestEnvPage() {
               Test Supabase Library
             </button>
             <button
+              onClick={async () => {
+                try {
+                  const response = await fetch('/api/test-env')
+                  const data = await response.json()
+                  console.log('Server env test:', data)
+                  alert(`Server Environment Test:\n\n${JSON.stringify(data, null, 2)}`)
+                } catch (error) {
+                  alert(`Error testing server env: ${error.message}`)
+                }
+              }}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium transition-colors"
+            >
+              Test Server Env Vars
+            </button>
+            <button
               onClick={() => {
                 console.log('Full process.env:', process.env)
                 alert('Check browser console for full process.env')
