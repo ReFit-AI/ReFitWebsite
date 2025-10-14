@@ -197,7 +197,7 @@ export default function TestEnvPage() {
             <li>1. Deploy this test page to Vercel</li>
             <li>2. Visit /test-env on your deployed site</li>
             <li>3. Screenshot the results</li>
-            <li>4. If env vars show "NOT SET", they need to be added in Vercel dashboard</li>
+            <li>4. If env vars show &quot;NOT SET&quot;, they need to be added in Vercel dashboard</li>
             <li>5. If connection fails with 401, the API key format is wrong</li>
           </ul>
         </div>
