@@ -4,6 +4,13 @@ import { supabase } from '@/lib/supabase'
 // GET all deposits for admin dashboard
 export async function GET(request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     // Check admin auth (simple bearer token for now)
     const authHeader = request.headers.get('authorization')
     const adminSecret = process.env.ADMIN_SECRET || 'development-secret'

@@ -29,6 +29,13 @@ export default function InventoryPage() {
 
   async function fetchData() {
     try {
+      // Check if Supabase is configured
+      if (!supabase) {
+        setError('Database not configured. Please check environment variables.')
+        setLoading(false)
+        return
+      }
+
       // Fetch inventory
       const { data: inventoryData, error: invError } = await supabase
         .from('inventory')

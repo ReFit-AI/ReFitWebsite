@@ -6,6 +6,13 @@ const MIN_DEPOSIT = 1000
 
 export async function POST(request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json()
     const { walletAddress, amount, txSignature } = body
 
@@ -161,6 +168,13 @@ export async function POST(request) {
 // GET endpoint to check deposit status
 export async function GET(request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     const { searchParams } = new URL(request.url)
     const walletAddress = searchParams.get('wallet')
 

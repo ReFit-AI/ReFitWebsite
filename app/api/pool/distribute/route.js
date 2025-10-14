@@ -6,6 +6,13 @@ import { supabase } from '@/lib/supabase'
 
 export async function POST(request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     // TODO: Add proper auth (NextAuth, Clerk, etc.)
     // For now, require admin secret from server environment
     // This will be handled by middleware/auth in production
@@ -187,6 +194,13 @@ export async function POST(request) {
 // GET endpoint to view distribution history
 export async function GET(request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     const { searchParams } = new URL(request.url)
     const wallet = searchParams.get('wallet')
 
