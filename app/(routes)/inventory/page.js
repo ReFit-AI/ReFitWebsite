@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
 import {
@@ -113,12 +114,12 @@ export default function InventoryPage() {
           <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold mb-2">Admin Access Required</h2>
           <p className="text-gray-400 mb-6">This page is restricted to administrators only.</p>
-          <a
+          <Link
             href="/"
             className="inline-block px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg font-medium transition-colors"
           >
             Return Home
-          </a>
+          </Link>
         </div>
       </div>
     )
@@ -139,12 +140,12 @@ export default function InventoryPage() {
           <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h2 className="text-xl font-bold mb-2">Inventory System Not Set Up</h2>
           <p className="text-gray-400 mb-6">{error}</p>
-          <a
+          <Link
             href="/admin/setup"
             className="inline-block px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-medium transition-colors"
           >
             Go to Setup
-          </a>
+          </Link>
         </div>
       </div>
     )

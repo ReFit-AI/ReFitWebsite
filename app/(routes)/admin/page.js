@@ -5,10 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
 import Link from 'next/link'
 import {
-  Package,
   FileText,
   BarChart3,
-  Settings,
   Database,
   ClipboardList,
   Boxes,
@@ -139,7 +137,7 @@ export default function AdminDashboard() {
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-            <div className="text-white/60 text-sm mb-1">Today's Revenue</div>
+            <div className="text-white/60 text-sm mb-1">Today&apos;s Revenue</div>
             <div className="text-2xl font-bold text-green-400">$0</div>
           </div>
           <div className="bg-white/5 rounded-xl p-4 border border-white/10">
