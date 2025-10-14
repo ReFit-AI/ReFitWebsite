@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
 import Link from 'next/link'
 import {
@@ -18,14 +17,17 @@ import {
 } from 'lucide-react'
 
 export default function AdminDashboard() {
-  const router = useRouter()
   const { isAdmin, authLoading, publicKey } = useAdminAuth()
 
+  // Debug logging
   useEffect(() => {
-    if (!authLoading && !isAdmin) {
-      router.push('/')
-    }
-  }, [authLoading, isAdmin, router])
+    console.log('[Admin Page] Auth state:', {
+      isAdmin,
+      authLoading,
+      publicKey: publicKey?.toString(),
+      expectedAdmin: process.env.NEXT_PUBLIC_ADMIN_WALLET
+    })
+  }, [isAdmin, authLoading, publicKey])
 
   if (authLoading) {
     return (
