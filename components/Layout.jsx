@@ -63,12 +63,6 @@ const Layout = ({ children }) => {
       icon: Activity,
       description: 'Live pool stats'
     },
-    {
-      path: '/inventory',
-      label: 'Inventory',
-      icon: Boxes,
-      description: 'Live transparency'
-    },
   ]
 
   // Tertiary - profile/info pages (only show dashboard if connected)

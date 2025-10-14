@@ -1,17 +1,22 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useAdminAuth } from '@/hooks/useAdminAuth'
 import {
   Package,
   TrendingUp,
   DollarSign,
   ShoppingCart,
   Activity,
-  Search
+  Search,
+  Shield
 } from 'lucide-react'
 
 export default function InventoryPage() {
+  const router = useRouter()
+  const { isAdmin, authLoading } = useAdminAuth()
   const [inventory, setInventory] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -19,13 +24,22 @@ export default function InventoryPage() {
   const [filter, setFilter] = useState('all') // all, in_stock, sold
   const [searchTerm, setSearchTerm] = useState('')
 
+  // Check admin auth first
   useEffect(() => {
-    fetchData()
+    if (!authLoading && !isAdmin) {
+      router.push('/')
+    }
+  }, [authLoading, isAdmin, router])
 
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchData, 30000)
-    return () => clearInterval(interval)
-  }, [])
+  useEffect(() => {
+    if (isAdmin) {
+      fetchData()
+
+      // Refresh every 30 seconds
+      const interval = setInterval(fetchData, 30000)
+      return () => clearInterval(interval)
+    }
+  }, [isAdmin])
 
   async function fetchData() {
     try {
@@ -82,6 +96,33 @@ export default function InventoryPage() {
 
     return matchesFilter && matchesSearch
   })
+
+  // Auth checks first
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-white/60">Checking access...</div>
+      </div>
+    )
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="max-w-md text-center">
+          <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Admin Access Required</h2>
+          <p className="text-gray-400 mb-6">This page is restricted to administrators only.</p>
+          <a
+            href="/"
+            className="inline-block px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg font-medium transition-colors"
+          >
+            Return Home
+          </a>
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (
