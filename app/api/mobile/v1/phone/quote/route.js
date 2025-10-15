@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { calculateQuote, buildModelIndex, searchModels } from '@/lib/pricing-engine-v3';
+import { calculateQuote } from '@/lib/pricing-engine-v3';
 
 export async function POST(request) {
   try {

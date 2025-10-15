@@ -34,7 +34,7 @@ export default function AdminInventoryPage() {
     if (!authLoading && isAdmin) {
       fetchInventory()
     }
-  }, [authLoading, isAdmin])
+  }, [authLoading, isAdmin]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function fetchInventory() {
     try {

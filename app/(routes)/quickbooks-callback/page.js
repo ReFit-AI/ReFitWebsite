@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Shield, Copy, CheckCircle, AlertCircle } from 'lucide-react'
 
-export default function QuickBooksCallback() {
+function QuickBooksCallbackContent() {
   const searchParams = useSearchParams()
   const [callbackUrl, setCallbackUrl] = useState('')
   const [copied, setCopied] = useState(false)
@@ -181,5 +181,17 @@ export default function QuickBooksCallback() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function QuickBooksCallback() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    }>
+      <QuickBooksCallbackContent />
+    </Suspense>
   )
 }
