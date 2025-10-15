@@ -1,184 +1,79 @@
 import { NextResponse } from 'next/server';
-// import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
-
-// Same phone database as models endpoint
-const PHONE_DATABASE = {
-  'iPhone 16 Pro Max': { 
-    basePrice: 1199, 
-    conditions: {
-      excellent: 0.85,
-      good: 0.70,
-      fair: 0.55,
-      broken: 0.30
-    }
-  },
-  'iPhone 16 Pro': { 
-    basePrice: 999, 
-    conditions: {
-      excellent: 0.85,
-      good: 0.70,
-      fair: 0.55,
-      broken: 0.30
-    }
-  },
-  'iPhone 16': { 
-    basePrice: 799, 
-    conditions: {
-      excellent: 0.80,
-      good: 0.65,
-      fair: 0.50,
-      broken: 0.25
-    }
-  },
-  'iPhone 15 Pro Max': { 
-    basePrice: 999, 
-    conditions: {
-      excellent: 0.80,
-      good: 0.65,
-      fair: 0.50,
-      broken: 0.25
-    }
-  },
-  'iPhone 15 Pro': { 
-    basePrice: 899, 
-    conditions: {
-      excellent: 0.80,
-      good: 0.65,
-      fair: 0.50,
-      broken: 0.25
-    }
-  },
-  'iPhone 15': { 
-    basePrice: 699, 
-    conditions: {
-      excellent: 0.75,
-      good: 0.60,
-      fair: 0.45,
-      broken: 0.20
-    }
-  },
-  'Samsung Galaxy S24 Ultra': { 
-    basePrice: 1299, 
-    conditions: {
-      excellent: 0.80,
-      good: 0.65,
-      fair: 0.50,
-      broken: 0.25
-    }
-  },
-  'Samsung Galaxy S24+': { 
-    basePrice: 999, 
-    conditions: {
-      excellent: 0.75,
-      good: 0.60,
-      fair: 0.45,
-      broken: 0.20
-    }
-  },
-  'Samsung Galaxy S24': { 
-    basePrice: 799, 
-    conditions: {
-      excellent: 0.75,
-      good: 0.60,
-      fair: 0.45,
-      broken: 0.20
-    }
-  },
-  'Google Pixel 9 Pro XL': { 
-    basePrice: 1099, 
-    conditions: {
-      excellent: 0.75,
-      good: 0.60,
-      fair: 0.45,
-      broken: 0.20
-    }
-  },
-  'Google Pixel 9 Pro': { 
-    basePrice: 999, 
-    conditions: {
-      excellent: 0.75,
-      good: 0.60,
-      fair: 0.45,
-      broken: 0.20
-    }
-  },
-  'Google Pixel 9': { 
-    basePrice: 799, 
-    conditions: {
-      excellent: 0.70,
-      good: 0.55,
-      fair: 0.40,
-      broken: 0.15
-    }
-  }
-};
+import { calculateQuote, buildModelIndex, searchModels } from '@/lib/pricing-engine-v3';
 
 export async function POST(request) {
   try {
-    const { model, condition, carrier, storage } = await request.json();
+    const { model, condition, carrier, storage, issues = [], accessories = {} } = await request.json();
 
     if (!model || !condition) {
       return NextResponse.json(
-        { error: 'Model and condition are required' },
+        { success: false, error: 'Model and condition are required' },
         { status: 400 }
       );
     }
 
-    const phoneData = PHONE_DATABASE[model];
-    if (!phoneData) {
+    // Convert model name to modelId format (lowercase, hyphenated)
+    const modelId = model.toLowerCase().replace(/\s+/g, '-');
+
+    // Map mobile app conditions to pricing engine conditions
+    // The pricing engine expects: excellent, good, fair
+    // We also support: poor (maps to fair)
+    let engineCondition = condition.toLowerCase();
+    if (engineCondition === 'poor' || engineCondition === 'broken') {
+      engineCondition = 'fair'; // Map poor/broken to fair (grade D)
+    }
+
+    // Call the pricing engine
+    const quote = calculateQuote({
+      modelId,
+      storage: storage || '128GB',
+      carrier: carrier?.toLowerCase() || 'unlocked',
+      condition: engineCondition,
+      issues: issues || [],
+      accessories: accessories || { charger: false, box: false }
+    });
+
+    if (quote.error) {
       return NextResponse.json(
-        { error: 'Invalid phone model' },
+        { success: false, error: quote.error },
         { status: 400 }
       );
     }
-
-    const conditionMultiplier = phoneData.conditions[condition];
-    if (!conditionMultiplier) {
-      return NextResponse.json(
-        { error: 'Invalid condition' },
-        { status: 400 }
-      );
-    }
-
-    // Calculate base quote
-    let quoteUSD = phoneData.basePrice * conditionMultiplier;
-
-    // Apply carrier adjustment
-    if (carrier === 'unlocked') {
-      quoteUSD *= 1.1; // 10% bonus for unlocked phones
-    }
-
-    // Apply storage adjustment
-    if (storage === '256GB') {
-      quoteUSD *= 1.05;
-    } else if (storage === '512GB') {
-      quoteUSD *= 1.1;
-    } else if (storage === '1TB') {
-      quoteUSD *= 1.15;
-    }
-
-    // Round to nearest dollar
-    quoteUSD = Math.round(quoteUSD);
 
     // Get current SOL price
-    let solPrice = 150; // Default fallback
+    let solPrice = 180; // Default fallback (matches pricing engine)
     try {
       const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
       const data = await response.json();
-      solPrice = data.solana.usd;
+      if (data?.solana?.usd) {
+        solPrice = data.solana.usd;
+      }
     } catch (error) {
       console.error('Failed to fetch SOL price:', error);
     }
 
-    const quoteSOL = quoteUSD / solPrice;
+    const quoteSOL = quote.usdPrice / solPrice;
 
+    // Return both old and new format for compatibility
     return NextResponse.json({
+      // New format (what pricing engine returns)
+      success: true,
+      data: {
+        quote: quote.usdPrice,
+        solPrice: parseFloat(quoteSOL.toFixed(4)),
+        grade: quote.breakdown?.grade || engineCondition,
+        basePrice: quote.breakdown?.basePrice || quote.usdPrice,
+        marginPercent: parseInt(quote.margin) || 15,
+        message: `Quote valid for 10 minutes`,
+        breakdown: quote.breakdown
+      },
+      // Old format for backward compatibility
       quoteId: crypto.randomUUID(),
       model,
       condition,
       carrier,
       storage,
-      quoteUSD,
+      quoteUSD: quote.usdPrice,
       quoteSOL: parseFloat(quoteSOL.toFixed(4)),
       solPrice,
       expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
