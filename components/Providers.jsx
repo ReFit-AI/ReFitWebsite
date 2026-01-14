@@ -11,10 +11,37 @@ const solanaConnectors = toSolanaWalletConnectors({
   shouldAutoConnect: false,
 })
 
+// Get Privy App ID - must be set in environment variables
+const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID
+
 export default function Providers({ children }) {
+  // If Privy App ID is not configured, render children without Privy
+  // This allows builds to complete and shows a helpful error in dev
+  if (!privyAppId) {
+    if (typeof window !== 'undefined') {
+      console.error('NEXT_PUBLIC_PRIVY_APP_ID is not set. Authentication will not work.')
+    }
+    return (
+      <WalletProvider>
+        {children}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#1a1a1a',
+              color: '#fff',
+              border: '1px solid #333',
+            },
+          }}
+        />
+      </WalletProvider>
+    )
+  }
+
   return (
     <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'your_privy_app_id_here'}
+      appId={privyAppId}
       config={{
         appearance: {
           theme: 'dark',
