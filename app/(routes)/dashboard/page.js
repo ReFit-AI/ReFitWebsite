@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/navigation'
 import {
   DollarSign,
@@ -17,9 +16,11 @@ import {
   LogOut,
   LayoutDashboard
 } from 'lucide-react'
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet'
 
 export default function DashboardPage() {
-  const { connected, publicKey, connecting } = useWallet()
+  const { connected, publicKey, authReady, privyReady } = useUnifiedWallet()
+  const connecting = authReady && !privyReady && !connected
   const router = useRouter()
   const [deposits, setDeposits] = useState([])
   const [withdrawalRequests, setWithdrawalRequests] = useState([])

@@ -111,9 +111,10 @@ export async function POST(request) {
       async: false
     };
 
-    // Only log redacted payload in production
-    const isDev = process.env.NODE_ENV === 'development';
-    console.log('Shipment payload:', JSON.stringify(isDev ? shipmentPayload : redactSensitive(shipmentPayload), null, 2));
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Shipment payload:', JSON.stringify(shipmentPayload, null, 2));
+    }
 
     // Add a small delay to avoid rate limits
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -127,38 +128,35 @@ export async function POST(request) {
     }
     
     if (shipment.status === 'ERROR') {
-      console.error('Shipment creation failed:', shipment.messages);
       throw new Error(`Shipment creation failed: ${shipment.messages?.map(m => m.text).join(', ')}`);
     }
 
-    // Filter for UPS Ground and USPS Priority Mail
+    // Filter for UPS options only
     const filteredRates = shipment.rates
       .filter(rate => {
         if (!rate.amount || !rate.servicelevel || !rate.servicelevel.name) return false;
 
+        // Only accept UPS carriers
+        if (rate.provider !== 'UPS') return false;
+
         const serviceName = rate.servicelevel.name.toLowerCase();
 
-        // Accept UPS Ground
-        if (rate.provider === 'UPS' && serviceName.includes('ground')) {
-          return true;
-        }
+        // Accept these UPS services (exclude expensive Next Day options)
+        const allowedServices = [
+          'ground',
+          'ground saver',
+          '3 day select',
+          '2nd day air'  // Include 2-day option for urgent shipments
+        ];
 
-        // Accept USPS Priority Mail (but not Express)
-        if (rate.provider === 'USPS' &&
-            serviceName.includes('priority mail') &&
-            !serviceName.includes('express')) {
-          return true;
-        }
-
-        return false;
+        return allowedServices.some(service => serviceName.includes(service));
       })
       .map(rate => ({
         carrier: rate.provider,
         service: rate.servicelevel.name,
         price: 0.00, // Show as free since we're covering shipping costs
         currency: rate.currency,
-        estimatedDays: rate.estimatedDays || rate.days ||
-                      (rate.provider === 'UPS' ? 5 : 3), // UPS Ground 1-5 days, USPS Priority 1-3 days
+        estimatedDays: rate.estimatedDays || rate.days || 5, // Default to 5 days for UPS Ground
         rateId: rate.objectId, // Use real Shippo rate ID
         attributes: ['prepaid', 'insured', 'tracking'],
         actualCost: parseFloat(rate.amount) // Store actual cost for our records
@@ -174,10 +172,10 @@ export async function POST(request) {
         // If same cost, prefer faster delivery
         return a.estimatedDays - b.estimatedDays;
       })
-      .slice(0, 2); // Show top 2 options (usually UPS Ground + USPS Priority)
+      .slice(0, 3); // Show top 3 UPS options
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`Found ${rates.length} shipping rates (UPS Ground / USPS Priority)`);
+      console.log(`Found ${rates.length} UPS shipping rates`);
       rates.forEach(rate => {
         console.log(`  - ${rate.carrier} ${rate.service}: $${rate.actualCost} (${rate.estimatedDays} days)`);
       });
@@ -185,7 +183,6 @@ export async function POST(request) {
 
     // If no rates found, use fallback
     if (rates.length === 0) {
-      console.warn('No UPS Ground or USPS Priority Mail rates found, using fallback');
       return NextResponse.json({
         success: true,
         rates: [
@@ -216,21 +213,10 @@ export async function POST(request) {
 
     return NextResponse.json(response);
   } catch (error) {
-    const isDev = process.env.NODE_ENV === 'development';
-    console.error('Shipping rates error:', sanitizeError(error, isDev));
-    
-    // Return sanitized error in production
-    const errorResponse = isDev ? {
+    return NextResponse.json({
       success: false,
-      error: error.message || 'Unknown shipping API error',
-      errorType: error.name === 'ShippoError' || error.code ? 'shippo_api_error' : 'server_error',
+      error: sanitizeError(error, 'Failed to get shipping rates'),
       rates: []
-    } : {
-      success: false,
-      error: 'Failed to get shipping rates',
-      rates: []
-    };
-    
-    return NextResponse.json(errorResponse, { status: 500 });
+    }, { status: 500 });
   }
 }

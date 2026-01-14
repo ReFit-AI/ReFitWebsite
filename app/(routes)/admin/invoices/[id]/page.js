@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 import { downloadInvoicePDF, downloadInvoiceExcel } from '@/lib/invoiceExport'
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
+const ADMIN_WALLET = process.env.ADMIN_WALLET
 
 export default function InvoiceDetailsPage() {
   const params = useParams()

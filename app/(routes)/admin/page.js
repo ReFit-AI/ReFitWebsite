@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
 import Link from 'next/link'
 import {
@@ -18,16 +17,6 @@ import {
 
 export default function AdminDashboard() {
   const { isAdmin, authLoading, publicKey } = useAdminAuth()
-
-  // Debug logging
-  useEffect(() => {
-    console.log('[Admin Page] Auth state:', {
-      isAdmin,
-      authLoading,
-      publicKey: publicKey?.toString(),
-      expectedAdmin: process.env.NEXT_PUBLIC_ADMIN_WALLET
-    })
-  }, [isAdmin, authLoading, publicKey])
 
   if (authLoading) {
     return (

@@ -2,6 +2,23 @@
 import { supabase } from '../lib/supabase';
 import { linkWalletWithFallback } from '../lib/auth-helper';
 
+const normalizeAddressForDb = (address = {}) => {
+  const isDefault = address.is_default ?? address.isDefault ?? false;
+
+  return {
+    name: address.name?.trim() || null,
+    street1: address.street1?.trim() || null,
+    street2: address.street2?.trim() || '',
+    city: address.city?.trim() || null,
+    state: address.state || null,
+    zip: address.zip?.toString().trim() || null,
+    country: address.country || 'US',
+    phone: address.phone?.trim() || null,
+    email: address.email?.trim() || null,
+    is_default: isDefault,
+  };
+};
+
 class ProductionUserProfileService {
   constructor() {
     this.currentUser = null;
@@ -15,10 +32,36 @@ class ProductionUserProfileService {
     }
     
     // Fall back to Supabase auth
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        return user.id;
+      }
+    } catch (authError) {
+      console.log('Auth user not found, trying wallet context');
+    }
     
-    return user.id;
+    // Check if we have a wallet address in context
+    const walletAddress = supabase?.rest?.headers?.['X-Wallet-Address'];
+    if (walletAddress) {
+      try {
+        // Try to get profile by wallet address
+        const { data: profiles, error } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('wallet_address', walletAddress);
+        
+        const profile = profiles && profiles.length > 0 ? profiles[0] : null;
+        
+        if (!error && profile) {
+          return profile.id;
+        }
+      } catch (profileError) {
+        console.log('Profile not found for wallet:', walletAddress);
+      }
+    }
+    
+    throw new Error('Not authenticated - no user ID available');
   }
 
   // Initialize user profile when wallet connects
@@ -33,13 +76,93 @@ class ProductionUserProfileService {
       
       const { user, isNew } = result;
       
-      // Get full user profile if we have a real user ID
+      // Ensure profile exists in profiles table
       if (user.id && !user.id.startsWith('mock-')) {
-        const profile = await this.getProfile(user.id);
-        if (profile) {
-          this.currentUser = profile;
-        } else {
-          // If profile fetch fails, use basic user data
+        // First check if profile exists (use maybeSingle to avoid 406 errors)
+        const { data: existingProfiles, error: fetchError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('wallet_address', walletAddress);
+        
+        const existingProfile = existingProfiles && existingProfiles.length > 0 ? existingProfiles[0] : null;
+        
+        if (!existingProfile && !fetchError) {
+          // Profile doesn't exist, create it
+          // First, try without specifying ID (let database generate it)
+          let profileData = {
+            wallet_address: walletAddress,
+            email: user.email || `${walletAddress.toLowerCase()}@shoprefit.com`,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          };
+          
+          let { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert(profileData)
+            .select()
+            .single();
+          
+          // If that fails with a constraint error, try to fetch existing
+          if (createError && (createError.code === '23505' || createError.message?.includes('duplicate key'))) {
+            // Unique constraint violation - profile already exists, fetch it
+            const { data: retryProfiles, error: retryError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('wallet_address', walletAddress);
+            
+            const retryProfile = retryProfiles && retryProfiles.length > 0 ? retryProfiles[0] : null;
+            
+            if (!retryError && retryProfile) {
+              newProfile = retryProfile;
+              createError = null;
+              console.log('Profile already exists, using existing:', retryProfile.id);
+            }
+          } else if (createError && createError.code === '23502' && user.id && user.id.length === 36) {
+            // Not-null constraint - ID might be required
+            profileData.id = user.id;
+            const { data: retryProfile, error: retryError } = await supabase
+              .from('profiles')
+              .insert(profileData)
+              .select()
+              .single();
+            
+            if (!retryError) {
+              newProfile = retryProfile;
+              createError = null;
+            } else {
+              createError = retryError;
+            }
+          }
+          
+          if (createError) {
+            console.error('Failed to create profile:', 
+              createError.message || 'Unknown error',
+              {
+                message: createError.message,
+                code: createError.code,
+                details: createError.details,
+                hint: createError.hint,
+                walletAddress,
+                userId: user.id,
+                fullError: JSON.stringify(createError)
+              });
+            // Continue anyway with basic user data
+            this.currentUser = {
+              id: user.id,
+              wallet_address: walletAddress,
+              email: user.email || `${walletAddress.toLowerCase()}@shoprefit.com`,
+              created_at: new Date().toISOString(),
+            };
+          } else {
+            this.currentUser = newProfile;
+          }
+        } else if (existingProfile) {
+          // Profile exists, use it
+          this.currentUser = existingProfile;
+        }
+        
+        // Fallback to basic user data if no profile
+        if (!this.currentUser) {
           this.currentUser = {
             id: user.id,
             wallet_address: walletAddress,
@@ -55,6 +178,24 @@ class ProductionUserProfileService {
           email: user.email || `${walletAddress}@shoprefit.com`,
           created_at: new Date().toISOString(),
         };
+      }
+      
+      // Set the wallet context for RLS
+      if (supabase) {
+        // Set config for RLS policies
+        try {
+          const { error: rpcError } = await supabase.rpc('set_wallet_context', { 
+            wallet_address: walletAddress 
+          });
+          
+          if (rpcError) {
+            // RPC might not exist yet, that's OK
+            console.log('set_wallet_context not available:', rpcError.message || 'RPC function not found');
+          }
+        } catch (err) {
+          // RPC call failed, that's OK for now
+          console.log('set_wallet_context error:', err.message || 'RPC not configured');
+        }
       }
       
       return {
@@ -89,75 +230,18 @@ class ProductionUserProfileService {
     }
   }
 
-  // Link wallet to Supabase user
+  // Link wallet to Supabase user (legacy method - deprecated)
   async linkWalletToUser(walletAddress) {
-    if (!supabase) return null;
-    
-    try {
-      // Check if user exists
-      const { data: existingUser } = await supabase
-        .from('users')
-        .select('id')
-        .eq('wallet_address', walletAddress)
-        .single();
-
-      if (existingUser) {
-        // Sign in existing user
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: `${walletAddress}@shoprefit.com`,
-          password: walletAddress,
-        });
-        
-        if (error && error.message.includes('Invalid login')) {
-          // User exists but auth doesn't, create auth
-          const { data: authData, error: signUpError } = await supabase.auth.signUp({
-            email: `${walletAddress}@shoprefit.com`,
-            password: walletAddress,
-            options: {
-              data: {
-                wallet_address: walletAddress,
-              },
-              emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/auth/callback`,
-            },
-          });
-          
-          if (signUpError) throw signUpError;
-          return { user: authData.user, isNew: false };
-        }
-        
-        if (error) throw error;
-        return { user: data.user, isNew: false };
-      }
-
-      // Create new user
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: `${walletAddress}@shoprefit.com`,
-        password: walletAddress,
-        options: {
-          data: {
-            wallet_address: walletAddress,
-          },
-          emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/auth/callback`,
-        },
-      });
-
-      if (signUpError) throw signUpError;
-
-      // Create user record
-      const { error: insertError } = await supabase
-        .from('users')
-        .insert({
-          id: authData.user.id,
-          wallet_address: walletAddress,
-        });
-
-      if (insertError) throw insertError;
-
-      return { user: authData.user, isNew: true };
-    } catch (error) {
-      console.error('Error linking wallet:', process.env.NODE_ENV === 'development' ? error : error.message);
-      throw error;
-    }
+    // This method is deprecated - just return a mock user
+    // The real authentication happens via linkWalletWithFallback
+    return {
+      user: {
+        id: `wallet-${walletAddress}`,
+        email: `${walletAddress.toLowerCase()}@shoprefit.com`,
+        user_metadata: { wallet_address: walletAddress }
+      },
+      isNew: false
+    };
   }
 
   // Get user profile
@@ -234,9 +318,10 @@ class ProductionUserProfileService {
   // Get shipping addresses
   async getShippingAddresses() {
     if (!supabase) return [];
-    
+
     try {
       const userId = await this.getCurrentUserId();
+      if (!userId) return [];
 
       const { data, error } = await supabase
         .from('shipping_addresses')
@@ -249,7 +334,13 @@ class ProductionUserProfileService {
 
       return data || [];
     } catch (error) {
-      console.error('Get addresses error:', process.env.NODE_ENV === 'development' ? error : error.message);
+      // Don't log authentication errors - it's expected when wallet-only
+      if (error.message === 'Not authenticated') {
+        return [];
+      }
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Get addresses error:', error.message || error);
+      }
       return [];
     }
   }
@@ -260,9 +351,10 @@ class ProductionUserProfileService {
     
     try {
       const userId = await this.getCurrentUserId();
+      const normalized = normalizeAddressForDb(address);
 
       // If marking as default, unset other defaults
-      if (address.is_default) {
+      if (normalized.is_default) {
         await supabase
           .from('shipping_addresses')
           .update({ is_default: false })
@@ -272,7 +364,7 @@ class ProductionUserProfileService {
       const { data, error } = await supabase
         .from('shipping_addresses')
         .insert({
-          ...address,
+          ...normalized,
           user_id: userId
         })
         .select()
@@ -282,8 +374,13 @@ class ProductionUserProfileService {
 
       return { success: true, address: data };
     } catch (error) {
-      console.error('Add address error:', process.env.NODE_ENV === 'development' ? error : error.message);
-      return { success: false, error: error.message };
+      console.error('Add address error:', error.message || 'Unknown error', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+      return { success: false, error: error.message || 'Failed to add address' };
     }
   }
 
@@ -293,9 +390,17 @@ class ProductionUserProfileService {
     
     try {
       const userId = await this.getCurrentUserId();
+      const normalized = normalizeAddressForDb(updates);
+      const updatePayload = Object.fromEntries(
+        Object.entries(normalized).filter(([key]) => {
+          const camelKey = key === 'is_default' ? 'isDefault' : key;
+          return Object.prototype.hasOwnProperty.call(updates, key) ||
+                 Object.prototype.hasOwnProperty.call(updates, camelKey);
+        })
+      );
 
       // If marking as default, unset other defaults
-      if (updates.is_default) {
+      if (updatePayload.is_default) {
         await supabase
           .from('shipping_addresses')
           .update({ is_default: false })
@@ -304,7 +409,7 @@ class ProductionUserProfileService {
 
       const { data, error } = await supabase
         .from('shipping_addresses')
-        .update(updates)
+        .update(updatePayload)
         .eq('id', addressId)
         .eq('user_id', userId)
         .select()

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
+import { sanitizeError } from '@/lib/validation';
 import { createClient } from '@supabase/supabase-js';
 import { validateInvoiceData, sanitizeInvoiceData } from '@/lib/invoiceValidation';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
+const ADMIN_WALLET = process.env.ADMIN_WALLET;
 
 // Use service role for admin operations (bypasses RLS)
 const getSupabase = () => {
@@ -81,7 +82,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error fetching invoices:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -200,7 +201,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error creating invoice:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -268,7 +269,7 @@ export async function DELETE(request) {
   } catch (error) {
     console.error('Error deleting invoice:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -318,7 +319,7 @@ export async function PATCH(request) {
   } catch (error) {
     console.error('Error updating invoice:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
+const ADMIN_WALLET = process.env.ADMIN_WALLET;
 
 // Use service role for admin operations (bypasses RLS)
 const getSupabase = () => {

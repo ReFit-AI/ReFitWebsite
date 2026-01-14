@@ -4,16 +4,13 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { AlertCircle, Package, Battery, Smartphone, Info } from 'lucide-react'
 import SmartPhoneSelectorV2 from './SmartPhoneSelectorV2'
-import { calculateQuote } from '@/lib/pricing-engine-v3'
+import { calculateQuote } from '@/lib/pricing-engine'
 
 const PhoneFormV2 = ({ onSubmit }) => {
   const [phoneSelection, setPhoneSelection] = useState(null)
+  const [imei, setImei] = useState('')
   const [condition, setCondition] = useState('')
   const [issues, setIssues] = useState([])
-  const [accessories, setAccessories] = useState({
-    charger: false,
-    box: false
-  })
   const [quoteError, setQuoteError] = useState(null)
   const [showConditionInfo, setShowConditionInfo] = useState(false)
 
@@ -119,10 +116,20 @@ const PhoneFormV2 = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
+
     if (!phoneSelection || !condition) {
-      setQuoteError('Please complete all required fields')
+      setQuoteError('Please select a phone model and condition')
       return
+    }
+
+    // IMEI is optional for quotes, but validate if provided
+    let imeiClean = ''
+    if (imei) {
+      imeiClean = imei.replace(/\s/g, '')
+      if (!/^\d{15}$/.test(imeiClean)) {
+        setQuoteError('If provided, IMEI must be exactly 15 digits')
+        return
+      }
     }
 
     // Calculate quote using KT pricing
@@ -131,8 +138,7 @@ const PhoneFormV2 = ({ onSubmit }) => {
       storage: phoneSelection.storage,
       carrier: phoneSelection.carrier,
       condition,
-      issues,
-      accessories
+      issues
     })
 
     if (quote.error) {
@@ -149,7 +155,7 @@ const PhoneFormV2 = ({ onSubmit }) => {
         carrier: phoneSelection.carrier,
         condition,
         issues,
-        ...accessories
+        imei: imeiClean
       },
       quote
     })
@@ -160,7 +166,60 @@ const PhoneFormV2 = ({ onSubmit }) => {
       {/* Phone Selection */}
       <SmartPhoneSelectorV2 onSelect={handlePhoneSelect} />
 
-      {/* Condition Selection - Only shown after phone selected */}
+      {/* IMEI Number - Optional for quote, shown after phone selected */}
+      {phoneSelection && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold text-white">
+              IMEI Number
+              <span className="ml-2 text-sm font-normal text-gray-400">(Optional for quote)</span>
+            </h3>
+            <Info className="text-gray-400" size={16} />
+          </div>
+
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
+            <div className="flex items-start space-x-2">
+              <Info className="text-blue-400 mt-0.5" size={16} />
+              <div className="text-sm text-blue-200 space-y-2">
+                <p className="font-semibold">How to find your IMEI:</p>
+                <div className="text-gray-300 space-y-1">
+                  <div>
+                    <span className="font-medium text-white">Easiest Method:</span> Dial <span className="font-mono bg-gray-800 px-2 py-0.5 rounded">*#06#</span> on your phone
+                  </div>
+                  <div>
+                    <span className="font-medium text-white">iPhone:</span> Settings → General → About → IMEI
+                  </div>
+                  <div>
+                    <span className="font-medium text-white">Android:</span> Settings → About Phone → IMEI
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 mt-2">
+                  Optional for quote. Helps us verify your device during inspection.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <input
+            type="text"
+            value={imei}
+            onChange={(e) => setImei(e.target.value)}
+            placeholder="Enter 15-digit IMEI (optional for quote)"
+            maxLength={15}
+            className="w-full bg-gray-900/30 border-2 border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-solana-purple focus:outline-none transition-colors"
+          />
+
+          {imei && !/^\d{15}$/.test(imei.replace(/\s/g, '')) && (
+            <p className="text-sm text-red-400">IMEI must be exactly 15 digits</p>
+          )}
+        </motion.div>
+      )}
+
+      {/* Condition Selection - Shown after phone selected (IMEI optional) */}
       {phoneSelection && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -280,39 +339,6 @@ const PhoneFormV2 = ({ onSubmit }) => {
         </motion.div>
       )}
 
-      {/* Accessories */}
-      {condition && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
-        >
-          <h3 className="text-lg font-semibold text-white">Included Accessories</h3>
-          <div className="flex flex-wrap gap-3">
-            <label className="flex items-center space-x-2 px-4 py-3 bg-gray-900/30 hover:bg-gray-900/50 rounded-lg cursor-pointer transition-colors">
-              <input
-                type="checkbox"
-                checked={accessories.charger}
-                onChange={(e) => setAccessories(prev => ({ ...prev, charger: e.target.checked }))}
-                className="w-5 h-5 rounded border-gray-600 text-solana-purple focus:ring-solana-purple focus:ring-offset-0 bg-gray-800"
-              />
-              <span className="text-white">Original Charger</span>
-              <span className="text-green-400 text-sm">+$5</span>
-            </label>
-            
-            <label className="flex items-center space-x-2 px-4 py-3 bg-gray-900/30 hover:bg-gray-900/50 rounded-lg cursor-pointer transition-colors">
-              <input
-                type="checkbox"
-                checked={accessories.box}
-                onChange={(e) => setAccessories(prev => ({ ...prev, box: e.target.checked }))}
-                className="w-5 h-5 rounded border-gray-600 text-solana-purple focus:ring-solana-purple focus:ring-offset-0 bg-gray-800"
-              />
-              <span className="text-white">Original Box</span>
-              <span className="text-green-400 text-sm">+$5</span>
-            </label>
-          </div>
-        </motion.div>
-      )}
 
       {/* Error Display */}
       {quoteError && (

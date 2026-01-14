@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
+import { sanitizeError, purchaseLabelSchema } from '@/lib/validation';
+import { verifyOrigin } from '@/lib/csrf-protection';
+import { rateLimitEndpoint } from '@/lib/rate-limit-upstash';
 
 // Helper to generate a mock label when Shippo is not configured or in dev
 function generateMockLabel() {
@@ -17,21 +20,39 @@ function generateMockLabel() {
 
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { rateId, userAddress } = body;
-
-    // Validate input
-    if (!rateId) {
+    // Rate limiting - label purchases cost money
+    const rateLimitResult = await rateLimitEndpoint.shipping(request);
+    if (!rateLimitResult.success) {
       return NextResponse.json(
-        { success: false, error: 'Rate ID is required' },
+        { success: false, error: rateLimitResult.message || 'Too many requests' },
+        { status: 429, headers: rateLimitResult.headers }
+      );
+    }
+
+    const body = await request.json();
+
+    // Validate input with Zod
+    const validationResult = purchaseLabelSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid input',
+          details: validationResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)
+        },
         { status: 400 }
       );
     }
 
-    if (!userAddress || !userAddress.street1 || !userAddress.city || !userAddress.state || !userAddress.zip) {
+    const { rateId, userAddress, walletAddress } = validationResult.data;
+
+    // SECURITY: CSRF protection for shipping label purchase (costs money)
+    const csrfCheck = verifyOrigin(request);
+    if (!csrfCheck.valid) {
+      console.warn('❌ CSRF check failed for label purchase');
       return NextResponse.json(
-        { success: false, error: 'Complete shipping address is required' },
-        { status: 400 }
+        { success: false, error: csrfCheck.error || 'Invalid request origin' },
+        { status: 403 }
       );
     }
 
@@ -192,17 +213,6 @@ export async function POST(request) {
       }
     });
   } catch (error) {
-    console.error('Label purchase error - Full details:', {
-      message: error.message,
-      stack: error.stack,
-      response: error.response?.data,
-      status: error.response?.status,
-      details: error.details,
-      issues: error.issues,
-      name: error.name,
-      fullError: JSON.stringify(error, null, 2)
-    });
-    
     // Handle Zod validation errors
     if (error.name === 'ZodError' && error.issues) {
       const issues = error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join(', ');
@@ -216,33 +226,20 @@ export async function POST(request) {
       );
     }
     
-    // Provide more specific error messages
-    let errorMessage = error.message || 'Unknown error occurred';
+    // Sanitize error message for production
+    const errorMessage = sanitizeError(error, 'Failed to purchase shipping label');
+
+    // Determine appropriate status code
     let statusCode = 500;
-    
-    if (error.message?.includes('API key')) {
-      errorMessage = 'Shipping service configuration error. Please check API keys.';
-      statusCode = 503;
-    } else if (error.message?.includes('address')) {
-      errorMessage = 'Invalid shipping address. Please verify the address details.';
-      statusCode = 400;
-    } else if (error.message?.includes('rate')) {
-      errorMessage = 'Unable to calculate shipping rate for this address.';
-      statusCode = 400;
-    } else if (error.message?.includes('Invalid input')) {
-      errorMessage = 'Invalid shipping data. Please check all required fields.';
+    if (error.message?.includes('API key')) statusCode = 503;
+    if (error.message?.includes('address') || error.message?.includes('rate') || error.message?.includes('Invalid input')) {
       statusCode = 400;
     }
-    
+
     return NextResponse.json(
-      { 
-        success: false, 
-        error: errorMessage,
-        details: process.env.NODE_ENV === 'development' ? {
-          message: error.message,
-          issues: error.issues,
-          stack: error.stack
-        } : undefined
+      {
+        success: false,
+        error: errorMessage
       },
       { status: statusCode }
     );

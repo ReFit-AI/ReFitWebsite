@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { verifyTransaction } from '@/lib/verify-transaction';
+import { rateLimitEndpoint } from '@/lib/rate-limit-upstash';
 
 // Tier configurations
 const TIERS = {
@@ -10,6 +12,15 @@ const TIERS = {
 
 export async function POST(request) {
   try {
+    // Rate limiting for financial endpoint
+    const rateLimitResult = await rateLimitEndpoint.api(request);
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { success: false, error: rateLimitResult.message || 'Too many requests' },
+        { status: 429, headers: rateLimitResult.headers }
+      );
+    }
+
     const body = await request.json();
     const { walletAddress, amount, tier, txSignature, fromOrderId } = body;
 
@@ -42,34 +53,40 @@ export async function POST(request) {
       );
     }
 
-    // Verify transaction on Solana
-    if (process.env.NODE_ENV === 'production') {
-      const connection = new Connection(
-        process.env.NEXT_PUBLIC_SOLANA_RPC_HOST || 'https://api.mainnet-beta.solana.com'
+    // SECURITY: Verify transaction on Solana
+    // Use the robust verifyTransaction function that checks:
+    // - Transaction exists and is confirmed
+    // - Correct vault address (prevents fake deposits)
+    // - Correct amount (with 1% slippage tolerance)
+    // - USDC mint verification
+    const vaultAddress = process.env.SQUADS_VAULT;
+
+    if (!vaultAddress) {
+      return NextResponse.json(
+        { success: false, error: 'Vault not configured' },
+        { status: 500 }
       );
+    }
 
-      try {
-        const tx = await connection.getTransaction(txSignature, {
-          commitment: 'confirmed'
-        });
+    try {
+      const verification = await verifyTransaction({
+        txSignature,
+        expectedVaultAddress: vaultAddress,
+        expectedAmount: amount,
+        slippageTolerance: 0.01 // 1% tolerance for SOL/USDC price fluctuations
+      });
 
-        if (!tx) {
-          return NextResponse.json(
-            { success: false, error: 'Transaction not found' },
-            { status: 400 }
-          );
-        }
-
-        // TODO: Verify transaction actually sent USDC to vault
-        // This requires parsing the transaction instructions
-        // For MVP, we'll trust the signature exists
-      } catch (err) {
-        console.error('Transaction verification error:', err);
+      if (!verification.valid) {
         return NextResponse.json(
-          { success: false, error: 'Failed to verify transaction' },
-          { status: 500 }
+          { success: false, error: verification.error || 'Invalid transaction' },
+          { status: 400 }
         );
       }
+    } catch {
+      return NextResponse.json(
+        { success: false, error: 'Failed to verify transaction' },
+        { status: 500 }
+      );
     }
 
     // Calculate unlock date
@@ -111,7 +128,6 @@ export async function POST(request) {
       .single();
 
     if (error) {
-      console.error('Database error:', error);
       return NextResponse.json(
         { success: false, error: 'Failed to create stake' },
         { status: 500 }
@@ -140,8 +156,7 @@ export async function POST(request) {
         status: stake.status
       }
     });
-  } catch (error) {
-    console.error('Create stake error:', error);
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }

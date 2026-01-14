@@ -13,7 +13,7 @@ import {
   FileSpreadsheet
 } from 'lucide-react'
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
+const ADMIN_WALLET = process.env.ADMIN_WALLET
 
 export default function AdminReportsPage() {
   const { publicKey, connected } = useWallet()

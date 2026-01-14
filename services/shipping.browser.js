@@ -34,11 +34,12 @@ class BrowserShippingService {
     }
   }
 
-  async purchaseLabel(rateId, userAddress) {
+  async purchaseLabel(rateId, userAddress, walletAddress) {
     try {
       const response = await axios.post('/api/shipping/purchase-label', {
         rateId,
-        userAddress
+        userAddress,
+        walletAddress
       })
       return response.data
     } catch (error) {

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import { sanitizeError } from '@/lib/validation';
 import { supabase } from '@/lib/supabase';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
+const ADMIN_WALLET = process.env.ADMIN_WALLET;
 
 // GET - Fetch all inventory (ADMIN ONLY)
 export async function GET(request) {
@@ -39,7 +40,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error fetching inventory:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -80,7 +81,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error adding inventory item:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -129,7 +130,7 @@ export async function PATCH(request) {
   } catch (error) {
     console.error('Error updating inventory item:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -164,7 +165,7 @@ export async function DELETE(request) {
   } catch (error) {
     console.error('Error deleting inventory item:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }

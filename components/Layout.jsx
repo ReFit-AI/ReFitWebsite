@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronDown,
@@ -21,37 +21,38 @@ import {
   Boxes
 } from 'lucide-react'
 import { initializeServices, cleanupServices } from '@/services'
-import { WalletButton } from './WalletButton'
+import PrivyWalletButton from './PrivyWalletButton'
 
 const Layout = ({ children }) => {
   const pathname = usePathname()
-  const { publicKey, connected } = useWallet()
+  const { publicKey, connected, address } = useUnifiedWallet()
   const [moreMenuOpen, setMoreMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Initialize services when wallet connects
   React.useEffect(() => {
-    if (connected && publicKey) {
-      initializeServices(publicKey.toBase58())
+    if (connected && address) {
+      initializeServices(address)
     } else {
       cleanupServices()
     }
-  }, [connected, publicKey])
+  }, [connected, address])
 
   // Primary actions - what users come to do
   const primaryNav = [
     {
       path: '/sell',
-      label: 'Trade',
+      label: 'Trade In',
       icon: Package,
-      description: 'Sell your device'
+      description: 'Get instant cash for your phone'
     },
     {
       path: '/stake',
       label: 'Stake',
       icon: Coins,
-      description: 'Earn 8% monthly',
-      highlight: true // New feature highlight
+      description: 'Coming Dec 2025',
+      comingSoon: true,
+      badge: 'Soon'
     },
   ]
 
@@ -191,9 +192,14 @@ const Layout = ({ children }) => {
                         <span className={`font-semibold ${isActive ? 'text-white' : 'text-gray-300'}`}>
                           {item.label}
                         </span>
-                        {item.highlight && (
-                          <span className="ml-2 px-2 py-0.5 bg-gradient-to-r from-purple-600 to-pink-600 text-xs rounded-full font-bold">
-                            NEW
+                        {item.highlight && !item.comingSoon && (
+                          <span className="ml-2 px-2 py-0.5 bg-gradient-to-r from-purple-600 to-green-600 text-xs rounded-full font-bold">
+                            HOT
+                          </span>
+                        )}
+                        {item.comingSoon && (
+                          <span className="ml-2 px-2 py-0.5 bg-gray-800 border border-gray-700 text-xs rounded text-gray-400">
+                            {item.badge || 'SOON'}
                           </span>
                         )}
                       </div>
@@ -295,7 +301,7 @@ const Layout = ({ children }) => {
             {/* Right Side - Wallet and Mobile Menu */}
             <div className="flex items-center space-x-4">
               {/* Wallet Button */}
-              <WalletButton />
+              <PrivyWalletButton />
               
               {/* Mobile Menu Button */}
               <button

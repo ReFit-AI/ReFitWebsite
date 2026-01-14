@@ -1,7 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { TrendingUp, TrendingDown, Activity, Package, ArrowUpDown } from 'lucide-react'
+import {
+  TrendingUp,
+  TrendingDown,
+  Activity,
+  Package,
+  ArrowUpDown,
+  Zap,
+  DollarSign,
+  Clock,
+  Users,
+  BarChart3,
+  ArrowUpRight,
+  ArrowDownRight
+} from 'lucide-react'
 
 export default function OrderbookPage() {
   const [selectedModel, setSelectedModel] = useState('iPhone 15 Pro Max')
@@ -16,28 +29,38 @@ export default function OrderbookPage() {
     { name: 'Samsung S23 Ultra', lastPrice: 625, change: 0.5, volume: 98 }
   ]
 
+  // Enhanced mock data with wallet addresses
   const sellOrders = [
-    { price: 1055, quantity: 15, total: 15825, condition: 'Excellent' },
-    { price: 1053, quantity: 8, total: 8424, condition: 'Excellent' },
-    { price: 1052, quantity: 12, total: 12624, condition: 'Good' },
-    { price: 1051, quantity: 20, total: 21020, condition: 'Excellent' },
-    { price: 1050, quantity: 25, total: 26250, condition: 'Good' },
+    { price: 1055, quantity: 15, total: 15825, condition: 'Excellent', wallet: '7dvc...jemn' },
+    { price: 1053, quantity: 8, total: 8424, condition: 'Excellent', wallet: '9H6V...Poqm' },
+    { price: 1052, quantity: 12, total: 12624, condition: 'Good', wallet: 'BLVi...mjKp' },
+    { price: 1051, quantity: 20, total: 21020, condition: 'Excellent', wallet: '5Qyx...8Kp3' },
+    { price: 1050, quantity: 25, total: 26250, condition: 'Good', wallet: 'Fg7M...nQ9s' },
+    { price: 1049.50, quantity: 10, total: 10495, condition: 'Excellent', wallet: '3vZk...2mPq' },
+    { price: 1049, quantity: 18, total: 18882, condition: 'Good', wallet: 'JkL9...Xy4m' },
+    { price: 1048.50, quantity: 14, total: 14679, condition: 'Excellent', wallet: '8Hn2...9Lp1' },
   ]
 
   const buyOrders = [
-    { price: 1049, quantity: 18, total: 18882, condition: 'Any' },
-    { price: 1048, quantity: 30, total: 31440, condition: 'Good+' },
-    { price: 1047, quantity: 22, total: 23034, condition: 'Any' },
-    { price: 1046, quantity: 15, total: 15690, condition: 'Excellent' },
-    { price: 1045, quantity: 28, total: 29260, condition: 'Good+' },
+    { price: 1048, quantity: 18, total: 18864, condition: 'Any', wallet: 'Qw3E...7Rn5' },
+    { price: 1047.50, quantity: 22, total: 23045, condition: 'Good+', wallet: 'Tz6Y...4Bp8' },
+    { price: 1047, quantity: 15, total: 15705, condition: 'Any', wallet: 'Ax8C...3Vp2' },
+    { price: 1046.50, quantity: 30, total: 31395, condition: 'Excellent', wallet: 'Km5N...1Dq7' },
+    { price: 1046, quantity: 12, total: 12552, condition: 'Good+', wallet: 'Pn2J...6Hp9' },
+    { price: 1045.50, quantity: 28, total: 29274, condition: 'Any', wallet: 'Rt4L...8Mp4' },
+    { price: 1045, quantity: 20, total: 20900, condition: 'Good+', wallet: 'Vy7Q...2Kp1' },
+    { price: 1044.50, quantity: 16, total: 16712, condition: 'Excellent', wallet: 'Zx9M...5Tp3' },
   ]
 
   const recentTrades = [
-    { time: '14:32:18', price: 1050, quantity: 12, side: 'buy', condition: 'Excellent' },
-    { time: '14:31:45', price: 1049, quantity: 8, side: 'sell', condition: 'Good' },
-    { time: '14:30:12', price: 1051, quantity: 15, side: 'buy', condition: 'Excellent' },
-    { time: '14:29:33', price: 1050, quantity: 5, side: 'sell', condition: 'Good' },
-    { time: '14:28:51', price: 1052, quantity: 20, side: 'buy', condition: 'Excellent' },
+    { time: '14:32:18', price: 1050, quantity: 12, side: 'buy', condition: 'Excellent', buyer: '7dvc...jemn', seller: 'Ax8C...3Vp2' },
+    { time: '14:31:45', price: 1049, quantity: 8, side: 'sell', condition: 'Good', buyer: '9H6V...Poqm', seller: 'Km5N...1Dq7' },
+    { time: '14:30:12', price: 1051, quantity: 15, side: 'buy', condition: 'Excellent', buyer: 'BLVi...mjKp', seller: 'Pn2J...6Hp9' },
+    { time: '14:29:33', price: 1050, quantity: 5, side: 'sell', condition: 'Good', buyer: '5Qyx...8Kp3', seller: 'Rt4L...8Mp4' },
+    { time: '14:28:51', price: 1052, quantity: 20, side: 'buy', condition: 'Excellent', buyer: 'Fg7M...nQ9s', seller: 'Vy7Q...2Kp1' },
+    { time: '14:27:22', price: 1048, quantity: 7, side: 'sell', condition: 'Good', buyer: '3vZk...2mPq', seller: 'Zx9M...5Tp3' },
+    { time: '14:26:15', price: 1049, quantity: 11, side: 'buy', condition: 'Excellent', buyer: 'JkL9...Xy4m', seller: 'Bq1N...7Wp6' },
+    { time: '14:25:03', price: 1051, quantity: 4, side: 'buy', condition: 'Good', buyer: '8Hn2...9Lp1', seller: 'Gh3P...9Xp8' },
   ]
 
   const candlestickData = [
@@ -58,12 +81,18 @@ export default function OrderbookPage() {
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between mb-4">
             <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-600/20 to-green-600/20 rounded-full text-sm font-semibold text-purple-400">
+                  <Zap className="w-3 h-3" />
+                  MVP DEMO - Mock Data
+                </div>
+              </div>
               <h1 className="text-3xl font-bold flex items-center gap-3">
-                <Activity className="w-8 h-8 text-purple-400" />
-                Wholesale Orderbook
-                <span className="px-3 py-1 text-xs bg-purple-600/30 text-purple-300 rounded-full">BETA</span>
+                <BarChart3 className="w-8 h-8 text-purple-400" />
+                Decentralized Orderbook
+                <span className="px-3 py-1 text-xs bg-green-600/30 text-green-300 rounded-full">OpenBook V2</span>
               </h1>
-              <p className="text-gray-400 mt-1">Real-time wholesale phone trading on Solana</p>
+              <p className="text-gray-400 mt-1">Blockchain-powered wholesale phone marketplace</p>
             </div>
           </div>
 
@@ -95,28 +124,61 @@ export default function OrderbookPage() {
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Stats Bar */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">Last Price</div>
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-purple-600/50 transition-all group">
+            <div className="flex items-center gap-2 mb-1">
+              <DollarSign className="w-4 h-4 text-purple-400" />
+              <div className="text-sm text-gray-400">Last Price</div>
+            </div>
             <div className="text-2xl font-bold">${selectedModelData.lastPrice}</div>
+            <div className="text-xs text-gray-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              Latest trade price
+            </div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">24h Change</div>
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-purple-600/50 transition-all group">
+            <div className="flex items-center gap-2 mb-1">
+              <Activity className="w-4 h-4 text-blue-400" />
+              <div className="text-sm text-gray-400">24h Change</div>
+            </div>
             <div className={`text-2xl font-bold flex items-center gap-2 ${selectedModelData.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
               {selectedModelData.change >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
               {selectedModelData.change >= 0 ? '+' : ''}{selectedModelData.change}%
             </div>
+            <div className="text-xs text-gray-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              Price change vs 24h ago
+            </div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">24h Volume</div>
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-purple-600/50 transition-all group">
+            <div className="flex items-center gap-2 mb-1">
+              <Package className="w-4 h-4 text-green-400" />
+              <div className="text-sm text-gray-400">24h Volume</div>
+            </div>
             <div className="text-2xl font-bold">{selectedModelData.volume} units</div>
+            <div className="text-xs text-gray-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              Phones traded today
+            </div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">Bid/Ask Spread</div>
-            <div className="text-2xl font-bold text-yellow-400">$1</div>
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-purple-600/50 transition-all group">
+            <div className="flex items-center gap-2 mb-1">
+              <ArrowUpDown className="w-4 h-4 text-yellow-400" />
+              <div className="text-sm text-gray-400">Bid/Ask Spread</div>
+            </div>
+            <div className="text-2xl font-bold text-yellow-400">$1.00</div>
+            <div className="text-xs text-gray-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              Difference: best bid & ask
+            </div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-            <div className="text-sm text-gray-400 mb-1">Liquidity</div>
-            <div className="text-2xl font-bold text-purple-400">High</div>
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-purple-600/50 transition-all group">
+            <div className="flex items-center gap-2 mb-1">
+              <BarChart3 className="w-4 h-4 text-purple-400" />
+              <div className="text-sm text-gray-400">Liquidity</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="text-2xl font-bold text-purple-400">High</div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </div>
+            <div className="text-xs text-gray-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              $202k total order value
+            </div>
           </div>
         </div>
 
@@ -126,14 +188,20 @@ export default function OrderbookPage() {
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
               <div className="p-4 border-b border-gray-800 flex items-center justify-between">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <ArrowUpDown className="w-5 h-5 text-blue-400" />
-                  Order Book
-                </h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <ArrowUpDown className="w-5 h-5 text-blue-400" />
+                    Order Book
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-green-400 font-medium">Live Updates</span>
+                  </div>
+                </div>
                 <div className="flex gap-2 text-xs">
-                  <button className="px-3 py-1 bg-gray-800 rounded">0.01</button>
-                  <button className="px-3 py-1 bg-purple-600 rounded">0.1</button>
-                  <button className="px-3 py-1 bg-gray-800 rounded">1</button>
+                  <button className="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition-colors">0.01</button>
+                  <button className="px-3 py-1 bg-purple-600 rounded hover:bg-purple-700 transition-colors">0.1</button>
+                  <button className="px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition-colors">1</button>
                 </div>
               </div>
 
@@ -149,14 +217,17 @@ export default function OrderbookPage() {
                   </div>
                   <div className="p-3 space-y-1">
                     {sellOrders.map((order, idx) => (
-                      <div key={idx} className="relative">
-                        <div className="absolute inset-0 bg-red-500/10" style={{ width: `${(order.quantity / 30) * 100}%` }}></div>
+                      <div key={idx} className="relative group">
+                        <div className="absolute inset-0 bg-red-500/10 transition-all group-hover:bg-red-500/20" style={{ width: `${(order.quantity / 30) * 100}%` }}></div>
                         <div className="relative grid grid-cols-3 text-sm py-1.5 hover:bg-gray-800/50 cursor-pointer rounded transition-colors">
                           <div className="text-red-400 font-medium">${order.price.toLocaleString()}</div>
                           <div className="text-right text-gray-300">{order.quantity}</div>
                           <div className="text-right text-gray-400">${order.total.toLocaleString()}</div>
                         </div>
-                        <div className="text-[10px] text-gray-500 pl-1">{order.condition}</div>
+                        <div className="flex items-center justify-between text-[10px] text-gray-500 pl-1">
+                          <span>{order.condition}</span>
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity">{order.wallet}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -173,16 +244,39 @@ export default function OrderbookPage() {
                   </div>
                   <div className="p-3 space-y-1">
                     {buyOrders.map((order, idx) => (
-                      <div key={idx} className="relative">
-                        <div className="absolute inset-0 bg-green-500/10" style={{ width: `${(order.quantity / 30) * 100}%` }}></div>
+                      <div key={idx} className="relative group">
+                        <div className="absolute inset-0 bg-green-500/10 transition-all group-hover:bg-green-500/20" style={{ width: `${(order.quantity / 30) * 100}%` }}></div>
                         <div className="relative grid grid-cols-3 text-sm py-1.5 hover:bg-gray-800/50 cursor-pointer rounded transition-colors">
                           <div className="text-green-400 font-medium">${order.price.toLocaleString()}</div>
                           <div className="text-right text-gray-300">{order.quantity}</div>
                           <div className="text-right text-gray-400">${order.total.toLocaleString()}</div>
                         </div>
-                        <div className="text-[10px] text-gray-500 pl-1">{order.condition}</div>
+                        <div className="flex items-center justify-between text-[10px] text-gray-500 pl-1">
+                          <span>{order.condition}</span>
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity">{order.wallet}</span>
+                        </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Spread Indicator */}
+              <div className="px-4 py-3 bg-gradient-to-r from-red-900/20 via-yellow-900/20 to-green-900/20 border-t border-b border-gray-800">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ArrowUpDown className="w-4 h-4 text-yellow-400" />
+                    <span className="text-sm font-medium text-yellow-400">Spread: $1.00</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                      <span className="text-gray-400">Best Ask: <span className="text-red-400 font-medium">$1048.50</span></span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                      <span className="text-gray-400">Best Bid: <span className="text-green-400 font-medium">$1048.00</span></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -379,24 +473,50 @@ export default function OrderbookPage() {
 
             {/* Recent Trades */}
             <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-              <div className="p-4 border-b border-gray-800">
+              <div className="p-4 border-b border-gray-800 flex items-center justify-between">
                 <h2 className="text-xl font-bold flex items-center gap-2">
                   <Activity className="w-5 h-5 text-green-400" />
                   Recent Trades
                 </h2>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-gray-400">Live</span>
+                </div>
               </div>
               <div className="p-4">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {recentTrades.map((trade, idx) => (
-                    <div key={idx} className="flex items-center justify-between text-sm py-2 border-b border-gray-800/50 last:border-0">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${trade.side === 'buy' ? 'bg-green-400' : 'bg-red-400'}`}></div>
-                        <span className="text-gray-500 text-xs">{trade.time}</span>
+                    <div key={idx} className="group bg-gray-800/30 hover:bg-gray-800/60 p-3 rounded-lg border border-gray-800/50 hover:border-gray-700 transition-all">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${trade.side === 'buy' ? 'bg-green-400 animate-pulse' : 'bg-red-400 animate-pulse'}`}></div>
+                          <span className="text-gray-500 text-xs font-mono">{trade.time}</span>
+                          <span className={`px-2 py-0.5 text-[10px] font-semibold rounded ${trade.side === 'buy' ? 'bg-green-600/20 text-green-400' : 'bg-red-600/20 text-red-400'}`}>
+                            {trade.side.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className={`font-bold text-lg ${trade.side === 'buy' ? 'text-green-400' : 'text-red-400'}`}>
+                          ${trade.price}
+                        </div>
                       </div>
-                      <div className={`font-medium ${trade.side === 'buy' ? 'text-green-400' : 'text-red-400'}`}>
-                        ${trade.price}
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1 text-gray-400">
+                          <Package className="w-3 h-3" />
+                          <span>{trade.quantity} units</span>
+                          <span className="mx-1">•</span>
+                          <span className="text-gray-500">{trade.condition}</span>
+                        </div>
                       </div>
-                      <div className="text-gray-400">{trade.quantity}</div>
+                      <div className="flex items-center justify-between text-[10px] text-gray-500 mt-2 pt-2 border-t border-gray-800/50">
+                        <div className="flex items-center gap-1">
+                          <ArrowUpRight className="w-3 h-3 text-green-400" />
+                          <span>Buyer: <span className="font-mono text-gray-400">{trade.buyer}</span></span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <ArrowDownRight className="w-3 h-3 text-red-400" />
+                          <span>Seller: <span className="font-mono text-gray-400">{trade.seller}</span></span>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -426,6 +546,124 @@ export default function OrderbookPage() {
                   <span className="text-gray-400">Ask Liquidity</span>
                   <span className="font-medium">$84,143</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* How It Works Section */}
+        <div className="mt-12 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-green-900/20 border border-purple-800/30 rounded-lg p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2 flex items-center justify-center gap-3">
+              <Zap className="w-8 h-8 text-purple-400" />
+              How the Decentralized Orderbook Works
+            </h2>
+            <p className="text-gray-400">Powered by Solana blockchain and OpenBook V2 protocol</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 hover:border-purple-600/50 transition-all">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold">1. Peer-to-Peer Trading</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Wholesale buyers and sellers place orders directly on-chain. No middlemen. No centralized control.
+                Orders are matched automatically through smart contracts on Solana.
+              </p>
+            </div>
+
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 hover:border-green-600/50 transition-all">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-green-400" />
+                </div>
+                <h3 className="text-xl font-bold">2. Price Discovery</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Market-driven pricing based on real supply and demand. The orderbook shows all bids and asks,
+                allowing transparent price discovery and optimal trade execution.
+              </p>
+            </div>
+
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 hover:border-blue-600/50 transition-all">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-blue-400" />
+                </div>
+                <h3 className="text-xl font-bold">3. Instant Settlement</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                When orders match, trades execute instantly on Solana. Funds are held in escrow smart contracts
+                until delivery is confirmed, ensuring security for both parties.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <ArrowUpRight className="w-5 h-5 text-green-400" />
+                <h3 className="text-lg font-bold text-green-400">Buyer Benefits</h3>
+              </div>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-1.5"></div>
+                  <span>Access wholesale inventory at competitive market prices</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-1.5"></div>
+                  <span>Set your own buy orders and wait for sellers to match</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-1.5"></div>
+                  <span>Funds held in escrow until delivery confirmed</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-1.5"></div>
+                  <span>Filter by condition: Excellent, Good, Fair, or Any</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <ArrowDownRight className="w-5 h-5 text-red-400" />
+                <h3 className="text-lg font-bold text-red-400">Seller Benefits</h3>
+              </div>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-1.5"></div>
+                  <span>List inventory at your desired price point</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-1.5"></div>
+                  <span>Instant matching with highest bidders</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-1.5"></div>
+                  <span>Payment guaranteed through smart contract escrow</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 bg-red-400 rounded-full mt-1.5"></div>
+                  <span>Transparent pricing - see real-time market demand</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 p-6 bg-yellow-900/20 border border-yellow-700/30 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Zap className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="text-lg font-bold text-yellow-400 mb-2">MVP Demo Notice</h3>
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  This is a demonstration of the orderbook interface with mock data. The full implementation will
+                  integrate with Solana blockchain, OpenBook V2 DEX protocol, and smart contract escrow for secure
+                  peer-to-peer trading. Phone inventory will be tokenized as compressed NFTs for digital product passports.
+                </p>
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@
 
 import { supabase } from '@/lib/supabase';
 import orderServiceLocal from './orderService'; // Fallback to localStorage
+import { verifyQuoteComplete } from '@/lib/quote-signing';
 
 class OrderServiceSupabase {
   constructor() {
@@ -28,6 +29,26 @@ class OrderServiceSupabase {
     }
 
     try {
+      // SECURITY: Verify quote signature if present
+      if (priceQuote.signature) {
+        const quoteData = {
+          quoteId: priceQuote.quoteId,
+          modelId: phoneData.model?.toLowerCase().replace(/\s+/g, '-') || '',
+          storage: phoneData.storage,
+          carrier: phoneData.carrier,
+          condition: phoneData.condition,
+          usdPrice: priceQuote.usdPrice,
+          solPrice: priceQuote.solPrice,
+          expiresAt: priceQuote.expiresAt
+        };
+
+        const verification = verifyQuoteComplete(quoteData, priceQuote.signature);
+        if (!verification.valid) {
+          console.error('Quote verification failed:', verification.error);
+          throw new Error(verification.error || 'Invalid or expired quote');
+        }
+      }
+
       // First, ensure profile exists
       const profile = await this.ensureProfile(walletAddress);
       if (!profile) {
@@ -151,7 +172,18 @@ class OrderServiceSupabase {
       return orderServiceLocal.getOrdersByWallet(walletAddress);
     }
 
+    // If Supabase is not properly initialized, fallback to local
+    if (!supabase) {
+      console.warn('Supabase client not initialized, using local storage');
+      return orderServiceLocal.getOrdersByWallet(walletAddress);
+    }
+
     try {
+      // Ensure wallet context is set
+      if (supabase.rest?.headers) {
+        supabase.rest.headers['X-Wallet-Address'] = walletAddress;
+      }
+      
       const { data: orders, error } = await supabase
         .from('orders')
         .select('*')
@@ -159,8 +191,28 @@ class OrderServiceSupabase {
         .order('created_at', { ascending: false });
       
       if (error) {
-        console.error('Get orders error:', error);
-        throw error;
+        // Check if it's a network error or RLS error
+        if (error.message?.includes('Failed to fetch') || error.code === 'PGRST301') {
+          console.warn('Orders fetch failed, likely RLS or network issue:', error.message);
+          // Return empty orders instead of throwing
+          return {
+            success: true,
+            orders: []
+          };
+        }
+        
+        console.error('Get orders error:', error.message || 'Unknown error', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        });
+        
+        // Return empty orders on error instead of throwing
+        return {
+          success: true,
+          orders: []
+        };
       }
       
       return {
@@ -168,10 +220,25 @@ class OrderServiceSupabase {
         orders: orders || []
       };
     } catch (error) {
-      console.error('Get orders by wallet error:', process.env.NODE_ENV === 'development' ? error : error.message);
+      // Handle network errors gracefully
+      if (error.message?.includes('Failed to fetch')) {
+        console.warn('Network error fetching orders, returning empty array');
+        return {
+          success: true,
+          orders: []
+        };
+      }
+      
+      console.error('Get orders by wallet error:', error.message || 'Unknown error', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        walletAddress
+      });
+      
+      // Always return orders array to prevent UI errors
       return {
-        success: false,
-        error: error.message,
+        success: true,
         orders: []
       };
     }

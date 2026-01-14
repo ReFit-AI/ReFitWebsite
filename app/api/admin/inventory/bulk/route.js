@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
+const ADMIN_WALLET = process.env.ADMIN_WALLET;
 
 // POST - Bulk import inventory items
 export async function POST(request) {

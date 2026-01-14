@@ -1,18 +1,18 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
-import { 
-  User, MapPin, Bell, 
+import {
+  User, MapPin, Bell,
   Plus, Edit2, Trash2
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import userProfileService from '@/services/userProfile';
 import ShippingAddressForm from '@/components/ShippingAddressForm';
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet';
 
 export default function ProfilePage() {
-  const { publicKey, connected } = useWallet();
+  const { publicKey, connected } = useUnifiedWallet();
   const [profile, setProfile] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [orders, setOrders] = useState([]);

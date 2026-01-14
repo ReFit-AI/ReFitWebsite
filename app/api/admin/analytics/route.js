@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { requireAdmin } from '@/lib/admin-auth';
+import { sanitizeError } from '@/lib/validation';
 
 // Use service role for admin operations
 const getSupabase = () => {
@@ -12,7 +14,16 @@ const getSupabase = () => {
   );
 };
 
-export async function GET() {
+export async function GET(request) {
+  // SECURITY: Require admin authentication
+  const adminCheck = await requireAdmin(request);
+  if (!adminCheck.authorized) {
+    return NextResponse.json(
+      { success: false, error: 'Unauthorized - Admin access required' },
+      { status: 401 }
+    );
+  }
+
   const supabase = getSupabase();
 
   if (!supabase) {
@@ -121,9 +132,8 @@ export async function GET() {
       stats
     });
   } catch (error) {
-    console.error('Error fetching analytics:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Failed to fetch analytics') },
       { status: 500 }
     );
   }

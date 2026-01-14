@@ -1,16 +1,46 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { verifyTransaction } from '@/lib/verify-transaction'
+import { rateLimitEndpoint } from '@/lib/rate-limit-upstash'
 
-// Minimum deposit amount
-const MIN_DEPOSIT = 1000
+// Deposit limits for beta
+const MIN_DEPOSIT = 10 // $10 minimum to prevent spam
+const MAX_DEPOSIT = 100 // $100 max during beta for risk management
+const IS_BETA = true
 
 export async function POST(request) {
+  // TEMPORARILY DISABLED - Coming Soon
+  return NextResponse.json(
+    {
+      success: false,
+      error: 'Pool deposits are coming soon! Expected launch: December 2025',
+      comingSoon: true
+    },
+    { status: 503 }
+  );
+
   try {
     if (!supabase) {
       return NextResponse.json(
         { success: false, error: 'Database not configured' },
         { status: 500 }
       );
+    }
+
+    // SECURITY: Rate limiting - distributed across serverless instances
+    const rateLimitResult = await rateLimitEndpoint.api(request)
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: rateLimitResult.message || 'Too many requests',
+          retryAfter: rateLimitResult.retryAfter
+        },
+        {
+          status: 429,
+          headers: rateLimitResult.headers
+        }
+      )
     }
 
     const body = await request.json()
@@ -31,6 +61,17 @@ export async function POST(request) {
       )
     }
 
+    if (IS_BETA && amount > MAX_DEPOSIT) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Maximum deposit during beta is $${MAX_DEPOSIT}`,
+          details: 'We are limiting deposits during beta testing for security. This limit will be increased after our security audit.'
+        },
+        { status: 400 }
+      )
+    }
+
     // Check if transaction signature already used (prevent double deposits)
     const { data: existingDeposit } = await supabase
       .from('deposits')
@@ -45,12 +86,19 @@ export async function POST(request) {
       )
     }
 
-    // TODO: Verify transaction on Solana (for production)
-    // This would check:
-    // 1. Transaction exists
-    // 2. Amount matches
-    // 3. Sent to correct vault address
-    // 4. Is USDC transfer
+    // SECURITY: Verify transaction on Solana blockchain
+    try {
+      await verifyTransaction(txSignature, amount, walletAddress)
+    } catch (verifyError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Transaction verification failed: ${verifyError.message}`,
+          details: 'The transaction could not be verified on the Solana blockchain. Please ensure you sent USDC to the correct vault address.'
+        },
+        { status: 400 }
+      )
+    }
 
     // Check if user already has deposits (for metrics)
     const { data: existingDeposits } = await supabase
@@ -72,22 +120,12 @@ export async function POST(request) {
       if (!bonusError && bonusResult?.success) {
         hasEarlyBonus = true
         rftRate = 1.5 // 50% bonus for early birds
-        console.log(`✅ Early bird bonus claimed! Slots remaining: ${bonusResult.slots_remaining}`)
       }
-    } catch (bonusErr) {
-      console.log('Bonus not claimed (might be out of slots):', bonusErr.message)
-      // Continue without bonus
+    } catch {
+      // Continue without bonus if not available
     }
 
     // Create deposit record
-    console.log('Creating deposit record:', {
-      wallet: walletAddress.slice(0, 8) + '...',
-      amount,
-      tx: txSignature.slice(0, 8) + '...',
-      rftRate,
-      hasEarlyBonus
-    })
-
     const { data: deposit, error: depositError } = await supabase
       .from('deposits')
       .insert({
@@ -103,13 +141,6 @@ export async function POST(request) {
       .single()
 
     if (depositError) {
-      console.error('Deposit insert error:', {
-        code: depositError.code,
-        message: depositError.message,
-        details: depositError.details,
-        hint: depositError.hint
-      })
-
       // Check if it's a duplicate transaction
       if (depositError.code === '23505' || depositError.message?.includes('duplicate')) {
         return NextResponse.json(
@@ -131,7 +162,7 @@ export async function POST(request) {
     })
 
     if (poolError) {
-      console.error('Pool update error:', poolError)
+      // Pool stats update failed, but deposit was successful
     }
 
     // Log admin action
@@ -142,8 +173,6 @@ export async function POST(request) {
         description: `New deposit from ${walletAddress.slice(0, 8)}...`,
         amount: amount
       })
-
-    console.log(`✅ New deposit: ${walletAddress.slice(0, 8)}... deposited $${amount}`)
 
     return NextResponse.json({
       success: true,
@@ -156,8 +185,7 @@ export async function POST(request) {
         estimatedRftPerWeek: amount * rftRate
       }
     })
-  } catch (error) {
-    console.error('Deposit API error:', error)
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }
@@ -215,8 +243,7 @@ export async function GET(request) {
         weeklyRft: totalDeposited * (deposits?.[0]?.rft_rate || 1)
       }
     })
-  } catch (error) {
-    console.error('Get deposits error:', error)
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to fetch deposits' },
       { status: 500 }

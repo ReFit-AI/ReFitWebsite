@@ -1,0 +1,29 @@
+{
+  "vendor": "KT Corp",
+  "last_updated": "2025-11-06T11:00:09.851530",
+  "source_file": "KT Corp - PPL ( USED ) #20251105.xlsx",
+  "devices": {
+    "iphones": [],
+    "samsung": [
+      {
+        "model": "GALAXY S24 ULTRA",
+        "storage": "ATT ( GB +$20 )",
+        "lock_status": "Unlocked",
+        "prices": {
+          "B": 460.0,
+          "C": 460.0,
+          "D": 440.0
+        }
+      },
+      {
+        "model": "GALAXY S24 ULTRA",
+        "storage": "ATT ( GB +$20 )",
+        "lock_status": "Carrier Locked",
+        "prices": {
+          "B": 260.0,
+          "C": 130.0
+        }
+      }
+    ]
+  }
+}

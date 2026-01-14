@@ -1,16 +1,37 @@
 import { NextResponse } from 'next/server';
-import { calculateQuote } from '@/lib/pricing-engine-v3';
+import { calculateQuote } from '@/lib/pricing-engine';
+import { signQuote } from '@/lib/quote-signing';
+import { mobileQuoteSchema, sanitizeError } from '@/lib/validation';
+import { randomUUID } from 'crypto';
+import { rateLimitEndpoint } from '@/lib/rate-limit-upstash';
 
 export async function POST(request) {
   try {
-    const { model, condition, carrier, storage, issues = [], accessories = {} } = await request.json();
-
-    if (!model || !condition) {
+    // Rate limiting for quote endpoint
+    const rateLimitResult = await rateLimitEndpoint.quote(request);
+    if (!rateLimitResult.success) {
       return NextResponse.json(
-        { success: false, error: 'Model and condition are required' },
+        { success: false, error: rateLimitResult.message || 'Too many requests' },
+        { status: 429, headers: rateLimitResult.headers }
+      );
+    }
+
+    const body = await request.json();
+
+    // Validate input with Zod
+    const validationResult = mobileQuoteSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid input',
+          details: validationResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)
+        },
         { status: 400 }
       );
     }
+
+    const { model, condition, carrier, storage, issues } = validationResult.data;
 
     // Convert model name to modelId format (lowercase, hyphenated)
     const modelId = model.toLowerCase().replace(/\s+/g, '-');
@@ -29,8 +50,7 @@ export async function POST(request) {
       storage: storage || '128GB',
       carrier: carrier?.toLowerCase() || 'unlocked',
       condition: engineCondition,
-      issues: issues || [],
-      accessories: accessories || { charger: false, box: false }
+      issues: issues || []
     });
 
     if (quote.error) {
@@ -54,6 +74,26 @@ export async function POST(request) {
 
     const quoteSOL = quote.usdPrice / solPrice;
 
+    // Generate quote data for signing
+    const quoteId = randomUUID();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes
+    const createdAt = new Date().toISOString();
+
+    // Prepare quote data for HMAC signing
+    const quoteData = {
+      quoteId,
+      modelId,
+      storage: storage || '128GB',
+      carrier: carrier?.toLowerCase() || 'unlocked',
+      condition: engineCondition,
+      usdPrice: quote.usdPrice,
+      solPrice: parseFloat(quoteSOL.toFixed(4)),
+      expiresAt
+    };
+
+    // SECURITY: Sign the quote to prevent tampering
+    const { signature } = signQuote(quoteData);
+
     // Return both old and new format for compatibility
     return NextResponse.json({
       // New format (what pricing engine returns)
@@ -68,7 +108,7 @@ export async function POST(request) {
         breakdown: quote.breakdown
       },
       // Old format for backward compatibility
-      quoteId: crypto.randomUUID(),
+      quoteId,
       model,
       condition,
       carrier,
@@ -76,13 +116,14 @@ export async function POST(request) {
       quoteUSD: quote.usdPrice,
       quoteSOL: parseFloat(quoteSOL.toFixed(4)),
       solPrice,
-      expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
-      createdAt: new Date().toISOString()
+      expiresAt,
+      createdAt,
+      // SECURITY: Include signature for verification
+      signature
     });
   } catch (error) {
-    console.error('Quote generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate quote' },
+      { error: sanitizeError(error, 'Failed to generate quote') },
       { status: 500 }
     );
   }

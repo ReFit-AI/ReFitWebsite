@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { Package, Clock, CheckCircle, Truck, Eye, Download } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import orderService from '@/services/orderService.supabase'
 import TrackingStatus from '@/components/TrackingStatus'
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet'
 
 export default function OrdersPage() {
-  const { connected, publicKey } = useWallet()
+  const { connected, publicKey } = useUnifiedWallet()
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState(null)
@@ -22,32 +22,43 @@ export default function OrdersPage() {
       // Use the order service to get real orders
       const result = await orderService.getOrdersByWallet(publicKey.toString())
       
-      if (result.success && result.orders.length > 0) {
-        // Map Supabase order structure to UI structure
-        const mappedOrders = result.orders.map(order => ({
-          id: order.id,
-          device: `${order.device_brand} ${order.device_model}${order.device_storage ? ` - ${order.device_storage}` : ''}`,
-          brand: order.device_brand,
-          model: order.device_model,
-          condition: order.device_condition,
-          price: order.quote_usd,
-          solPrice: order.quote_sol,
-          status: order.status.replace('_', '-'), // Convert pending_shipment to pending-shipment
-          createdAt: order.created_at,
-          shippingLabel: order.label_url,
-          trackingNumber: order.tracking_number,
-          carrier: order.carrier,
-          shippingAddress: order.shipping_address,
-          paymentTxHash: order.payment_tx_hash,
-          completedAt: order.completed_at
-        }))
-        setOrders(mappedOrders)
+      if (result.success) {
+        if (result.orders && result.orders.length > 0) {
+          // Map Supabase order structure to UI structure
+          const mappedOrders = result.orders.map(order => ({
+            id: order.id,
+            device: `${order.device_brand} ${order.device_model}${order.device_storage ? ` - ${order.device_storage}` : ''}`,
+            brand: order.device_brand,
+            model: order.device_model,
+            condition: order.device_condition,
+            price: order.quote_usd,
+            solPrice: order.quote_sol,
+            status: order.status.replace('_', '-'), // Convert pending_shipment to pending-shipment
+            createdAt: order.created_at,
+            shippingLabel: order.label_url,
+            trackingNumber: order.tracking_number,
+            carrier: order.carrier,
+            shippingAddress: order.shipping_address,
+            paymentTxHash: order.payment_tx_hash,
+            completedAt: order.completed_at
+          }))
+          setOrders(mappedOrders)
+        } else {
+          // No orders found - show empty state
+          setOrders([])
+        }
       } else {
-        // Show empty state - no demo orders
+        // Even on error, show empty state rather than spinning forever
+        console.log('Orders fetch failed:', result.error)
         setOrders([])
+        // Only show error toast if it's not a "no profile" error
+        if (!result.error?.includes('Not authenticated')) {
+          toast.error('Unable to load orders. Please try again.')
+        }
       }
     } catch (error) {
       console.error('Load orders error:', error)
+      setOrders([]) // Show empty state on error
       toast.error('Failed to load orders')
     } finally {
       setLoading(false)

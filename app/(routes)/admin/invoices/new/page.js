@@ -17,7 +17,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
+const ADMIN_WALLET = process.env.ADMIN_WALLET
 
 function NewInvoiceContent() {
   const searchParams = useSearchParams()

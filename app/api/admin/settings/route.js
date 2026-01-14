@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import { sanitizeError } from '@/lib/validation';
 import { createClient } from '@supabase/supabase-js';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
+const ADMIN_WALLET = process.env.ADMIN_WALLET;
 
 // GET - Fetch setting by key
 export async function GET(request) {
@@ -36,7 +37,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error fetching settings:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -77,7 +78,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error updating setting:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }

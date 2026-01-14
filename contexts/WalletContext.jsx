@@ -1,13 +1,11 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { ConnectionProvider, WalletProvider as SolanaWalletProvider } from '@solana/wallet-adapter-react'
+import { useUnifiedWallet, ConnectionProvider, WalletProvider as SolanaWalletProvider } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
-import { 
+import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  CoinbaseWalletAdapter,
-  TrustWalletAdapter,
   LedgerWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
@@ -31,12 +29,10 @@ export const WalletProvider = ({ children }) => {
 
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-      new BackpackWalletAdapter(),
-      new CoinbaseWalletAdapter(),
-      new TrustWalletAdapter(),
-      new LedgerWalletAdapter(),
+      new PhantomWalletAdapter(),       // Most popular Solana wallet
+      new BackpackWalletAdapter(),      // Solana-native wallet by Coral
+      new SolflareWalletAdapter(),      // Popular Solana wallet
+      new LedgerWalletAdapter(),        // Hardware wallet support
     ],
     []
   )

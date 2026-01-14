@@ -1,0 +1,678 @@
+{
+  "last_updated": "2025-11-06T11:57:16.127855",
+  "source": "KT Corp",
+  "devices": [
+    {
+      "model": "GALAXY S25 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 540.0,
+        "B+": 510.0,
+        "B": 480.0,
+        "C": 310.0,
+        "D": 180.0
+      }
+    },
+    {
+      "model": "GALAXY S25 ULTRA",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 570.0,
+        "B+": 540.0,
+        "B": 510.0,
+        "C": 310.0,
+        "D": 180.0
+      }
+    },
+    {
+      "model": "GALAXY S25 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 440.0,
+        "B+": 440.0,
+        "B": 400.0,
+        "C": 310.0,
+        "D": 180.0
+      }
+    },
+    {
+      "model": "GALAXY S25 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 440.0,
+        "B+": 440.0,
+        "B": 400.0,
+        "C": 310.0,
+        "D": 180.0
+      }
+    },
+    {
+      "model": "GALAXY S25 ULTRA",
+      "storage": "512GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 465.0,
+        "B+": 465.0,
+        "B": 420.0,
+        "C": 310.0,
+        "D": 180.0
+      }
+    },
+    {
+      "model": "GALAXY S25 ULTRA",
+      "storage": "1TB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 500.0,
+        "B+": 500.0,
+        "B": 445.0,
+        "C": 310.0,
+        "D": 180.0
+      }
+    },
+    {
+      "model": "GALAXY S25 PLUS",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 340.0,
+        "B+": 310.0,
+        "B": 260.0,
+        "C": 150.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY S25 PLUS",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 370.0,
+        "B+": 340.0,
+        "B": 290.0,
+        "C": 150.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY S25",
+      "storage": "128GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 230.0,
+        "B+": 230.0,
+        "B": 190.0,
+        "C": 110.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY S25",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 260.0,
+        "B+": 260.0,
+        "B": 220.0,
+        "C": 110.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY S25 FE",
+      "storage": "128GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 130.0,
+        "B+": 130.0,
+        "B": 110.0,
+        "C": 40.0,
+        "D": 30.0
+      }
+    },
+    {
+      "model": "GALAXY S25 FE",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 145.0,
+        "B+": 145.0,
+        "B": 125.0,
+        "C": 40.0,
+        "D": 30.0
+      }
+    },
+    {
+      "model": "GALAXY S24 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 420.0,
+        "B+": 420.0,
+        "B": 400.0,
+        "C": 260.0,
+        "D": 130.0
+      }
+    },
+    {
+      "model": "GALAXY S24 ULTRA",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 460.0,
+        "B+": 460.0,
+        "B": 440.0,
+        "C": 260.0,
+        "D": 130.0
+      }
+    },
+    {
+      "model": "GALAXY S24 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 340.0,
+        "B+": 340.0,
+        "B": 310.0,
+        "C": 260.0,
+        "D": 130.0
+      }
+    },
+    {
+      "model": "GALAXY S24 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 300.0,
+        "B+": 300.0,
+        "B": 270.0,
+        "C": 220.0,
+        "D": 130.0
+      }
+    },
+    {
+      "model": "GALAXY S24 ULTRA",
+      "storage": "512GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 330.0,
+        "B+": 330.0,
+        "B": 300.0,
+        "C": 220.0,
+        "D": 130.0
+      }
+    },
+    {
+      "model": "GALAXY S24 ULTRA",
+      "storage": "1TB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 360.0,
+        "B+": 360.0,
+        "B": 330.0,
+        "C": 220.0,
+        "D": 130.0
+      }
+    },
+    {
+      "model": "GALAXY S24 PLUS",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 280.0,
+        "B+": 250.0,
+        "B": 210.0,
+        "C": 120.0,
+        "D": 30.0
+      }
+    },
+    {
+      "model": "GALAXY S24 PLUS",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 310.0,
+        "B+": 280.0,
+        "B": 240.0,
+        "C": 120.0,
+        "D": 30.0
+      }
+    },
+    {
+      "model": "GALAXY S24",
+      "storage": "128GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 185.0,
+        "B+": 185.0,
+        "B": 170.0,
+        "C": 90.0,
+        "D": 40.0
+      }
+    },
+    {
+      "model": "GALAXY S24",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 215.0,
+        "B+": 215.0,
+        "B": 200.0,
+        "C": 90.0,
+        "D": 40.0
+      }
+    },
+    {
+      "model": "GALAXY S24 FE",
+      "storage": "128GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 80.0,
+        "B+": 80.0,
+        "B": 60.0,
+        "C": 30.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY S24 FE",
+      "storage": "128GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 80.0,
+        "B+": 80.0,
+        "B": 60.0,
+        "C": 30.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY S24 FE",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 90.0,
+        "B+": 90.0,
+        "B": 70.0,
+        "C": 30.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY S23 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 280.0,
+        "B+": 280.0,
+        "B": 260.0,
+        "C": 160.0,
+        "D": 70.0
+      }
+    },
+    {
+      "model": "GALAXY S23 ULTRA",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 300.0,
+        "B+": 300.0,
+        "B": 280.0,
+        "C": 160.0,
+        "D": 70.0
+      }
+    },
+    {
+      "model": "GALAXY S23 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 210.0,
+        "B+": 210.0,
+        "B": 190.0,
+        "C": 160.0,
+        "D": 70.0
+      }
+    },
+    {
+      "model": "GALAXY S23 ULTRA",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 200.0,
+        "B+": 200.0,
+        "B": 180.0,
+        "C": 150.0,
+        "D": 70.0
+      }
+    },
+    {
+      "model": "GALAXY S23 ULTRA",
+      "storage": "512GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 220.0,
+        "B+": 220.0,
+        "B": 200.0,
+        "C": 150.0,
+        "D": 70.0
+      }
+    },
+    {
+      "model": "GALAXY S23 ULTRA",
+      "storage": "1TB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 240.0,
+        "B+": 240.0,
+        "B": 220.0,
+        "C": 150.0,
+        "D": 70.0
+      }
+    },
+    {
+      "model": "GALAXY S23 PLUS",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 150.0,
+        "B+": 150.0,
+        "B": 130.0,
+        "C": 70.0,
+        "D": 10.0
+      }
+    },
+    {
+      "model": "GALAXY S23 PLUS",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 110.0,
+        "B+": 110.0,
+        "B": 90.0,
+        "C": 70.0,
+        "D": 10.0
+      }
+    },
+    {
+      "model": "GALAXY S23",
+      "storage": "128GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 135.0,
+        "B+": 135.0,
+        "B": 115.0,
+        "C": 20.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY S23",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 155.0,
+        "B+": 155.0,
+        "B": 135.0,
+        "C": 20.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY S23",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 175.0,
+        "B+": 175.0,
+        "B": 155.0,
+        "C": 20.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 6",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 480.0,
+        "B+": 450.0,
+        "B": 430.0,
+        "C": 240.0,
+        "D": 140.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 6",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 520.0,
+        "B+": 490.0,
+        "B": 470.0,
+        "C": 240.0,
+        "D": 140.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 5",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 340.0,
+        "B+": 320.0,
+        "B": 290.0,
+        "C": 180.0,
+        "D": 80.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 5",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 370.0,
+        "B+": 350.0,
+        "B": 320.0,
+        "C": 180.0,
+        "D": 80.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 4",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 180.0,
+        "B+": 180.0,
+        "B": 170.0,
+        "C": 160.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 4",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 200.0,
+        "B+": 200.0,
+        "B": 190.0,
+        "C": 160.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 4",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 180.0,
+        "B+": 180.0,
+        "B": 150.0,
+        "C": 160.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 4",
+      "storage": "512GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 160.0,
+        "B+": 160.0,
+        "B": 145.0,
+        "C": 160.0,
+        "D": 60.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 3",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 190.0,
+        "B+": 190.0,
+        "B": 160.0,
+        "C": 100.0,
+        "D": 55.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 3",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 220.0,
+        "B+": 220.0,
+        "B": 190.0,
+        "C": 100.0,
+        "D": 55.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 3",
+      "storage": "256GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 140.0,
+        "B+": 140.0,
+        "B": 120.0,
+        "C": 100.0,
+        "D": 55.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD 3",
+      "storage": "512GB",
+      "lock_status": "Carrier Locked",
+      "prices": {
+        "A": 140.0,
+        "B+": 140.0,
+        "B": 120.0,
+        "C": 100.0,
+        "D": 55.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 200.0,
+        "B+": 200.0,
+        "B": 170.0,
+        "C": 80.0,
+        "D": 40.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "512GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 230.0,
+        "B+": 230.0,
+        "B": 200.0,
+        "C": 80.0,
+        "D": 40.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "128GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 175.0,
+        "B+": 165.0,
+        "B": 135.0,
+        "C": 60.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 205.0,
+        "B+": 195.0,
+        "B": 165.0,
+        "C": 60.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "128GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 118.0,
+        "B+": 118.0,
+        "B": 88.0,
+        "C": 45.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 148.0,
+        "B+": 148.0,
+        "B": 118.0,
+        "C": 45.0,
+        "D": 20.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "128GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 90.0,
+        "B+": 90.0,
+        "B": 80.0,
+        "C": 40.0,
+        "D": 10.0
+      }
+    },
+    {
+      "model": "GALAXY Z FOLD",
+      "storage": "256GB",
+      "lock_status": "Unlocked",
+      "prices": {
+        "A": 100.0,
+        "B+": 100.0,
+        "B": 90.0,
+        "C": 40.0,
+        "D": 10.0
+      }
+    }
+  ]
+}

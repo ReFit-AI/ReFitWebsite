@@ -2,20 +2,19 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck, TrendingUp } from 'lucide-react'
+import { ArrowLeft, Smartphone, Shield, Clock, DollarSign, MapPin, Truck } from 'lucide-react'
 import Link from 'next/link'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from 'react-hot-toast'
 import PhoneFormV2 from '@/components/PhoneFormV2'
 import PriceQuote from '@/components/PriceQuote'
 import ShippingAddressForm from '@/components/ShippingAddressForm'
 import ShippingSelection from '@/components/ShippingSelection'
-import SeekerComparison from '@/components/SeekerComparison'
 import { getUserProfileService, getShippingService, initializeServices } from '@/services'
 import orderService from '@/services/orderService.supabase'
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet'
 
 export default function SellPage() {
-  const { publicKey, connected } = useWallet()
+  const { publicKey, connected } = useUnifiedWallet()
   const [currentStep, setCurrentStep] = useState(1)
   const [phoneData, setPhoneData] = useState(null)
   const [priceQuote, setPriceQuote] = useState(null)
@@ -53,7 +52,8 @@ export default function SellPage() {
         setUserAddress(defaultAddr)
       }
     } catch (error) {
-      console.error('Load addresses error:', error)
+      // Silent fail - expected when user hasn't saved addresses yet
+      // console.log('No saved addresses found')
     }
   }
 
@@ -70,11 +70,6 @@ export default function SellPage() {
     setCurrentStep(3)
   }
 
-  const handleDepositToPool = () => {
-    // Redirect to stake page with pre-filled amount
-    const depositAmount = Math.floor(priceQuote?.usdPrice || 0)
-    window.location.href = `/stake?amount=${depositAmount}&source=tradein`
-  }
 
   const handleSaveAddress = async (addressData) => {
     setUserAddress(addressData)
@@ -125,12 +120,16 @@ export default function SellPage() {
       return
     }
 
+    // IMEI is optional but recommended for device verification
+    // We can track package with shipping number
+
     try {
       // Generate shipping label
       const shippingService = getShippingService()
       const labelResult = await shippingService.purchaseLabel(
         selectedShippingRate.rateId,
-        userAddress
+        userAddress,
+        publicKey.toString()
       )
 
       if (!labelResult.success) {
@@ -250,48 +249,33 @@ export default function SellPage() {
                 <div className="bg-gray-900/50 rounded-2xl p-8 border border-gray-800">
                   <div className="text-center mb-8">
                     <DollarSign className="mx-auto mb-4 text-solana-green" size={48} />
-                    <h2 className="text-2xl font-bold mb-2">Your instant quote</h2>
-                    <p className="text-gray-400">Based on current market conditions</p>
+                    <h2 className="text-2xl font-bold mb-2">Your Instant Quote</h2>
+                    <p className="text-gray-400">Guaranteed price for your device</p>
                   </div>
                   <PriceQuote quote={priceQuote} phoneData={phoneData} />
-                  
-                  {/* Seeker Upgrade Comparison */}
-                  <SeekerComparison tradeInValue={priceQuote.usdPrice} />
-                </div>
 
-                {/* Pool Deposit Option */}
-                <div className="bg-gradient-to-br from-purple-900/30 to-green-900/30 rounded-2xl p-6 border border-purple-500/30">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                      <TrendingUp className="w-6 h-6 text-purple-400" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-2">Earn Passive Income Instead?</h3>
-                      <p className="text-gray-300 mb-4">
-                        Instead of taking ${priceQuote.usdPrice} cash, deposit it into our liquidity pool
-                        and earn <span className="text-green-400 font-bold">8% monthly (104% APY)</span>.
-                        Your old phone becomes a passive income generator!
-                      </p>
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div className="bg-black/30 rounded-lg p-3">
-                          <div className="text-sm text-gray-400">Monthly Returns</div>
-                          <div className="text-xl font-bold text-green-400">
-                            ${(priceQuote.usdPrice * 0.08).toFixed(0)}/mo
-                          </div>
-                        </div>
-                        <div className="bg-black/30 rounded-lg p-3">
-                          <div className="text-sm text-gray-400">Annual Returns</div>
-                          <div className="text-xl font-bold text-purple-400">
-                            ${(priceQuote.usdPrice * 1.04).toFixed(0)}/yr
-                          </div>
-                        </div>
+                  {/* Simple value props */}
+                  <div className="grid grid-cols-3 gap-4 mt-8">
+                    <div className="text-center">
+                      <div className="w-10 h-10 mx-auto mb-2 bg-solana-purple/20 rounded-full flex items-center justify-center">
+                        <Truck className="w-5 h-5 text-solana-purple" size={20} />
                       </div>
-                      <button
-                        onClick={handleDepositToPool}
-                        className="w-full py-3 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all"
-                      >
-                        Deposit ${priceQuote.usdPrice} to Pool Instead
-                      </button>
+                      <div className="text-sm font-medium">Free Shipping</div>
+                      <div className="text-xs text-gray-500">Prepaid label</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-10 h-10 mx-auto mb-2 bg-solana-green/20 rounded-full flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-solana-green" size={20} />
+                      </div>
+                      <div className="text-sm font-medium">Fast Payment</div>
+                      <div className="text-xs text-gray-500">24-48 hours</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-10 h-10 mx-auto mb-2 bg-solana-purple/20 rounded-full flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-solana-purple" size={20} />
+                      </div>
+                      <div className="text-sm font-medium">Insured</div>
+                      <div className="text-xs text-gray-500">Protected shipping</div>
                     </div>
                   </div>
                 </div>
@@ -307,7 +291,7 @@ export default function SellPage() {
                     onClick={handleAcceptQuote}
                     className="btn-primary flex-1"
                   >
-                    Ship Device for ${priceQuote.usdPrice} Cash
+                    Accept & Continue to Shipping
                   </button>
                 </div>
               </div>
@@ -442,7 +426,7 @@ export default function SellPage() {
                   <div className="text-center p-4 bg-gray-800/50 rounded-xl">
                     <Shield className="mx-auto mb-2 text-solana-purple" size={24} />
                     <div className="font-semibold">Insured</div>
-                    <div className="text-sm text-gray-400">Full coverage</div>
+                    <div className="text-sm text-gray-400">Protected shipping</div>
                   </div>
                   <div className="text-center p-4 bg-gray-800/50 rounded-xl">
                     <Clock className="mx-auto mb-2 text-solana-purple" size={24} />

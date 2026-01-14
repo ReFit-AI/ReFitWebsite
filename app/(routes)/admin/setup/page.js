@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Settings, Database, Package, Check, AlertCircle } from 'lucide-react'
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
+const ADMIN_WALLET = process.env.ADMIN_WALLET
 
 export default function SetupPage() {
   const { publicKey, connected } = useWallet()

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-server';
+import { sanitizeError } from '@/lib/validation';
 
 export async function POST(request) {
   try {
@@ -47,14 +48,34 @@ export async function POST(request) {
 
     // Create new user (passwordless)
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
-      email: `${walletAddress}@shoprefit.com`,
+      email: `${walletAddress.toLowerCase()}@shoprefit.com`,
       email_confirm: true,
       user_metadata: {
         wallet_address: walletAddress,
       },
     });
 
-    if (createError) throw createError;
+    if (createError) {
+      // If user already exists, just get them instead
+      if (createError.message?.includes('already been registered') || createError.code === 'email_exists') {
+        const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+        const existingUser = existingUsers?.users?.find(
+          u => u.email === `${walletAddress.toLowerCase()}@shoprefit.com`
+        );
+        
+        if (existingUser) {
+          console.log('User already exists, using existing:', existingUser.id);
+          return NextResponse.json({
+            user: existingUser,
+            isNew: false,
+            success: true,
+          });
+        }
+      }
+      
+      console.error('Error creating user:', createError);
+      throw createError;
+    }
 
     // Create user record
     const { error: insertError } = await supabaseAdmin
@@ -62,7 +83,7 @@ export async function POST(request) {
       .insert({
         id: newUser.user.id,
         wallet_address: walletAddress,
-        email: `${walletAddress}@shoprefit.com`,
+        email: `${walletAddress.toLowerCase()}@shoprefit.com`,
       });
 
     if (insertError && !insertError.message.includes('duplicate')) {
@@ -72,7 +93,7 @@ export async function POST(request) {
     // Generate session
     const { data: session, error: sessionError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'magiclink',
-      email: `${walletAddress}@shoprefit.com`,
+      email: `${walletAddress.toLowerCase()}@shoprefit.com`,
       options: {
         redirectTo: `${request.headers.get('origin')}/auth/callback`,
       },
@@ -86,9 +107,8 @@ export async function POST(request) {
       session,
     });
   } catch (error) {
-    console.error('Wallet link error:', process.env.NODE_ENV === 'development' ? error : error.message);
     return NextResponse.json(
-      { error: error.message || 'Failed to link wallet' },
+      { error: sanitizeError(error, 'Failed to link wallet') },
       { status: 500 }
     );
   }

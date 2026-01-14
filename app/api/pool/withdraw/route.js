@@ -1,9 +1,39 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { requireAdmin } from '@/lib/admin-auth'
+import { rateLimitEndpoint } from '@/lib/rate-limit-upstash'
+import { verifyOrigin } from '@/lib/csrf-protection'
 
 // POST - Request withdrawal
 export async function POST(request) {
+  // TEMPORARILY DISABLED - Coming Soon
+  return NextResponse.json(
+    {
+      success: false,
+      error: 'Pool withdrawals are coming soon! Expected launch: December 2025',
+      comingSoon: true
+    },
+    { status: 503 }
+  );
+
   try {
+    // SECURITY: Rate limiting - distributed across serverless instances
+    const rateLimitResult = await rateLimitEndpoint.api(request)
+    if (!rateLimitResult.success) {
+      console.log(`⚠️ Rate limit exceeded for withdrawal request`)
+      return NextResponse.json(
+        {
+          success: false,
+          error: rateLimitResult.message || 'Too many requests',
+          retryAfter: rateLimitResult.retryAfter
+        },
+        {
+          status: 429,
+          headers: rateLimitResult.headers
+        }
+      )
+    }
+
     const body = await request.json()
     const { walletAddress, amount } = body
 
@@ -143,10 +173,18 @@ export async function GET(request) {
 // PATCH - Admin: Process withdrawal (approve/reject)
 export async function PATCH(request) {
   try {
+    // SECURITY: Require admin authentication
+    const adminCheck = await requireAdmin(request);
+    if (!adminCheck.authorized) {
+      console.error('❌ Unauthorized withdrawal action attempt');
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized - Admin access required' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json()
     const { requestId, action, txSignature } = body // action: 'approve', 'reject', 'complete'
-
-    // TODO: Add admin authentication
 
     if (!requestId || !action) {
       return NextResponse.json(

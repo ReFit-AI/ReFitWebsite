@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { sanitizeError } from '@/lib/validation';
 
 export async function POST(request) {
   try {
@@ -63,11 +64,10 @@ export async function POST(request) {
       });
     }
   } catch (error) {
-    console.error('Address validation error:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error.message,
+      {
+        success: false,
+        error: sanitizeError(error, 'Failed to validate address'),
         messages: ['Failed to validate address']
       },
       { status: 500 }

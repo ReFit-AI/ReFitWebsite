@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
+const ADMIN_WALLET = process.env.ADMIN_WALLET;
 const SHIPPO_API_KEY = process.env.SHIPPO_API_KEY;
 
 // POST - Create shipping label via Shippo and auto-update inventory

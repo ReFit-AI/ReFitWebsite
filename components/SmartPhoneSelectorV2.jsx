@@ -3,12 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Check, ChevronRight, Smartphone, Apple, Android, Circle } from 'lucide-react'
-import { 
+import {
   POPULAR_MODELS,
-  searchModels, 
   getStorageOptions,
-  getAllModelsByCategory 
-} from '@/lib/pricing-engine-v3'
+  getAllModels,
+  searchModels
+} from '@/lib/pricing-engine'
 
 const SmartPhoneSelectorV2 = ({ onSelect }) => {
   const [selectedCategory, setSelectedCategory] = useState('iphone')

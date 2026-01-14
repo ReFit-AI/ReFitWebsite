@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
+import { sanitizeError } from '@/lib/validation';
 import { createClient } from '@supabase/supabase-js';
 import { validateBuyerData, sanitizeBuyerData } from '@/lib/invoiceValidation';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET;
+const ADMIN_WALLET = process.env.ADMIN_WALLET;
 
 // GET - List all buyers
 export async function GET() {
@@ -24,7 +25,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching buyers:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -73,7 +74,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error creating buyer:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
@@ -111,7 +112,7 @@ export async function PATCH(request) {
   } catch (error) {
     console.error('Error updating buyer:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: sanitizeError(error, 'Internal server error') },
       { status: 500 }
     );
   }
