@@ -9,8 +9,7 @@
     "lint": "next lint",
     "test": "node scripts/quick-test.js",
     "test:local": "node scripts/test-marketplace-local.js",
-    "test:setup": "bash scripts/test-setup.sh",
-    "test:devnet": "node scripts/test-devnet.js"
+    "test:setup": "bash scripts/test-setup.sh"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.32.1",
