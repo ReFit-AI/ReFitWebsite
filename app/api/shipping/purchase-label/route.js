@@ -10,11 +10,11 @@ function generateMockLabel() {
   return {
     trackingNumber,
     labelUrl: `https://www.shoprefit.com/mock-labels/${trackingNumber}.pdf`,
-    trackingUrl: `https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1=${trackingNumber}`,
-    carrier: 'USPS',
+    trackingUrl: `https://www.ups.com/track?tracknum=${trackingNumber}`,
+    carrier: 'UPS',
     cost: 0.00,
-    service: 'USPS Priority Mail',
-    estimatedDays: 3
+    service: 'UPS Ground',
+    estimatedDays: 5
   };
 }
 
@@ -97,15 +97,15 @@ export async function POST(request) {
         console.log('Creating new shipment to get rate...');
       }
       
-      // Define warehouse address
+      // Define warehouse address (destination for trade-ins)
       const warehouseAddress = {
-      name: 'ReFit Warehouse',
-      street1: '100 California St',
-      city: 'San Francisco', 
-      state: 'CA',
-      zip: '94111',
+      name: 'Shop Refit, LLC',
+      street1: '4931 Anclote Dr',
+      city: 'Johns Creek',
+      state: 'GA',
+      zip: '30022',
       country: 'US',
-      phone: '415-555-0100',
+      phone: '470-555-0100',
       email: 'warehouse@shoprefit.com'
     };
 
@@ -125,9 +125,9 @@ export async function POST(request) {
     }
     
     // Create shipment to get real rates
+    // For trade-ins: customer ships FROM their address TO warehouse
     const shipmentPayload = {
-      addressFrom: warehouseAddress,
-      addressTo: {
+      addressFrom: {
         name: userAddress.name || 'Customer',
         street1: userAddress.street1,
         street2: userAddress.street2 || '',
@@ -138,6 +138,7 @@ export async function POST(request) {
         phone: userAddress.phone || '',
         email: userAddress.email || ''
       },
+      addressTo: warehouseAddress,
       parcels: [parcel],
       async: false
     };
@@ -153,23 +154,23 @@ export async function POST(request) {
       console.log('Available rates:', shipment.rates?.length || 0);
     }
 
-    // Find USPS Priority Mail rate
-    const uspsPriorityRate = shipment.rates
-      .filter(rate => 
-        rate.provider === 'USPS' && 
-        rate.servicelevel && 
-        rate.servicelevel.name.includes('Priority')
+    // Find UPS Ground rate (matches rates endpoint which returns UPS options)
+    const upsGroundRate = shipment.rates
+      .filter(rate =>
+        rate.provider === 'UPS' &&
+        rate.servicelevel &&
+        rate.servicelevel.name.toLowerCase().includes('ground')
       )
       .sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount))[0];
-    
-    if (!uspsPriorityRate) {
-      throw new Error('No USPS Priority Mail rates available for this address');
+
+    if (!upsGroundRate) {
+      throw new Error('No UPS Ground rates available for this address');
     }
-    
+
     if (process.env.NODE_ENV === 'development') {
-      console.log('Using USPS Priority Mail rate:', uspsPriorityRate.servicelevel.name);
+      console.log('Using UPS Ground rate:', upsGroundRate.servicelevel.name);
     }
-    selectedRate = uspsPriorityRate;
+    selectedRate = upsGroundRate;
 
     if (process.env.NODE_ENV === 'development') {
       console.log('Selected rate ID:', selectedRate.objectId || selectedRate.object_id);
@@ -206,10 +207,10 @@ export async function POST(request) {
         trackingNumber: transaction.trackingNumber || transaction.tracking_number,
         labelUrl: transaction.labelUrl || transaction.label_url,
         trackingUrl: transaction.trackingUrlProvider || transaction.tracking_url_provider,
-        carrier: transaction.carrier || transaction.carrier_account,
+        carrier: transaction.carrier || transaction.carrier_account || 'UPS',
         cost: selectedRate.amount ? parseFloat(selectedRate.amount) : 0.00,
-        service: 'USPS Priority Mail',
-        estimatedDays: selectedRate.estimatedDays || selectedRate.estimated_days || selectedRate.days || 3
+        service: selectedRate.servicelevel?.name || 'UPS Ground',
+        estimatedDays: selectedRate.estimatedDays || selectedRate.estimated_days || selectedRate.days || 5
       }
     });
   } catch (error) {

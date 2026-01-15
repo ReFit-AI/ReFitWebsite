@@ -74,13 +74,13 @@ export async function POST(request) {
 
     // Default warehouse address if fromAddress not provided
     const defaultWarehouse = {
-      name: 'ReFit Warehouse',
-      street1: '100 California St',
-      city: 'San Francisco',
-      state: 'CA',
-      zip: '94111',
+      name: 'Shop Refit, LLC',
+      street1: '4931 Anclote Dr',
+      city: 'Johns Creek',
+      state: 'GA',
+      zip: '30022',
       country: 'US',
-      phone: '415-555-0100'
+      phone: '470-555-0100'
     };
 
     if (process.env.NODE_ENV === 'development') {
