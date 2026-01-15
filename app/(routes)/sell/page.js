@@ -167,7 +167,7 @@ export default function SellPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pt-20 pb-16">
+    <div className="min-h-screen bg-surface-primary text-label-primary pt-20 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <motion.div
@@ -176,18 +176,18 @@ export default function SellPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <Link 
-              href="/" 
-              className="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-6"
+            <Link
+              href="/"
+              className="inline-flex items-center text-label-tertiary hover:text-white transition-colors mb-6"
             >
               <ArrowLeft size={20} className="mr-2" />
               Back to home
             </Link>
-            
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-solana-purple to-solana-green bg-clip-text text-transparent">
+
+            <h1 className="heading-display mb-4">
               Sell Your Phone
             </h1>
-            <p className="text-xl text-gray-400">Get instant payment in SOL</p>
+            <p className="text-xl text-label-secondary">Get instant payment in SOL</p>
           </motion.div>
 
           {/* Progress Steps */}
@@ -202,21 +202,21 @@ export default function SellPage() {
                 const Icon = step.icon
                 const isActive = currentStep === step.number
                 const isCompleted = currentStep > step.number
-                
+
                 return (
                   <div key={step.number} className="flex items-center">
                     <div className="relative">
                       <div className={`
                         w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300
-                        ${isActive ? 'bg-solana-purple text-white' : 
-                          isCompleted ? 'bg-solana-green text-white' : 
-                          'bg-gray-800 text-gray-500'}
+                        ${isActive ? 'bg-accent-blue text-white' :
+                          isCompleted ? 'bg-accent-green text-white' :
+                          'bg-surface-elevated text-label-tertiary'}
                       `}>
-                        <Icon size={20} />
+                        <Icon size={20} strokeWidth={1.5} />
                       </div>
                       <span className={`
                         absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm whitespace-nowrap
-                        ${isActive ? 'text-white' : 'text-gray-500'}
+                        ${isActive ? 'text-white' : 'text-label-tertiary'}
                       `}>
                         {step.title}
                       </span>
@@ -224,7 +224,7 @@ export default function SellPage() {
                     {index < steps.length - 1 && (
                       <div className={`
                         h-0.5 w-16 sm:w-24 mx-2 transition-all duration-300
-                        ${isCompleted ? 'bg-solana-green' : 'bg-gray-800'}
+                        ${isCompleted ? 'bg-accent-green' : 'bg-surface-tertiary'}
                       `} />
                     )}
                   </div>
@@ -246,36 +246,36 @@ export default function SellPage() {
 
             {currentStep === 2 && priceQuote && (
               <div className="space-y-8">
-                <div className="bg-gray-900/50 rounded-2xl p-8 border border-gray-800">
+                <div className="card">
                   <div className="text-center mb-8">
-                    <DollarSign className="mx-auto mb-4 text-solana-green" size={48} />
-                    <h2 className="text-2xl font-bold mb-2">Your Instant Quote</h2>
-                    <p className="text-gray-400">Guaranteed price for your device</p>
+                    <DollarSign className="mx-auto mb-4 text-accent-green" size={48} strokeWidth={1.5} />
+                    <h2 className="heading-2 mb-2">Your Instant Quote</h2>
+                    <p className="text-label-secondary">Guaranteed price for your device</p>
                   </div>
                   <PriceQuote quote={priceQuote} phoneData={phoneData} />
 
                   {/* Simple value props */}
                   <div className="grid grid-cols-3 gap-4 mt-8">
                     <div className="text-center">
-                      <div className="w-10 h-10 mx-auto mb-2 bg-solana-purple/20 rounded-full flex items-center justify-center">
-                        <Truck className="w-5 h-5 text-solana-purple" size={20} />
+                      <div className="w-10 h-10 mx-auto mb-2 bg-accent-blue/15 rounded-full flex items-center justify-center">
+                        <Truck className="w-5 h-5 text-accent-blue" strokeWidth={1.5} />
                       </div>
                       <div className="text-sm font-medium">Free Shipping</div>
-                      <div className="text-xs text-gray-500">Prepaid label</div>
+                      <div className="text-xs text-label-tertiary">Prepaid label</div>
                     </div>
                     <div className="text-center">
-                      <div className="w-10 h-10 mx-auto mb-2 bg-solana-green/20 rounded-full flex items-center justify-center">
-                        <Clock className="w-5 h-5 text-solana-green" size={20} />
+                      <div className="w-10 h-10 mx-auto mb-2 bg-accent-green/15 rounded-full flex items-center justify-center">
+                        <Clock className="w-5 h-5 text-accent-green" strokeWidth={1.5} />
                       </div>
                       <div className="text-sm font-medium">Fast Payment</div>
-                      <div className="text-xs text-gray-500">24-48 hours</div>
+                      <div className="text-xs text-label-tertiary">24-48 hours</div>
                     </div>
                     <div className="text-center">
-                      <div className="w-10 h-10 mx-auto mb-2 bg-solana-purple/20 rounded-full flex items-center justify-center">
-                        <Shield className="w-5 h-5 text-solana-purple" size={20} />
+                      <div className="w-10 h-10 mx-auto mb-2 bg-accent-purple/15 rounded-full flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-accent-purple" strokeWidth={1.5} />
                       </div>
                       <div className="text-sm font-medium">Insured</div>
-                      <div className="text-xs text-gray-500">Protected shipping</div>
+                      <div className="text-xs text-label-tertiary">Protected shipping</div>
                     </div>
                   </div>
                 </div>
@@ -300,13 +300,13 @@ export default function SellPage() {
             {currentStep === 3 && (
               <div className="space-y-8">
                 {/* Shipping Address Section */}
-                <div className="bg-gray-900 rounded-lg p-8">
+                <div className="card">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-semibold">Shipping Address</h2>
+                    <h2 className="heading-2">Shipping Address</h2>
                     {savedAddresses.length > 0 && (
                       <button
                         onClick={() => setShowAddressForm(!showAddressForm)}
-                        className="text-solana-purple hover:text-solana-green transition-colors"
+                        className="text-accent-blue hover:text-accent-blue/80 transition-colors"
                       >
                         {showAddressForm ? 'Cancel' : userAddress ? 'Change Address' : 'Add New'}
                       </button>
@@ -320,18 +320,18 @@ export default function SellPage() {
                       onCancel={() => setShowAddressForm(false)}
                     />
                   ) : userAddress ? (
-                    <div className="p-4 bg-gray-800 rounded">
+                    <div className="p-4 bg-surface-secondary rounded-ios">
                       <p className="font-medium">{userAddress.name}</p>
-                      <p className="text-gray-400">{userAddress.street1}</p>
-                      {userAddress.street2 && <p className="text-gray-400">{userAddress.street2}</p>}
-                      <p className="text-gray-400">
+                      <p className="text-label-secondary">{userAddress.street1}</p>
+                      {userAddress.street2 && <p className="text-label-secondary">{userAddress.street2}</p>}
+                      <p className="text-label-secondary">
                         {userAddress.city}, {userAddress.state} {userAddress.zip}
                       </p>
                     </div>
                   ) : (
                     <button
                       onClick={() => setShowAddressForm(true)}
-                      className="w-full py-3 bg-gray-800 hover:bg-gray-700 rounded transition-colors"
+                      className="w-full py-3 bg-surface-secondary hover:bg-surface-tertiary rounded-ios transition-colors"
                     >
                       Add Shipping Address
                     </button>

@@ -6,132 +6,276 @@
   * {
     box-sizing: border-box;
   }
-  
+
   html {
-    @apply bg-black text-white antialiased font-sf-pro;
-    margin: 0;
-    padding: 0;
+    @apply bg-surface-primary text-label-primary antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  
+
   body {
-    @apply min-h-screen bg-black text-white;
-    background: linear-gradient(135deg, #000000 0%, #0A0A0A 100%) !important;
-    margin: 0;
-    padding: 0;
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    @apply min-h-screen bg-surface-primary text-label-primary;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+                 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
-  
-  #root {
-    @apply min-h-screen bg-black text-white;
-  }
-  
-  /* Minimalist scrollbar */
+
+  /* Minimal scrollbar - almost invisible */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
-  
+
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-800 rounded-full;
+    @apply bg-surface-quaternary/50 rounded-full;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-700;
+    @apply bg-surface-quaternary;
   }
-  
-  /* Selection colors */
+
+  /* Selection */
   ::selection {
-    @apply bg-solana-purple/30 text-white;
+    @apply bg-accent-blue/30 text-white;
   }
-  
-  /* Focus styles */
+
+  /* Focus styles - subtle but accessible */
   *:focus {
     @apply outline-none;
   }
-  
+
   button:focus-visible,
-  a:focus-visible {
-    @apply ring-2 ring-solana-purple ring-offset-2 ring-offset-black;
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    @apply ring-2 ring-accent-blue/50 ring-offset-2 ring-offset-surface-primary;
   }
 }
 
 @layer components {
-  /* Glass morphism effect */
+  /* ===== iOS GLASS MATERIAL ===== */
+  /* Standard frosted glass - for nav, cards */
   .glass {
-    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+    @apply bg-surface-elevated/80 backdrop-blur-xl border-t border-white/[0.08];
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
-  
-  /* Button styles */
+
+  /* Thick glass - for modals, sheets */
+  .glass-thick {
+    @apply bg-surface-elevated/90 backdrop-blur-2xl border border-white/[0.05];
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+  }
+
+  /* Ultra-thin glass - for overlays */
+  .glass-thin {
+    @apply bg-black/40 backdrop-blur-xl;
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  /* ===== BUTTONS - Apple Style ===== */
+  /* Primary - Solid white, black text */
   .btn-primary {
-    @apply bg-white text-black font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:bg-gray-100 hover:scale-105 active:scale-95 inline-flex items-center justify-center;
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+    @apply bg-white text-black font-semibold
+           px-6 py-3 rounded-full
+           transition-all duration-200 ease-ios
+           hover:bg-white/90
+           active:scale-[0.98] active:bg-white/80
+           inline-flex items-center justify-center gap-2;
   }
-  
+
+  /* Secondary - Glass with white text */
   .btn-secondary {
-    @apply bg-transparent text-white font-semibold px-8 py-4 rounded-full border border-gray-700 transition-all duration-300 hover:bg-gray-900 hover:border-gray-600 hover:scale-105 active:scale-95 inline-flex items-center justify-center;
+    @apply bg-surface-tertiary/80 text-white font-medium
+           px-6 py-3 rounded-full
+           transition-all duration-200 ease-ios
+           hover:bg-surface-tertiary
+           active:scale-[0.98]
+           inline-flex items-center justify-center gap-2;
   }
-  
-  .btn-primary:hover {
-    box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+
+  /* Ghost - Minimal, text only feel */
+  .btn-ghost {
+    @apply bg-transparent text-label-secondary font-medium
+           px-4 py-2 rounded-ios
+           transition-all duration-200 ease-ios
+           hover:bg-surface-elevated hover:text-white
+           active:scale-[0.98]
+           inline-flex items-center justify-center gap-2;
   }
-  
-  /* Wallet button styling */
-  .wallet-adapter-button-trigger {
-    @apply rounded-full overflow-hidden;
+
+  /* Accent - For primary CTAs (use sparingly) */
+  .btn-accent {
+    @apply bg-accent-blue text-white font-semibold
+           px-6 py-3 rounded-full
+           transition-all duration-200 ease-ios
+           hover:bg-accent-blue/90
+           active:scale-[0.98]
+           inline-flex items-center justify-center gap-2;
   }
-  
+
+  /* ===== CARDS - Surface Elevation ===== */
+  /* Standard card - subtle elevation */
+  .card {
+    @apply bg-surface-elevated rounded-ios-lg p-6
+           transition-all duration-200 ease-ios;
+  }
+
+  .card-interactive {
+    @apply bg-surface-elevated rounded-ios-lg p-6
+           transition-all duration-200 ease-ios
+           hover:bg-surface-secondary
+           active:scale-[0.995];
+  }
+
+  /* Grouped list - iOS Settings style */
+  .card-group {
+    @apply bg-surface-elevated rounded-ios-lg overflow-hidden divide-y divide-surface-quaternary/30;
+  }
+
+  .card-group-item {
+    @apply px-4 py-3 flex items-center justify-between
+           transition-colors duration-150
+           hover:bg-surface-secondary
+           active:bg-surface-tertiary;
+  }
+
+  /* ===== FORMS ===== */
+  .form-input {
+    @apply w-full bg-surface-elevated
+           border-0 rounded-ios
+           px-4 py-3
+           text-white placeholder-label-tertiary
+           transition-all duration-200
+           focus:ring-2 focus:ring-accent-blue/30;
+  }
+
+  .form-select {
+    @apply w-full bg-surface-elevated
+           border-0 rounded-ios
+           px-4 py-3
+           text-white
+           transition-all duration-200
+           focus:ring-2 focus:ring-accent-blue/30;
+    color-scheme: dark;
+  }
+
+  .form-select option {
+    @apply bg-surface-secondary text-white;
+  }
+
+  .form-label {
+    @apply block text-footnote text-label-secondary uppercase tracking-wide mb-2;
+  }
+
+  /* ===== NAVIGATION ===== */
+  .nav-item {
+    @apply px-4 py-2 rounded-ios
+           text-label-secondary font-medium
+           transition-all duration-200 ease-ios
+           hover:bg-surface-elevated hover:text-white;
+  }
+
+  .nav-item-active {
+    @apply bg-surface-elevated text-white;
+  }
+
+  /* ===== TYPOGRAPHY UTILITIES ===== */
+  /* Note: Using direct styles instead of @apply to avoid circular dependencies
+     since fontSize utilities are defined in tailwind.config.js */
+  .heading-display {
+    font-size: 56px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .heading-1 {
+    font-size: 34px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+
+  .heading-2 {
+    font-size: 28px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+
+  .heading-3 {
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .text-secondary {
+    @apply text-label-secondary;
+  }
+
+  .text-tertiary {
+    @apply text-label-tertiary;
+  }
+
+  /* ===== DIVIDERS ===== */
+  .divider {
+    @apply h-px bg-surface-quaternary/30;
+  }
+
+  .divider-inset {
+    @apply h-px bg-surface-quaternary/30 ml-4;
+  }
+
+  /* ===== STATUS INDICATORS ===== */
+  .badge {
+    @apply inline-flex items-center gap-1.5
+           px-2.5 py-1 rounded-full
+           text-caption-1 font-medium;
+  }
+
+  .badge-success {
+    @apply bg-accent-green/15 text-accent-green;
+  }
+
+  .badge-warning {
+    @apply bg-accent-orange/15 text-accent-orange;
+  }
+
+  .badge-error {
+    @apply bg-accent-red/15 text-accent-red;
+  }
+
+  .badge-info {
+    @apply bg-accent-blue/15 text-accent-blue;
+  }
+
+  /* ===== WALLET BUTTON (Privy/Solana) ===== */
+  .wallet-adapter-button-trigger,
   .wallet-adapter-button {
-    @apply bg-gradient-to-r from-solana-purple to-solana-green text-white font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 border-0;
-    box-shadow: 0 4px 20px rgba(153, 69, 255, 0.3);
-  }
-  
-  .wallet-adapter-button:hover {
-    box-shadow: 0 8px 30px rgba(153, 69, 255, 0.4);
-  }
-  
-  /* Wallet Button Overrides */
-  .wallet-adapter-button {
-    @apply bg-gradient-to-r from-solana-purple to-solana-green text-black font-semibold px-6 py-2 rounded-lg transition-all duration-300 !important;
-    @apply hover:shadow-lg hover:shadow-solana-purple/50 hover:scale-105 !important;
-    @apply relative overflow-hidden !important;
+    @apply bg-white text-black font-semibold
+           px-5 py-2.5 rounded-full
+           transition-all duration-200 ease-ios
+           hover:bg-white/90
+           active:scale-[0.98]
+           border-0 !important;
   }
 
-  .wallet-adapter-button::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full;
-    animation: shimmer 2s infinite;
+  /* ===== LOADING STATES ===== */
+  .skeleton {
+    @apply bg-surface-secondary rounded-ios animate-pulse;
   }
 
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
+  .loading-spinner {
+    @apply w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin;
   }
 
-  .wallet-adapter-button-trigger {
-    @apply relative;
-  }
-
-  /* Cyberpunk glow for active nav items */
-  .nav-cyberpunk-glow {
-    box-shadow: 
-      0 0 20px rgba(168, 85, 247, 0.5),
-      0 0 40px rgba(168, 85, 247, 0.3),
-      inset 0 0 20px rgba(20, 184, 166, 0.2);
-  }
-
-  /* Mobile Navigation Enhancement */
-  @media (max-width: 768px) {
-    .wallet-adapter-button {
-      @apply text-sm px-4 py-1.5 !important;
-    }
-  }
-  
-  /* Mobile Touch Optimization */
+  /* ===== MOBILE OPTIMIZATION ===== */
   @media (hover: none) and (pointer: coarse) {
     button, a, .clickable {
       @apply min-h-[44px];
@@ -139,90 +283,20 @@
       touch-action: manipulation;
     }
   }
-  
-  /* Card styles */
-  .card {
-    @apply bg-gray-900/50 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300;
-  }
-  
-  .card:hover {
-    @apply transform translate-y-[-2px];
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Form styles */
-  .form-input {
-    @apply bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-solana-purple focus:ring-2 focus:ring-solana-purple/20 transition-all duration-200;
-  }
-  
-  .form-select {
-    @apply bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-solana-purple focus:ring-2 focus:ring-solana-purple/20 transition-all duration-200;
-    color-scheme: dark;
-  }
-  
-  .form-select option {
-    @apply bg-gray-900 text-white;
-    background-color: #111827 !important;
-    color: white !important;
-  }
-  
-  .form-select::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-  }
-  
-  /* Firefox specific styles */
-  @-moz-document url-prefix() {
-    .form-select option {
-      background-color: #111827;
-      color: white;
+
+  @media (max-width: 768px) {
+    .wallet-adapter-button {
+      @apply text-sm px-4 py-2 !important;
     }
   }
-  
-  /* For webkit browsers to ensure dropdown arrow is visible */
-  .form-select::-webkit-inner-spin-button,
-  .form-select::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  
-  /* Text styles */
+
+  /* ===== LEGACY SUPPORT (gradual migration) ===== */
+  /* Keep gradient utilities for components not yet migrated */
   .text-gradient {
-    @apply bg-gradient-to-r from-solana-purple to-solana-green bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-accent-purple to-accent-green bg-clip-text text-transparent;
   }
-  
-  /* Animation utilities */
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes glow {
-    from {
-      box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
-    }
-    to {
-      box-shadow: 0 0 30px rgba(20, 241, 149, 0.3);
-    }
-  }
-  
-  /* Gradient backgrounds */
+
   .bg-gradient-solana {
     background: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
   }
-  
-  .bg-gradient-dark {
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-  }
-  
-  /* Loading states */
-  .loading-dots {
-    @apply inline-flex space-x-1;
-  }
-  
-  .loading-dots div {
-    @apply w-2 h-2 bg-current rounded-full animate-pulse;
-  }
-  
-  .loading-dots div:nth-child(1) { animation-delay: 0ms; }
-  .loading-dots div:nth-child(2) { animation-delay: 150ms; }
-  .loading-dots div:nth-child(3) { animation-delay: 300ms; }
 }
