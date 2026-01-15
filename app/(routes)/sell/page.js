@@ -343,15 +343,15 @@ export default function SellPage() {
                   <ShippingSelection
                     fromAddress={userAddress}
                     toAddress={{
-                      name: 'ReFit Warehouse',
-                      company: 'ReFit',
-                      street1: '123 Tech Blvd',
-                      city: 'San Francisco',
-                      state: 'CA',
-                      zip: '94105',
+                      name: 'Shop Refit, LLC',
+                      company: 'Shop Refit',
+                      street1: '4931 Anclote Dr',
+                      city: 'Johns Creek',
+                      state: 'GA',
+                      zip: '30022',
                       country: 'US',
-                      phone: '415-555-0123',
-                      email: 'warehouse@refit.com'
+                      phone: '470-555-0100',
+                      email: 'warehouse@shoprefit.com'
                     }}
                     onSelectRate={handleSelectShippingRate}
                     selectedRateId={selectedShippingRate?.rateId}

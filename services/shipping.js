@@ -141,14 +141,14 @@ class ShippingService {
   // ReFit warehouse address
   static getWarehouseAddress() {
     return {
-      name: 'ReFit Warehouse',
-      company: 'ReFit',
-      street1: '100 California St',
-      city: 'San Francisco',
-      state: 'CA',
-      zip: '94111',
+      name: 'Shop Refit, LLC',
+      company: 'Shop Refit',
+      street1: '4931 Anclote Dr',
+      city: 'Johns Creek',
+      state: 'GA',
+      zip: '30022',
       country: 'US',
-      phone: '415-555-0100',
+      phone: '470-555-0100',
       email: 'warehouse@shoprefit.com'
     };
   }
