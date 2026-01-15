@@ -141,10 +141,11 @@ class ShippingService {
   // ReFit warehouse address
   static getWarehouseAddress() {
     return {
-      name: 'Shop Refit, LLC',
-      company: 'Shop Refit',
-      street1: '4931 Anclote Dr',
-      city: 'Johns Creek',
+      name: 'ShopRefit',
+      company: 'ShopRefit',
+      street1: '10945 State Bridge RD',
+      street2: 'STE 401 #257',
+      city: 'Alpharetta',
       state: 'GA',
       zip: '30022',
       country: 'US',

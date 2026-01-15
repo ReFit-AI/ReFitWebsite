@@ -99,9 +99,10 @@ export async function POST(request) {
       
       // Define warehouse address (destination for trade-ins)
       const warehouseAddress = {
-      name: 'Shop Refit, LLC',
-      street1: '4931 Anclote Dr',
-      city: 'Johns Creek',
+      name: 'ShopRefit',
+      street1: '10945 State Bridge RD',
+      street2: 'STE 401 #257',
+      city: 'Alpharetta',
       state: 'GA',
       zip: '30022',
       country: 'US',
