@@ -233,6 +233,22 @@ def import_kt_samsung(excel_file):
     print(f"  ✅ Imported {len(samsung_phones)} Samsung variants from KT")
     return samsung_phones
 
+def normalize_model_name(model):
+    """Normalize model names to consistent format (e.g., 'iPhone 16 Pro Max')"""
+    # Convert to title case but preserve specific patterns
+    model = model.strip()
+    # Handle all-caps from KT Corp
+    if model.isupper():
+        model = model.title()
+    # Fix common patterns
+    model = model.replace('Iphone', 'iPhone')
+    model = model.replace('Promax', 'Pro Max')
+    model = model.replace('Pro max', 'Pro Max')
+    model = model.replace(' Plus', ' Plus')
+    model = model.replace(' Mini', ' mini')
+    model = model.replace(' Air', ' Air')
+    return model
+
 def merge_prices(sa_devices, kt_devices):
     """Merge prices from multiple vendors, keeping best prices"""
     print("\n🔄 Merging prices from vendors...")
@@ -243,23 +259,27 @@ def merge_prices(sa_devices, kt_devices):
     all_devices = []
     for device in sa_devices:
         device['vendor'] = 'SA'
+        device['model'] = normalize_model_name(device['model'])
         all_devices.append(device)
 
     for device in kt_devices:
         device['vendor'] = 'KT'
+        device['model'] = normalize_model_name(device['model'])
         all_devices.append(device)
 
-    # Group by unique key
+    # Group by unique key (case-insensitive)
     for device in all_devices:
-        key = f"{device['model']}|{device['storage']}|{device['lock_status']}"
+        key = f"{device['model'].lower()}|{device['storage'].lower()}|{device['lock_status'].lower()}"
 
         if key not in merged:
             merged[key] = device.copy()
-            merged[key]['vendors'] = {device['vendor']: device['prices']}
+            merged[key]['prices'] = device['prices'].copy()  # Deep copy prices
+            merged[key]['vendors'] = {device['vendor']: device['prices'].copy()}
         else:
-            # Merge prices - take the best (highest) for each grade
-            merged[key]['vendors'][device['vendor']] = device['prices']
+            # Store this vendor's original prices (before merge)
+            merged[key]['vendors'][device['vendor']] = device['prices'].copy()
 
+            # Merge prices - take the best (highest) for each grade
             for grade in ['A', 'B+', 'B', 'C', 'D']:
                 current = merged[key]['prices'].get(grade)
                 new = device['prices'].get(grade)
@@ -273,6 +293,47 @@ def merge_prices(sa_devices, kt_devices):
     print(f"  ✅ Merged to {len(result)} unique device configurations")
     return result
 
+def validate_and_fix_prices(devices):
+    """Validate price data and fix common issues like grade inversions"""
+    print("\n🔍 Validating prices...")
+
+    issues_found = 0
+    issues_fixed = 0
+
+    # Grade order: A > B+ > B > C > D (prices should decrease)
+    grade_order = ['A', 'B+', 'B', 'C', 'D']
+
+    for device in devices:
+        prices = device.get('prices', {})
+
+        # Check for grade inversions
+        for i in range(len(grade_order) - 1):
+            higher_grade = grade_order[i]
+            lower_grade = grade_order[i + 1]
+
+            higher_price = prices.get(higher_grade)
+            lower_price = prices.get(lower_grade)
+
+            if higher_price and lower_price and lower_price > higher_price:
+                issues_found += 1
+                device_name = f"{device['model']} {device['storage']} {device['lock_status']}"
+                print(f"  ⚠️  Grade inversion: {device_name}")
+                print(f"      {higher_grade}=${higher_price} < {lower_grade}=${lower_price}")
+
+                # Fix by setting lower grade to higher grade price minus $5
+                fixed_price = higher_price - 5
+                if fixed_price > 0:
+                    prices[lower_grade] = fixed_price
+                    issues_fixed += 1
+                    print(f"      Fixed: {lower_grade}=${fixed_price}")
+
+    if issues_found == 0:
+        print("  ✅ No price anomalies found")
+    else:
+        print(f"\n  📊 Found {issues_found} issues, fixed {issues_fixed}")
+
+    return devices
+
 def main():
     """Main import function"""
     print("="*60)
@@ -280,8 +341,8 @@ def main():
     print("="*60)
 
     # File paths
-    sa_csv = '/Users/j3r/ReFit/PriceLists/SA_11.5.2025 - iPhone Used.csv'
-    kt_excel = '/Users/j3r/ReFit/PriceLists/KT Corp - PPL ( USED ) #20251105.xlsx'
+    sa_csv = '/Users/j3r/ReFit/PriceLists/SA-1.16.2026.csv'
+    kt_excel = '/Users/j3r/ReFit/PriceLists/KT Corp - PPL ( USED ) #20260116.xlsx'
 
     try:
         # Import from SA
@@ -302,6 +363,10 @@ def main():
 
         # Merge iPhone prices (best of both vendors)
         merged_iphones = merge_prices(sa_iphones, kt_iphones)
+
+        # Validate and fix price anomalies
+        merged_iphones = validate_and_fix_prices(merged_iphones)
+        kt_samsung = validate_and_fix_prices(kt_samsung)
 
         # Save separate files for each category
         timestamp = datetime.now().isoformat()

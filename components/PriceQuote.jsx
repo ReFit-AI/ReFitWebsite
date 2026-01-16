@@ -19,12 +19,11 @@ const PriceQuote = ({ quote, phoneData }) => {
   }
 
   const getConditionDetails = (condition) => {
+    // Aligned with pricing-engine.js margins
     const conditions = {
-      'like-new': { label: 'Like New', multiplier: '100%' },
-      'excellent': { label: 'Excellent', multiplier: '90%' },
-      'good': { label: 'Good', multiplier: '75%' },
-      'fair': { label: 'Fair', multiplier: '60%' },
-      'poor': { label: 'Poor', multiplier: '40%' }
+      'excellent': { label: 'Good Condition', multiplier: '83%', margin: 0.83 },
+      'good': { label: 'Cracked Screen', multiplier: '80%', margin: 0.80 },
+      'fair': { label: 'LCD Issues', multiplier: '77%', margin: 0.77 }
     }
     return conditions[condition] || { label: 'Unknown', multiplier: 'N/A' }
   }
