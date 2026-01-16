@@ -144,7 +144,7 @@ class ShippingService {
       name: 'ShopRefit',
       company: 'ShopRefit',
       street1: '10945 State Bridge RD',
-      street2: 'STE 401 #257',
+      street2: '401-257',
       city: 'Alpharetta',
       state: 'GA',
       zip: '30022',
