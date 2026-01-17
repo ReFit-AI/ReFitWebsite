@@ -19,13 +19,12 @@ const PriceQuote = ({ quote, phoneData }) => {
   }
 
   const getConditionDetails = (condition) => {
-    // Aligned with pricing-engine.js margins
     const conditions = {
-      'excellent': { label: 'Good Condition', multiplier: '83%', margin: 0.83 },
-      'good': { label: 'Cracked Screen', multiplier: '80%', margin: 0.80 },
-      'fair': { label: 'LCD Issues', multiplier: '77%', margin: 0.77 }
+      'excellent': { label: 'Good Condition' },
+      'good': { label: 'Cracked Screen' },
+      'fair': { label: 'LCD Issues' }
     }
-    return conditions[condition] || { label: 'Unknown', multiplier: 'N/A' }
+    return conditions[condition] || { label: 'Unknown' }
   }
 
   return (
@@ -95,10 +94,7 @@ const PriceQuote = ({ quote, phoneData }) => {
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Condition</span>
               <span className="font-medium">
-                {getConditionDetails(phoneData.condition).label} 
-                <span className="text-solana-green ml-2">
-                  ({getConditionDetails(phoneData.condition).multiplier} value)
-                </span>
+                {getConditionDetails(phoneData.condition).label}
               </span>
             </div>
             
