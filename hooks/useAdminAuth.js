@@ -1,76 +1,49 @@
 import { useEffect, useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet'
 
 const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET
 
 export function useAdminAuth() {
-  const router = useRouter()
-  const { publicKey, connected, connecting } = useWallet()
+  const { publicKey, connected, authReady, privyReady } = useUnifiedWallet()
   const [isAdmin, setIsAdmin] = useState(false)
   const [authLoading, setAuthLoading] = useState(true)
   const timeoutRef = useRef(null)
-  const hasRedirected = useRef(false)
+
+  const connecting = authReady && !privyReady && !connected
 
   useEffect(() => {
-    // Clear any existing timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
     }
 
-    // If connecting, keep loading
-    if (connecting) {
+    // Still connecting — stay in loading state
+    if (connecting || !authReady) {
       setAuthLoading(true)
       return
     }
 
-    // Wallet is connected and correct
-    if (connected && publicKey && publicKey.toString() === ADMIN_WALLET) {
-      console.log('[AdminAuth] Admin access granted')
-      setIsAdmin(true)
+    // Wallet is connected — check if admin
+    if (connected && publicKey) {
+      const granted = publicKey.toString() === ADMIN_WALLET
+      setIsAdmin(granted)
       setAuthLoading(false)
-      hasRedirected.current = false
       return
     }
 
-    // Wallet is connected but wrong wallet
-    if (connected && publicKey && publicKey.toString() !== ADMIN_WALLET) {
-      console.log('[AdminAuth] Wrong wallet, redirecting')
-      if (!hasRedirected.current) {
-        hasRedirected.current = true
-        router.push('/stake')
-      }
+    // Not connected yet — give wallet time to auto-reconnect
+    setAuthLoading(true)
+    timeoutRef.current = setTimeout(() => {
       setIsAdmin(false)
       setAuthLoading(false)
-      return
-    }
+    }, 3000)
 
-    // Not connected - give it time to auto-connect
-    if (!connected && !publicKey) {
-      console.log('[AdminAuth] No wallet yet, waiting 2s for auto-connect...')
-
-      // Keep loading state while waiting
-      setAuthLoading(true)
-
-      // Set timeout to redirect if still not connected
-      timeoutRef.current = setTimeout(() => {
-        if (!connected && !publicKey && !hasRedirected.current) {
-          console.log('[AdminAuth] No wallet after timeout, redirecting')
-          hasRedirected.current = true
-          router.push('/stake')
-          setAuthLoading(false)
-        }
-      }, 2000)
-    }
-
-    // Cleanup
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [connected, connecting, publicKey, router])
+  }, [connected, connecting, publicKey, authReady])
 
   return {
     isAdmin,
