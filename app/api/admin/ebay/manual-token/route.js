@@ -36,7 +36,7 @@ export async function POST(request) {
   } catch (err) {
     console.error('Manual token storage error:', err)
     return NextResponse.json(
-      { success: false, error: 'Failed to store token' },
+      { success: false, error: err?.message || 'Failed to store token' },
       { status: 500 }
     )
   }
