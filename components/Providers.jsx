@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { PrivyProvider } from '@privy-io/react-auth'
 import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana'
 import { WalletProvider } from '@/contexts/WalletContext'
@@ -14,27 +15,31 @@ const solanaConnectors = toSolanaWalletConnectors({
 // Get Privy App ID - must be set in environment variables
 const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID
 
+const toasterConfig = (
+  <Toaster
+    position="bottom-right"
+    toastOptions={{
+      duration: 4000,
+      style: {
+        background: '#1a1a1a',
+        color: '#fff',
+        border: '1px solid #333',
+      },
+    }}
+  />
+)
+
 export default function Providers({ children }) {
-  // If Privy App ID is not configured, render children without Privy
-  // This allows builds to complete and shows a helpful error in dev
-  if (!privyAppId) {
-    if (typeof window !== 'undefined') {
-      console.error('NEXT_PUBLIC_PRIVY_APP_ID is not set. Authentication will not work.')
-    }
+  // PrivyProvider crashes during Next.js SSR prerendering, so defer to client-only
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
+  // During SSR or if Privy not configured, render with just the Solana wallet adapter
+  if (!mounted || !privyAppId) {
     return (
       <WalletProvider>
         {children}
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#1a1a1a',
-              color: '#fff',
-              border: '1px solid #333',
-            },
-          }}
-        />
+        {toasterConfig}
       </WalletProvider>
     )
   }
@@ -53,7 +58,7 @@ export default function Providers({ children }) {
         loginMethods: ['email', 'google', 'wallet'],
         embeddedWallets: {
           solana: {
-            createOnLogin: 'users-without-wallets', // Auto-create Solana wallets
+            createOnLogin: 'users-without-wallets',
           },
         },
         externalWallets: {
@@ -65,17 +70,7 @@ export default function Providers({ children }) {
     >
       <WalletProvider>
         {children}
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#1a1a1a',
-              color: '#fff',
-              border: '1px solid #333',
-            },
-          }}
-        />
+        {toasterConfig}
       </WalletProvider>
     </PrivyProvider>
   )
