@@ -51,7 +51,7 @@ const nextConfig = {
     // Production CSP - strict but allow Privy
     const prodCSP = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'", // Remove unsafe-eval in prod, keep unsafe-inline for Next.js
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval required by wallet adapter libraries
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Required for styled-jsx and Google Fonts
       "img-src 'self' data: https: blob:",
       "connect-src 'self' https: wss:",
@@ -68,7 +68,7 @@ const nextConfig = {
     
     // Allowed origins for CORS
     const allowedOrigins = isDev 
-      ? ['http://localhost:3000', 'http://localhost:3001']
+      ? ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002']
       : ['https://shoprefit.com', 'https://www.shoprefit.com'];
     
     return [

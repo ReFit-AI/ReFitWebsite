@@ -12,7 +12,9 @@ import {
   DollarSign,
   TrendingUp,
   Shield,
-  ChevronRight
+  ChevronRight,
+  Tag,
+  ShoppingCart
 } from 'lucide-react'
 
 export default function AdminDashboard() {
@@ -45,6 +47,20 @@ export default function AdminDashboard() {
           icon: Boxes,
           description: 'Track all devices in stock',
           color: 'from-blue-500 to-cyan-500'
+        },
+        {
+          href: '/admin/pricing',
+          label: 'Price Lists',
+          icon: Tag,
+          description: 'Upload and track wholesale pricing',
+          color: 'from-yellow-500 to-amber-500'
+        },
+        {
+          href: '/admin/ebay',
+          label: 'eBay Hub',
+          icon: ShoppingCart,
+          description: 'Track eBay purchases & seller contacts',
+          color: 'from-red-500 to-orange-500'
         },
         {
           href: '/admin/invoices',
