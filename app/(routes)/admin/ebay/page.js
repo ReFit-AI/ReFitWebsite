@@ -42,6 +42,10 @@ export default function EbayHubPage() {
   // Connection state
   const [connection, setConnection] = useState({ connected: false, tokenStatus: 'none' })
   const [connectionLoading, setConnectionLoading] = useState(true)
+  const [showManualToken, setShowManualToken] = useState(false)
+  const [manualAccessToken, setManualAccessToken] = useState('')
+  const [manualRefreshToken, setManualRefreshToken] = useState('')
+  const [savingToken, setSavingToken] = useState(false)
 
   // Tab state
   const [activeTab, setActiveTab] = useState('purchases')
@@ -136,6 +140,39 @@ export default function EbayHubPage() {
       }
     } catch (err) {
       showToast('Connection error', 'error')
+    }
+  }
+
+  async function handleManualToken() {
+    if (!manualAccessToken.trim()) {
+      showToast('Access token is required', 'error')
+      return
+    }
+    try {
+      setSavingToken(true)
+      const res = await fetch('/api/admin/ebay/manual-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: walletStr,
+          accessToken: manualAccessToken.trim(),
+          refreshToken: manualRefreshToken.trim() || null
+        })
+      })
+      const data = await res.json()
+      if (data.success) {
+        showToast(`Connected as ${data.data.ebay_username}!`, 'success')
+        setShowManualToken(false)
+        setManualAccessToken('')
+        setManualRefreshToken('')
+        fetchConnectionStatus()
+      } else {
+        showToast(data.error || 'Failed to store token', 'error')
+      }
+    } catch (err) {
+      showToast('Failed to save token', 'error')
+    } finally {
+      setSavingToken(false)
     }
   }
 
@@ -398,17 +435,59 @@ export default function EbayHubPage() {
             </button>
           </div>
         ) : (
-          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-red-400" />
-              <span className="text-red-400 font-medium">eBay account not connected</span>
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-red-400" />
+                <span className="text-red-400 font-medium">eBay account not connected</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowManualToken(!showManualToken)}
+                  className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg text-sm transition-colors"
+                >
+                  Paste Token
+                </button>
+                <button
+                  onClick={handleConnect}
+                  className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white rounded-lg font-medium text-sm transition-colors"
+                >
+                  Connect eBay
+                </button>
+              </div>
             </div>
-            <button
-              onClick={handleConnect}
-              className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white rounded-lg font-medium text-sm transition-colors"
-            >
-              Connect eBay
-            </button>
+            {showManualToken && (
+              <div className="mt-4 pt-4 border-t border-red-500/20 space-y-3">
+                <p className="text-sm text-gray-400">Paste your OAuth token from the eBay Developer Portal:</p>
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">User Access Token *</label>
+                  <input
+                    type="password"
+                    value={manualAccessToken}
+                    onChange={(e) => setManualAccessToken(e.target.value)}
+                    placeholder="v^1.1#i^1#p^3#..."
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">Refresh Token (optional, for auto-renewal)</label>
+                  <input
+                    type="password"
+                    value={manualRefreshToken}
+                    onChange={(e) => setManualRefreshToken(e.target.value)}
+                    placeholder="v^1.1#i^1#r^1#..."
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500"
+                  />
+                </div>
+                <button
+                  onClick={handleManualToken}
+                  disabled={savingToken || !manualAccessToken.trim()}
+                  className="px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  {savingToken ? 'Saving...' : 'Save Token'}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
