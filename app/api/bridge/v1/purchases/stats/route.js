@@ -24,7 +24,7 @@ export async function GET(request) {
     // Fetch all purchases with optional date filter
     let purchaseQuery = supabaseAdmin
       .from('ebay_purchases')
-      .select('total_cost, sale_price, order_status, seller_username, model, order_date')
+      .select('*')
 
     if (since) {
       purchaseQuery = purchaseQuery.gte('order_date', since)

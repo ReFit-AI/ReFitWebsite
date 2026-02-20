@@ -29,7 +29,7 @@ export async function GET(request) {
 
     let query = supabaseAdmin
       .from('ebay_purchases')
-      .select('ebay_order_id, ebay_item_id, title, model, storage, price, shipping_cost, total_cost, seller_username, order_status, order_date, sale_price, tracking_number, shipping_carrier, notes', { count: 'exact' })
+      .select('*', { count: 'exact' })
       .order('order_date', { ascending: false })
 
     if (since) {
@@ -50,8 +50,11 @@ export async function GET(request) {
     const { data, error, count } = await query
     if (error) throw error
 
+    // Strip raw_api_data to keep responses lightweight
+    const purchases = (data || []).map(({ raw_api_data, ...rest }) => rest)
+
     return NextResponse.json({
-      purchases: data || [],
+      purchases,
       total: count || 0,
       has_more: (offset + limit) < (count || 0)
     })
