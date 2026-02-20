@@ -56,11 +56,15 @@ export async function GET(request) {
     // Also get aggregate stats
     const { data: allPurchases } = await supabaseAdmin
       .from('ebay_purchases')
-      .select('total_cost, order_status, seller_username')
+      .select('total_cost, order_status, seller_username, sale_price')
 
+    const totalSpent = allPurchases?.reduce((sum, p) => sum + parseFloat(p.total_cost || 0), 0) || 0
+    const totalRevenue = allPurchases?.reduce((sum, p) => sum + parseFloat(p.sale_price || 0), 0) || 0
     const stats = {
       totalPurchases: allPurchases?.length || 0,
-      totalSpent: allPurchases?.reduce((sum, p) => sum + parseFloat(p.total_cost || 0), 0) || 0,
+      totalSpent,
+      totalRevenue,
+      totalProfit: totalRevenue - totalSpent,
       awaitingDelivery: allPurchases?.filter(p => ['Active', 'Shipped'].includes(p.order_status)).length || 0,
       uniqueSellers: new Set(allPurchases?.map(p => p.seller_username).filter(Boolean)).size
     }
@@ -96,7 +100,7 @@ export async function PATCH(request) {
     }
 
     // Only allow specific fields to be updated
-    const allowedFields = ['notes', 'order_status', 'inventory_id', 'tracking_number', 'shipping_carrier', 'tracking_url']
+    const allowedFields = ['notes', 'order_status', 'inventory_id', 'tracking_number', 'shipping_carrier', 'tracking_url', 'sale_price', 'model', 'storage']
     const sanitized = {}
     for (const key of allowedFields) {
       if (updates[key] !== undefined) {

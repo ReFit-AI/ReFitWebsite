@@ -593,9 +593,9 @@ function PurchasesTab({
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <StatCard label="Total Purchases" value={stats.totalPurchases || 0} icon={ShoppingCart} color="text-orange-400" />
-        <StatCard label="Total Spent" value={`$${(stats.totalSpent || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon={DollarSign} color="text-green-400" />
+        <StatCard label="Total Spent" value={`$${(stats.totalSpent || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon={DollarSign} color="text-yellow-400" />
+        <StatCard label="Total Profit" value={`$${(stats.totalProfit || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`} icon={DollarSign} color={stats.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'} />
         <StatCard label="Awaiting Delivery" value={stats.awaitingDelivery || 0} icon={Package} color="text-blue-400" />
-        <StatCard label="Unique Sellers" value={stats.uniqueSellers || 0} icon={Users} color="text-purple-400" />
       </div>
 
       {/* Filters */}
@@ -644,35 +644,48 @@ function PurchasesTab({
           <table className="w-full">
             <thead className="bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Date</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Item</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Price</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Seller</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Tracking</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Status</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Date</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Model</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Item</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Paid</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Sold</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Profit</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Seller</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Tracking</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-gray-500">
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-400 mx-auto mb-3" />
                     Loading purchases...
                   </td>
                 </tr>
               ) : purchases.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-gray-500">
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
                     No purchases found. Click &quot;Sync Now&quot; to pull from eBay.
                   </td>
                 </tr>
-              ) : purchases.map(p => (
+              ) : purchases.map(p => {
+                const profit = p.sale_price ? parseFloat(p.sale_price) - parseFloat(p.total_cost || 0) : null
+                return (
                 <tr key={p.id} className="hover:bg-gray-800/50">
-                  <td className="px-4 py-3 text-sm text-gray-400">
+                  <td className="px-3 py-3 text-sm text-gray-400 whitespace-nowrap">
                     {p.order_date ? new Date(p.order_date).toLocaleDateString() : '-'}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="text-sm font-medium text-white max-w-xs truncate" title={p.title}>
+                  <td className="px-3 py-3">
+                    <div className="text-sm font-medium text-white whitespace-nowrap">
+                      {p.model || '-'}
+                    </div>
+                    {p.storage && (
+                      <div className="text-xs text-gray-500">{p.storage}</div>
+                    )}
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="text-sm text-gray-300 max-w-[200px] truncate" title={p.title}>
                       {p.title}
                     </div>
                     {p.ebay_item_id && (
@@ -686,24 +699,42 @@ function PurchasesTab({
                       </a>
                     )}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="text-sm font-medium text-white">
+                  <td className="px-3 py-3">
+                    <div className="text-sm font-medium text-white whitespace-nowrap">
                       ${parseFloat(p.total_cost || 0).toFixed(2)}
                     </div>
                     {parseFloat(p.shipping_cost) > 0 && (
                       <div className="text-xs text-gray-500">+${parseFloat(p.shipping_cost).toFixed(2)} ship</div>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-400">
+                  <td className="px-3 py-3">
+                    {p.sale_price ? (
+                      <div className="text-sm font-medium text-green-400 whitespace-nowrap">
+                        ${parseFloat(p.sale_price).toFixed(2)}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-600">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-3">
+                    {profit !== null ? (
+                      <div className={`text-sm font-medium whitespace-nowrap ${profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {profit >= 0 ? '+' : ''}${profit.toFixed(2)}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-600">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-3 text-sm text-gray-400 whitespace-nowrap">
                     {p.seller_username || '-'}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-3">
                     {p.tracking_number ? (
                       <a
                         href={p.tracking_url || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 font-mono"
+                        className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 font-mono whitespace-nowrap"
                       >
                         {p.shipping_carrier && <span className="text-gray-500">{p.shipping_carrier}</span>}
                         {p.tracking_number.slice(0, 12)}...
@@ -713,11 +744,11 @@ function PurchasesTab({
                       <span className="text-xs text-gray-600">No tracking</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-3">
                     <StatusBadge status={p.order_status} />
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>
